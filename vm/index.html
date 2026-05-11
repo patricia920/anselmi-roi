@@ -1849,7 +1849,7 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
         <span class="sp-chev">▾</span>
       </button>
       <div class="sp-actions">
-        <button class="sp-act" onclick="alert('Comparar 2 lojas · v33')" title="Modo comparação · 2 lojas lado a lado">
+        <button class="sp-act" onclick="openComparador()" title="Modo comparação · 2 lojas lado a lado">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18"/><rect x="14" y="3" width="7" height="18"/></svg>
           Comparar
         </button>
@@ -1891,6 +1891,63 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
   <div class="lb-box" onclick="event.stopPropagation()">
     <button class="lb-close" onclick="closeModal()" aria-label="Fechar">✕</button>
     <div class="lb-card" id="lb-card"></div>
+  </div>
+</div>
+
+<!-- ═══════════ COMPARADOR DE LOJAS ═══════════ -->
+<style>
+  .cmp-overlay{position:fixed;inset:0;background:rgba(26,23,20,.65);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:5vh 4vw;overflow-y:auto}
+  .cmp-overlay.show{display:flex}
+  .cmp-box{background:var(--paper);border-radius:8px;max-width:1240px;width:100%;padding:22px 26px;box-shadow:var(--shadow-lg);position:relative}
+  .cmp-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink-3);width:32px;height:32px;border-radius:50%;transition:background .12s}
+  .cmp-close:hover{background:var(--paper-2);color:var(--ink)}
+  .cmp-title{font-family:'Noto Serif TC',Georgia,serif;font-size:24px;font-weight:500;color:var(--ink);margin-bottom:6px}
+  .cmp-subtitle{font-size:12px;color:var(--ink-3);margin-bottom:18px;letter-spacing:.02em}
+  .cmp-selectors{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+  .cmp-sel-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-3);letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:6px}
+  .cmp-sel-wrap select{width:100%;padding:10px 12px;font-family:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--ink);cursor:pointer}
+  .cmp-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
+  .cmp-kpi{background:#fff;border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+  .cmp-kpi-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-3);letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+  .cmp-kpi-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .cmp-kpi-side{display:flex;flex-direction:column}
+  .cmp-kpi-side .v{font-family:'Archivo',sans-serif;font-size:22px;font-weight:800;color:var(--ink);line-height:1;letter-spacing:-.01em}
+  .cmp-kpi-side .l{font-size:10px;color:var(--ink-3);margin-top:4px;font-family:inherit}
+  .cmp-kpi-side.better .v{color:var(--musgo)}
+  .cmp-kpi-side.worse .v{color:var(--bordo)}
+  .cmp-tabela{width:100%;border-collapse:collapse;font-size:12px;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .cmp-tabela th{background:var(--card);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);font-weight:700}
+  .cmp-tabela th.num,.cmp-tabela td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .cmp-tabela td{padding:8px 12px;border-bottom:1px solid var(--paper-2);color:var(--ink-2)}
+  .cmp-tabela tr:last-child td{border-bottom:none}
+  .cmp-tabela tr.only-a td{background:rgba(168,109,31,.06)}
+  .cmp-tabela tr.only-b td{background:rgba(74,93,58,.06)}
+  .cmp-delta-pos{color:var(--musgo);font-weight:700}
+  .cmp-delta-neg{color:var(--bordo);font-weight:700}
+  .cmp-delta-zero{color:var(--ink-3)}
+  .cmp-filtros{display:flex;gap:6px;margin-bottom:10px;font-size:11px}
+  .cmp-filtros button{padding:5px 10px;border:1px solid var(--line);background:#fff;color:var(--ink-3);font-weight:600;border-radius:3px;cursor:pointer;font-family:inherit;font-size:11px}
+  .cmp-filtros button.active{background:var(--bordo);color:#fff;border-color:var(--bordo)}
+  .cmp-tabela-h{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-3);letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin:14px 0 8px}
+</style>
+<div class="cmp-overlay" id="cmp-overlay" onclick="if(event.target===this)closeComparador()">
+  <div class="cmp-box">
+    <button class="cmp-close" onclick="closeComparador()" aria-label="Fechar">✕</button>
+    <div class="cmp-title">Comparar lojas</div>
+    <div class="cmp-subtitle">KPIs lado a lado · diferenças de estoque/vendas por referência</div>
+
+    <div class="cmp-selectors">
+      <div>
+        <div class="cmp-sel-label">Loja A (referência)</div>
+        <div class="cmp-sel-wrap"><select id="cmp-sel-a" onchange="renderComparador()"></select></div>
+      </div>
+      <div>
+        <div class="cmp-sel-label">Loja B (comparar)</div>
+        <div class="cmp-sel-wrap"><select id="cmp-sel-b" onchange="renderComparador()"></select></div>
+      </div>
+    </div>
+
+    <div id="cmp-content"></div>
   </div>
 </div>
 
@@ -7724,6 +7781,173 @@ function exportLojaCSV(cod){
   return { refs: totalRefs, pecas: totalPecas, file: a.download };
 }
 window.exportLojaCSV = exportLojaCSV;
+
+/* ───────────────────────────────────────────────────────────────────────────
+   COMPARADOR DE LOJAS — modal com 2 dropdowns + KPIs + tabela de refs.
+   ─────────────────────────────────────────────────────────────────────────── */
+let _cmpFilter = 'all';  // 'all' | 'gaps' | 'comum' | 'maior-dif'
+
+function _cmpLojaSnapshot(cod){
+  // Retorna métricas e refs/qty pra uma loja
+  const loja = (typeof LOJAS !== 'undefined' && LOJAS.find(l => l.cod === cod)) || null;
+  if (!loja) return null;
+  const storeid = loja.storeid;
+  const VEL = window.VAR_ESTOQUE_LOJA || {};
+  const VVD = window.VAR_VENDAS_DIA || {};
+  const hoje = new Date();
+  const lim30 = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() - 30);
+
+  const refsQty = {};  // ref → qty
+  if (storeid) {
+    Object.entries(VEL).forEach(([ref, byStore]) => {
+      const q = +(byStore && byStore[storeid]) || 0;
+      if (q > 0) refsQty[ref] = q;
+    });
+  }
+  // Vendas 30d agregadas
+  let vendas30 = 0;
+  Object.values(refsQty).forEach((_, idx) => {});  // no-op
+  Object.keys(refsQty).forEach(ref => {
+    const vbl = VVD[ref] || {};
+    const lojaVendas = storeid ? vbl[storeid] : null;
+    if (lojaVendas && typeof lojaVendas === 'object') {
+      Object.entries(lojaVendas).forEach(([d, t]) => {
+        const dd = new Date(d);
+        if (dd >= lim30 && Array.isArray(t)) vendas30 += (+t[0] || 0);
+      });
+    }
+  });
+
+  const refsArr = Object.keys(refsQty);
+  const pecas = refsArr.reduce((s, r) => s + refsQty[r], 0);
+  return {
+    cod, nome: loja.nome, uf: loja.uf || '', storeid,
+    refsCount: refsArr.length,
+    pecas,
+    vendas30,
+    pecasPorRef: refsArr.length ? +(pecas / refsArr.length).toFixed(1) : 0,
+    refsQty
+  };
+}
+
+function _cmpKpiCard(label, valA, valB, formatFn){
+  formatFn = formatFn || (v => v.toLocaleString('pt-BR'));
+  const cA = valA > valB ? 'better' : (valA < valB ? 'worse' : '');
+  const cB = valB > valA ? 'better' : (valB < valA ? 'worse' : '');
+  return `<div class="cmp-kpi">
+    <div class="cmp-kpi-label">${label}</div>
+    <div class="cmp-kpi-pair">
+      <div class="cmp-kpi-side ${cA}"><div class="v">${formatFn(valA)}</div><div class="l">Loja A</div></div>
+      <div class="cmp-kpi-side ${cB}"><div class="v">${formatFn(valB)}</div><div class="l">Loja B</div></div>
+    </div>
+  </div>`;
+}
+
+function renderComparador(){
+  const selA = document.getElementById('cmp-sel-a'); const selB = document.getElementById('cmp-sel-b');
+  if (!selA || !selB) return;
+  const codA = selA.value, codB = selB.value;
+  if (!codA || !codB || codA === codB){
+    document.getElementById('cmp-content').innerHTML = '<div style="padding:30px;text-align:center;color:var(--ink-3);font-size:13px">Selecione duas lojas diferentes.</div>';
+    return;
+  }
+  const a = _cmpLojaSnapshot(codA);
+  const b = _cmpLojaSnapshot(codB);
+  if (!a || !b){
+    document.getElementById('cmp-content').innerHTML = '<div style="padding:30px;text-align:center;color:var(--bordo);font-size:13px">Erro: loja sem snapshot Sisplan.</div>';
+    return;
+  }
+
+  // KPIs
+  const kpisHtml = `<div class="cmp-kpis">
+    ${_cmpKpiCard('REFs presentes', a.refsCount, b.refsCount)}
+    ${_cmpKpiCard('Peças no estoque', a.pecas, b.pecas)}
+    ${_cmpKpiCard('Vendas 30d', a.vendas30, b.vendas30)}
+    ${_cmpKpiCard('Peças/REF média', a.pecasPorRef, b.pecasPorRef, v => v.toFixed(1).replace('.', ','))}
+  </div>`;
+
+  // Tabela de refs
+  const allRefs = new Set([...Object.keys(a.refsQty), ...Object.keys(b.refsQty)]);
+  let rows = [...allRefs].map(ref => {
+    const qA = a.refsQty[ref] || 0;
+    const qB = b.refsQty[ref] || 0;
+    const meta = (typeof PECAS !== 'undefined' && PECAS.find(p => p.ref === ref)) || {};
+    return { ref, tipo: meta.tipo || '—', qA, qB, delta: qA - qB, onlyA: qA > 0 && qB === 0, onlyB: qB > 0 && qA === 0 };
+  });
+
+  // Filtros
+  if (_cmpFilter === 'gaps') rows = rows.filter(r => r.onlyA || r.onlyB);
+  else if (_cmpFilter === 'comum') rows = rows.filter(r => !r.onlyA && !r.onlyB);
+  else if (_cmpFilter === 'maior-dif') rows = rows.filter(r => Math.abs(r.delta) >= 3);
+
+  // Ordena por |delta| desc, mostra top 30
+  rows.sort((x, y) => Math.abs(y.delta) - Math.abs(x.delta));
+  const top = rows.slice(0, 30);
+
+  const filtroHtml = `<div class="cmp-filtros">
+    ${['all','gaps','comum','maior-dif'].map(f => {
+      const lbl = {all:'Todas as refs',gaps:'Só gaps (só A ou só B)',comum:'Só em comum',
+                   'maior-dif':'Diferença ≥ 3 unidades'}[f];
+      return `<button class="${_cmpFilter===f?'active':''}" onclick="_cmpSetFilter('${f}')">${lbl}</button>`;
+    }).join('')}
+    <span style="margin-left:auto;color:var(--ink-3);font-size:11px;align-self:center">
+      ${rows.length} ref${rows.length!==1?'s':''} · mostrando top ${top.length} por diferença
+    </span>
+  </div>`;
+
+  const tabHtml = `<div class="cmp-tabela-h">Refs com maior diferença</div>${filtroHtml}
+    <table class="cmp-tabela">
+      <thead><tr>
+        <th>Ref</th><th>Tipo</th>
+        <th class="num">${a.nome}</th>
+        <th class="num">${b.nome}</th>
+        <th class="num">Δ (A − B)</th>
+      </tr></thead>
+      <tbody>
+      ${top.map(r => {
+        const cls = r.onlyA ? 'only-a' : (r.onlyB ? 'only-b' : '');
+        const dCls = r.delta > 0 ? 'cmp-delta-pos' : (r.delta < 0 ? 'cmp-delta-neg' : 'cmp-delta-zero');
+        const dStr = (r.delta > 0 ? '+' : '') + r.delta;
+        return `<tr class="${cls}"><td>${r.ref}</td><td>${r.tipo}</td><td class="num">${r.qA}</td><td class="num">${r.qB}</td><td class="num ${dCls}">${dStr}</td></tr>`;
+      }).join('')}
+      ${top.length === 0 ? '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--ink-3)">Nenhuma ref no filtro atual.</td></tr>' : ''}
+      </tbody>
+    </table>`;
+
+  document.getElementById('cmp-content').innerHTML = kpisHtml + tabHtml;
+}
+window.renderComparador = renderComparador;
+
+function _cmpSetFilter(f){ _cmpFilter = f; renderComparador(); }
+window._cmpSetFilter = _cmpSetFilter;
+
+function openComparador(){
+  // Popula os dropdowns com LOJAS
+  const selA = document.getElementById('cmp-sel-a'); const selB = document.getElementById('cmp-sel-b');
+  if (!selA || !selB) return;
+  if (typeof LOJAS === 'undefined' || !LOJAS.length){
+    alert('Lojas ainda não carregadas (Sisplan). Aguarde alguns segundos e tente de novo.');
+    return;
+  }
+  const opts = LOJAS.map(l => `<option value="${l.cod}">${l.nome}${l.uf?' — '+l.uf:''}</option>`).join('');
+  selA.innerHTML = opts;
+  selB.innerHTML = opts;
+  // Default: A = loja atual; B = segunda da lista
+  const cur = (typeof currentStore !== 'undefined' && currentStore && currentStore.cod) || LOJAS[0].cod;
+  selA.value = cur;
+  const otherIdx = LOJAS.findIndex(l => l.cod !== cur);
+  selB.value = LOJAS[otherIdx >= 0 ? otherIdx : 1]?.cod || LOJAS[1]?.cod || cur;
+  _cmpFilter = 'all';
+  document.getElementById('cmp-overlay').classList.add('show');
+  renderComparador();
+}
+window.openComparador = openComparador;
+
+function closeComparador(){
+  document.getElementById('cmp-overlay')?.classList.remove('show');
+}
+window.closeComparador = closeComparador;
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeComparador(); });
 
 function renderExport(){
   const cod = document.getElementById('export-loja')?.value || '*';
