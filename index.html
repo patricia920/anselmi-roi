@@ -101,11 +101,11 @@ footer{padding:var(--sp-6);text-align:center;color:var(--ink-4);font-size:var(--
       </div>
     </div>
     <div class="hdr-kpi">
-      <div class="hdr-stat"><div class="v">2.321</div><div class="l">Linhas</div></div>
-      <div class="hdr-stat"><div class="v">463</div><div class="l">SKUs</div></div>
-      <div class="hdr-stat"><div class="v">21</div><div class="l">Lojas</div></div>
+      <div class="hdr-stat"><div class="v" id="kpi-linhas">2.321</div><div class="l">Linhas</div></div>
+      <div class="hdr-stat"><div class="v" id="kpi-skus">463</div><div class="l">SKUs</div></div>
+      <div class="hdr-stat"><div class="v" id="kpi-lojas">21</div><div class="l">Lojas</div></div>
     </div>
-    <div class="hdr-date">07/05/2026</div>
+    <div class="hdr-date" id="hdr-date">07/05/2026</div>
   </div>
   <div class="tab-nav">
     <div class="tab" style="color:var(--brand-bordo);border-bottom-color:var(--brand-bordo)">
@@ -254,5 +254,39 @@ footer{padding:var(--sp-6);text-align:center;color:var(--ink-4);font-size:var(--
   Painel ROI Anselmi · construído sobre o pipeline Sisplan + Oracle existente · clone interno do ROI Volution
 </footer>
 
+<script src="lib/data-loader.js"></script>
+<script>
+// Lê do replenishment-report (Volution) e atualiza KPIs do header
+(async () => {
+  if (typeof RoiDataLoader === 'undefined') return;
+  try {
+    const result = await RoiDataLoader.load('replenishment', { fallback: null });
+    if (!result.ok || !result.rows) return;
+    const rows = result.rows;
+    const skus = new Set();
+    const lojas = new Set();
+    let linhas = 0;
+    for (const r of rows) {
+      if (r.rootProductCode) skus.add(r.rootProductCode);
+      const ranking = r.pointsOfSaleRanking || [];
+      for (const p of ranking) {
+        if (p.name) lojas.add(p.name);
+        linhas++;
+      }
+    }
+    const fmt = (n) => n.toLocaleString('pt-BR');
+    const setText = (id, txt) => { const e = document.getElementById(id); if (e) e.textContent = txt; };
+    setText('kpi-linhas', fmt(linhas));
+    setText('kpi-skus',   fmt(skus.size));
+    setText('kpi-lojas',  fmt(lojas.size));
+    if (result.exportedAt) {
+      const d = new Date(result.exportedAt);
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      setText('hdr-date', `${dd}/${mm}/${d.getFullYear()}`);
+    }
+  } catch (e) { console.warn('[index]', e); }
+})();
+</script>
 </body>
 </html>

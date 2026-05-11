@@ -168,6 +168,74 @@ def _calc_lost_sales(rows: list[dict]) -> float:
     return lost
 
 
+def _load_oracle_sales_ytd_yoy() -> dict:
+    """Vendas Oracle (vw_giro_venda) — YTD ano atual vs YTD ano anterior (mesmo período).
+
+    Oracle tem histórico desde 2025 (435k linhas). Calcula:
+      yearCur:  janeiro→hoje do ano corrente
+      yearPrev: janeiro→ (mesmo dia/mês) do ano anterior
+      yoyPct: (cur - prev) / prev * 100
+    """
+    try:
+        rows = load_oracle("vw_giro_venda")
+        if not isinstance(rows, list):
+            rows = rows.get("rows") or []
+    except FileNotFoundError:
+        return {"available": False}
+
+    today = datetime.now(BRT)
+    cur_year = today.year
+    prev_year = today.year - 1
+    cur_year_start = datetime(cur_year, 1, 1, tzinfo=BRT)
+    prev_year_start = datetime(prev_year, 1, 1, tzinfo=BRT)
+    # Cutoff: dia/mês de hoje no ano anterior
+    try:
+        prev_year_cutoff = today.replace(year=prev_year)
+    except ValueError:
+        # 29 fev em ano não-bissexto
+        prev_year_cutoff = today.replace(year=prev_year, day=28)
+
+    cur_value = cur_qty = 0.0
+    prev_value = prev_qty = 0.0
+    for r in rows:
+        date_str = str(r.get("dt_emissao", ""))[:10]
+        if not date_str:
+            continue
+        try:
+            d = datetime.fromisoformat(date_str).replace(tzinfo=BRT)
+        except ValueError:
+            continue
+        valor = float(r.get("valor") or 0)
+        qtde = float(r.get("qtde") or 0)
+        # Devolução: valor < 0 → inverte qtde (pra ser líquido)
+        if valor < 0 and qtde > 0:
+            qtde = -qtde
+        if cur_year_start <= d <= today:
+            cur_value += valor
+            cur_qty += qtde
+        elif prev_year_start <= d <= prev_year_cutoff:
+            prev_value += valor
+            prev_qty += qtde
+    yoy_value_pct = ((cur_value - prev_value) / prev_value * 100) if prev_value else None
+    yoy_qty_pct = ((cur_qty - prev_qty) / prev_qty * 100) if prev_qty else None
+    return {
+        "available": True,
+        "currentYear": {
+            "year": cur_year, "value": round(cur_value, 2), "qty": int(cur_qty),
+            "windowEnd": today.date().isoformat(),
+        },
+        "previousYear": {
+            "year": prev_year, "value": round(prev_value, 2), "qty": int(prev_qty),
+            "windowEnd": prev_year_cutoff.date().isoformat(),
+        },
+        "yoy": {
+            "valuePct": round(yoy_value_pct, 1) if yoy_value_pct is not None else None,
+            "qtyPct": round(yoy_qty_pct, 1) if yoy_qty_pct is not None else None,
+            "valueAbs": round(cur_value - prev_value, 2),
+        },
+    }
+
+
 def _load_sales_qty_ytd() -> float:
     """Total de UNIDADES vendidas YTD (não R$). Pra calcular days-of-stock."""
     try:
@@ -202,6 +270,7 @@ def run(*, dry_run: bool = False) -> dict:
     rows = replenishment_rows()
     sales_value, margin_value, transactions = _load_sales_ytd()
     sales_qty = _load_sales_qty_ytd()
+    oracle_yoy = _load_oracle_sales_ytd_yoy()
     overstock = _calc_overstock_metrics(rows)
     transfer = _calc_transfer_acceptance()
     lost_qty = _calc_lost_sales(rows)
@@ -254,6 +323,7 @@ def run(*, dry_run: bool = False) -> dict:
         "averageTicket": {
             "value": round(avg_ticket, 2),
         },
+        "yearOverYear": oracle_yoy,
         "transferAcceptance": transfer,
         "lostSales": {
             "qtyEstimate": round(lost_qty, 0),

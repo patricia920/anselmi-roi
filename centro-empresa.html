@@ -162,9 +162,9 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
       </div>
     </div>
     <div class="hdr-kpi">
-      <div class="hdr-stat"><div class="v" style="color:var(--musgo)">+27,9%</div><div class="l">Vendas YoY</div></div>
-      <div class="hdr-stat"><div class="v" style="color:var(--musgo)">+59,4%</div><div class="l">Margem YoY</div></div>
-      <div class="hdr-stat"><div class="v" style="color:var(--bordo)">+42,1%</div><div class="l">Estoque YoY</div></div>
+      <div class="hdr-stat"><div class="v" id="kpi-yoy-valor" style="color:var(--musgo)">+27,9%</div><div class="l">Vendas YoY (R$)</div></div>
+      <div class="hdr-stat"><div class="v" id="kpi-yoy-qty" style="color:var(--musgo)">+59,4%</div><div class="l">Vendas YoY (un)</div></div>
+      <div class="hdr-stat"><div class="v" id="kpi-yoy-window" style="color:var(--ink-3);font-size:14px">jan→hoje</div><div class="l">Janela comparada</div></div>
     </div>
     <div class="hdr-date">07/05/2026</div>
   </div>
@@ -389,8 +389,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     const fmtBRL = (n) => {
       if (n == null) return '—';
       if (Math.abs(n) >= 1e6) return 'R$ ' + (n/1e6).toFixed(2).replace('.',',') + 'M';
-      if (Math.abs(n) >= 1e3) return 'R$ ' + (n/1e3).toFixed(0) + 'K';
-      return 'R$ ' + n.toFixed(2).replace('.',',');
+      if (Math.abs(n) >= 100e3) return 'R$ ' + (n/1e3).toFixed(0) + 'K';  // só usa K acima de R$ 100k
+      return 'R$ ' + n.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     };
     const fmtN = (n) => n == null ? '—' : n.toLocaleString('pt-BR');
     const setText = (id, txt) => { const e = document.getElementById(id); if (e) e.textContent = txt; };
@@ -403,6 +403,23 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     setText('kpi-ticket-medio', fmtBRL(k.averageTicket.value));
     if (k.lostSales && k.lostSales.qtyEstimate) {
       setText('kpi-lost-sales-qty', fmtN(k.lostSales.qtyEstimate) + ' unidades não vendidas (sem preço médio confiável)');
+    }
+
+    // YoY real (Oracle vw_giro_venda) — substitui +27,9% / +59,4% hardcoded
+    const yoy = k.yearOverYear;
+    if (yoy && yoy.available) {
+      const valPct = yoy.yoy.valuePct;
+      const qtyPct = yoy.yoy.qtyPct;
+      const fmtPct = p => (p == null ? '—' : (p > 0 ? '+' : '') + p.toFixed(1).replace('.',',') + '%');
+      setText('kpi-yoy-valor', fmtPct(valPct));
+      setText('kpi-yoy-qty', fmtPct(qtyPct));
+      const cur = yoy.currentYear, prev = yoy.previousYear;
+      setText('kpi-yoy-window', `${cur.year} vs ${prev.year} · jan→${cur.windowEnd.slice(5)}`);
+      // Cor: verde se positivo, bordo se negativo
+      const valEl = document.getElementById('kpi-yoy-valor');
+      const qtyEl = document.getElementById('kpi-yoy-qty');
+      if (valEl) valEl.style.color = (valPct >= 0 ? 'var(--musgo)' : 'var(--bordo)');
+      if (qtyEl) qtyEl.style.color = (qtyPct >= 0 ? 'var(--musgo)' : 'var(--bordo)');
     }
 
     console.log('[centro-empresa] KPIs reais carregados:', k);
