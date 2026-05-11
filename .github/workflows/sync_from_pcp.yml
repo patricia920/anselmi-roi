@@ -1,0 +1,112 @@
+name: sync_from_pcp
+
+# Sincroniza arquivos do repo privado patricia920/anselmi-pcp pro anselmi-roi.
+# Roda a cada 30 min e on-demand. Pega:
+#   • ved_varejo.js (root) — Sisplan publicado pelo bot
+#   • data/cores_plm.json — metadata de cor (hex/nome) usada pelo vm-loader
+#   • data/plantas/*      — JPG/PNG/SVG das plantas de loja
+#   • data/drills/*       — JSONs de drill por loja
+#
+# Fotos NÃO vêm daqui: o vm-loader usa lib/foto-resolver.js + data/banco_fotos.json
+# (que já vive no anselmi-roi, apontando pra photo.anselmi.ind.br).
+#
+# Pré-requisitos (uma vez):
+#   • Settings → Secrets → Actions do anselmi-roi:
+#       PCP_PAT  =  fine-grained PAT com Read access a Contents do anselmi-pcp
+#
+# Commit é feito por github-actions[bot] e dispara Cloudflare Pages deploy.
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'   # a cada 30 min
+  workflow_dispatch:          # botão manual
+  push:
+    paths:
+      - '.github/workflows/sync_from_pcp.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync_from_pcp
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout anselmi-roi
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Checkout anselmi-pcp (somente arquivos relevantes)
+        uses: actions/checkout@v4
+        with:
+          repository: patricia920/anselmi-pcp
+          token: ${{ secrets.PCP_PAT }}
+          path: _pcp
+          sparse-checkout: |
+            ved_varejo.js
+            data/cores_plm.json
+            data/plantas
+            data/drills
+          sparse-checkout-cone-mode: false
+          fetch-depth: 1
+
+      - name: Copiar arquivos
+        run: |
+          set -euo pipefail
+
+          # ved_varejo.js no root
+          if [ -f _pcp/ved_varejo.js ]; then
+            cp _pcp/ved_varejo.js ./ved_varejo.js
+            echo "✓ ved_varejo.js copiado ($(wc -c < ved_varejo.js) bytes)"
+          else
+            echo "⚠ ved_varejo.js não encontrado no anselmi-pcp"
+          fi
+
+          mkdir -p data data/plantas data/drills
+
+          # cores_plm.json — só sobrescreve se origem existe
+          if [ -f "_pcp/data/cores_plm.json" ]; then
+            cp "_pcp/data/cores_plm.json" "data/cores_plm.json"
+            echo "✓ data/cores_plm.json copiado ($(wc -c < data/cores_plm.json) bytes)"
+          else
+            echo "⚠ data/cores_plm.json não encontrado no anselmi-pcp"
+          fi
+
+          # Plantas (imagens) — espelhamento completo
+          if [ -d _pcp/data/plantas ]; then
+            rsync -av --delete _pcp/data/plantas/ data/plantas/
+          fi
+
+          # Drills (JSON por loja) — espelhamento completo
+          if [ -d _pcp/data/drills ]; then
+            rsync -av --delete _pcp/data/drills/ data/drills/
+          fi
+
+          # Limpa o clone temporário
+          rm -rf _pcp
+
+      - name: Detectar alterações
+        id: diff
+        run: |
+          if [ -n "$(git status --porcelain ved_varejo.js data/)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit + push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ved_varejo.js data/cores_plm.json data/plantas data/drills 2>/dev/null || true
+          git commit -m "chore(sync): atualiza arquivos de anselmi-pcp [skip ci]"
+          git push
+
+      - name: Sem mudanças
+        if: steps.diff.outputs.changed == 'false'
+        run: echo "Nada novo — anselmi-roi já estava em dia."
