@@ -9595,12 +9595,143 @@ function devGerarRelatorio(){
     return;
   }
   const refs = Array.from(DEV_MARCADAS);
-  let pecas=0, valor=0;
+  const linhas = [];
+  let pecas = 0, valor = 0;
   refs.forEach(r => {
     const p = PECAS.find(x => x.ref === r);
-    if(p){ pecas += (p.estoque||0); valor += (p.estoque||0)*estPreco(p.tipo); }
+    if (!p) return;
+    const qty = p.estoque || 0;
+    const preco = estPreco(p.tipo);
+    const subt = qty * preco;
+    pecas += qty;
+    valor += subt;
+    linhas.push({
+      ref: p.ref,
+      tipo: p.tipo || '—',
+      cor: p.corPrincipal || '—',
+      colecao: p.est || '—',
+      qty,
+      preco,
+      subtotal: subt,
+      diasParado: p.diasParado || '',
+      status: p.status || '',
+      sugestao: p.sugestao || ''
+    });
   });
-  alert(`Relatório de devolução gerado (mock):\n\n• ${refs.length} REFs marcadas\n• ${pecas} peças no total\n• Valor estimado: ${estFmtBRL(valor)}\n\nEm produção: PDF + envio à malharia via Sisplan.`);
+  linhas.sort((a, b) => b.qty - a.qty);
+
+  const dataStr = new Date().toLocaleDateString('pt-BR');
+  const horaStr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const lojaNome = (typeof currentStore !== 'undefined' && currentStore && currentStore.nome) || 'Pátio Batel';
+  const lojaCod  = (typeof currentStore !== 'undefined' && currentStore && currentStore.cod)  || 'patio-batel';
+
+  // Abre janela nova com relatório print-friendly. Usuário escolhe "Salvar como PDF" no dialog.
+  const w = window.open('', '_blank', 'width=900,height=1100');
+  if (!w){ alert('Pop-up bloqueado. Permita pop-ups deste site para gerar o PDF.'); return; }
+  w.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+    <title>Devolução à Malharia · ${lojaNome} · ${dataStr}</title>
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter','Helvetica Neue',Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      body{padding:30px 36px;color:#1a1714;background:#fff}
+      .hdr{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #1a1714;padding-bottom:14px;margin-bottom:22px}
+      .hdr-l h1{font-family:Archivo,sans-serif;font-weight:900;font-size:22px;letter-spacing:-.01em}
+      .hdr-l h1 .dot{color:#6b1f2a}
+      .hdr-l .sub{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:.16em;margin-top:4px}
+      .hdr-r{font-size:11px;color:#666;text-align:right;font-family:'JetBrains Mono',monospace}
+      .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+      .meta-card{background:#f5f1ea;padding:12px 14px;border-radius:4px}
+      .meta-card .l{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#888;font-weight:700;margin-bottom:6px}
+      .meta-card .v{font-family:Archivo,sans-serif;font-weight:800;font-size:18px}
+      table{width:100%;border-collapse:collapse;font-size:11px}
+      th{background:#1a1714;color:#fff;padding:8px 10px;text-align:left;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:10px}
+      th.num,td.num{text-align:right;font-variant-numeric:tabular-nums}
+      td{padding:7px 10px;border-bottom:1px solid #e8e3d8}
+      tr:nth-child(even) td{background:#fbf8f2}
+      tfoot td{background:#1a1714;color:#fff;font-weight:700;border:none;padding:10px}
+      .footer{margin-top:30px;padding-top:14px;border-top:1px solid #ddd;font-size:10px;color:#888;display:flex;justify-content:space-between}
+      .actions{margin-bottom:18px;display:flex;gap:10px}
+      .actions button{padding:8px 16px;font:600 12px Inter,sans-serif;border:1px solid #1a1714;background:#fff;color:#1a1714;cursor:pointer;border-radius:4px}
+      .actions button.primary{background:#1a1714;color:#fff}
+      @media print { .actions{display:none} body{padding:18mm} }
+    </style></head><body>
+    <div class="actions">
+      <button class="primary" onclick="window.print()">Imprimir / Salvar como PDF</button>
+      <button onclick="window.close()">Fechar</button>
+    </div>
+    <div class="hdr">
+      <div class="hdr-l">
+        <h1>ANSELMI<span class="dot">.</span></h1>
+        <div class="sub">Devolução à Malharia · Visual Merchandising</div>
+      </div>
+      <div class="hdr-r">
+        ${dataStr} · ${horaStr}<br>
+        Loja: <b>${lojaNome}</b><br>
+        Cod: ${lojaCod}
+      </div>
+    </div>
+
+    <div class="meta">
+      <div class="meta-card"><div class="l">REFs marcadas</div><div class="v">${refs.length}</div></div>
+      <div class="meta-card"><div class="l">Peças totais</div><div class="v">${pecas.toLocaleString('pt-BR')}</div></div>
+      <div class="meta-card"><div class="l">Valor estimado</div><div class="v">${estFmtBRL(valor)}</div></div>
+      <div class="meta-card"><div class="l">Critério</div><div class="v" style="font-size:13px">${document.getElementById('dev-criterio')?.options[document.getElementById('dev-criterio').selectedIndex]?.text || '—'}</div></div>
+    </div>
+
+    <table>
+      <thead><tr>
+        <th>REF</th><th>Tipo</th><th>Cor</th><th>Coleção</th>
+        <th class="num">Qty</th><th class="num">Preço unit</th><th class="num">Subtotal</th>
+      </tr></thead>
+      <tbody>
+        ${linhas.map(l => `<tr>
+          <td><b>${l.ref}</b></td><td>${l.tipo}</td><td>${l.cor}</td><td>${l.colecao}</td>
+          <td class="num">${l.qty}</td>
+          <td class="num">${estFmtBRL(l.preco)}</td>
+          <td class="num">${estFmtBRL(l.subtotal)}</td>
+        </tr>`).join('')}
+      </tbody>
+      <tfoot><tr>
+        <td colspan="4">TOTAIS</td>
+        <td class="num">${pecas.toLocaleString('pt-BR')}</td>
+        <td></td>
+        <td class="num">${estFmtBRL(valor)}</td>
+      </tr></tfoot>
+    </table>
+
+    <div class="footer">
+      <div>VM Anselmi · gerado em ${dataStr} ${horaStr}</div>
+      <div>anselmi-roi.pages.dev/vm</div>
+    </div>
+    </body></html>`);
+  w.document.close();
+
+  // Pergunta se quer também abrir email pra malharia
+  setTimeout(() => {
+    if (confirm(`Relatório aberto em nova aba. ${refs.length} REFs · ${pecas} peças · ${estFmtBRL(valor)}.\n\nAbrir também email pré-formatado pra malharia?`)) {
+      const subject = `[VM Anselmi] Devolução à malharia — ${lojaNome} — ${dataStr}`;
+      const body = [
+        `Olá,`,
+        ``,
+        `Segue lista de peças marcadas para devolução à malharia.`,
+        ``,
+        `Loja: ${lojaNome} (${lojaCod})`,
+        `Data: ${dataStr}`,
+        `Total: ${refs.length} REFs · ${pecas} peças · ${estFmtBRL(valor)}`,
+        ``,
+        `REFs:`,
+        ...linhas.slice(0, 50).map(l => `  • ${l.ref} ${l.tipo} ${l.cor} — ${l.qty} pç (${estFmtBRL(l.subtotal)})`),
+        linhas.length > 50 ? `  ... e mais ${linhas.length - 50} refs (ver PDF anexo)` : '',
+        ``,
+        `Relatório completo no PDF anexo.`,
+        ``,
+        `Att,`,
+        `Visual Merchandising — Anselmi`
+      ].filter(Boolean).join('\n');
+      window.location.href = `mailto:malharia@anselmi.ind.br?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+  }, 800);
+
+  console.log(`[devolução] relatório gerado · ${refs.length} refs · ${pecas} peças · ${estFmtBRL(valor)}`);
 }
 
 renderManequins();
