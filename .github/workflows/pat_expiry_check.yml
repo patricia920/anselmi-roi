@@ -1,0 +1,89 @@
+name: pat_expiry_check
+
+# Cria Issue no GitHub quando o PAT PCP_PAT está prestes a expirar.
+# Roda toda segunda-feira de manhã (08:00 UTC = 05:00 BRT).
+#
+# Configuração: data de expiração do PAT atual armazenada em PAT_EXPIRES_AT.
+# Quando criar/regenerar o PAT, atualizar o valor da var de ambiente PAT_EXPIRES_AT
+# (Settings → Secrets and variables → Actions → Variables) com a nova data ISO.
+#
+# Se a variável não existir, fallback é '2027-05-10' (data do PAT atual).
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'       # toda segunda 08:00 UTC
+  workflow_dispatch:           # botão manual
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Calcula dias até expiração
+        id: calc
+        env:
+          PAT_EXPIRES_AT: ${{ vars.PAT_EXPIRES_AT || '2027-05-10' }}
+        run: |
+          set -euo pipefail
+          EXPIRES_AT="${PAT_EXPIRES_AT}"
+          HOJE=$(date +%Y-%m-%d)
+          DIAS_LEFT=$(( ( $(date -d "$EXPIRES_AT" +%s) - $(date -d "$HOJE" +%s) ) / 86400 ))
+          echo "expires_at=$EXPIRES_AT" >> "$GITHUB_OUTPUT"
+          echo "dias_left=$DIAS_LEFT"   >> "$GITHUB_OUTPUT"
+          echo "Hoje: $HOJE · Expira: $EXPIRES_AT · Dias restantes: $DIAS_LEFT"
+
+      - name: Abre Issue se ≤30 dias
+        if: ${{ steps.calc.outputs.dias_left <= 30 && steps.calc.outputs.dias_left >= 0 }}
+        uses: actions/github-script@v7
+        env:
+          DIAS_LEFT: ${{ steps.calc.outputs.dias_left }}
+          EXPIRES_AT: ${{ steps.calc.outputs.expires_at }}
+        with:
+          script: |
+            const dias = process.env.DIAS_LEFT;
+            const exp = process.env.EXPIRES_AT;
+            const titulo = `⚠️ PAT PCP_PAT expira em ${dias} dias (${exp})`;
+            const corpo = [
+              `O Personal Access Token \`PCP_PAT\` usado pelo workflow \`sync_from_pcp\` expira em **${dias} dias** (${exp}).`,
+              ``,
+              `Sem renovação, o sync de \`ved_varejo.js\` + \`data/cores_plm.json\` + \`data/plantas/\` + \`data/drills/\` do \`anselmi-pcp\` para o \`anselmi-roi\` vai parar.`,
+              ``,
+              `## Como renovar:`,
+              `1. Vai em https://github.com/settings/personal-access-tokens`,
+              `2. Clica no token \`PCP_PAT sync anselmi-pcp anselmi-roi\``,
+              `3. Clica em **Regenerate token** com expiração 1 ano à frente`,
+              `4. Copia o novo valor`,
+              `5. Vai em https://github.com/patricia920/anselmi-roi/settings/secrets/actions/PCP_PAT`,
+              `6. Clica **Update secret** e cola o novo valor`,
+              `7. Atualiza a variable \`PAT_EXPIRES_AT\` em Settings → Variables com a nova data ISO`,
+              `8. Dispara o workflow \`sync_from_pcp\` manual pra validar`,
+              ``,
+              `Fecha esta Issue depois de renovar.`
+            ].join('\n');
+
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+
+            // Verifica se já existe Issue aberta com o mesmo título
+            const { data: issues } = await github.rest.issues.listForRepo({ owner, repo, state: 'open', labels: 'pat-expiry' });
+            if (issues.find(i => i.title === titulo)) {
+              console.log('Issue já existe, skip');
+              return;
+            }
+            await github.rest.issues.create({ owner, repo, title: titulo, body: corpo, labels: ['pat-expiry'] });
+            console.log('Issue criada');
+
+      - name: Status
+        run: |
+          DIAS="${{ steps.calc.outputs.dias_left }}"
+          if [ "$DIAS" -lt 0 ]; then
+            echo "❌ PAT JÁ EXPIROU há $((-DIAS)) dias. Renove com urgência."
+            exit 1
+          elif [ "$DIAS" -le 30 ]; then
+            echo "⚠️ PAT expira em $DIAS dias — Issue aberta."
+          else
+            echo "✓ PAT ok ($DIAS dias restantes)."
+          fi

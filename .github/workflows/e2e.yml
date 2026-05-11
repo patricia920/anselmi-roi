@@ -1,0 +1,64 @@
+name: e2e
+
+# Smoke E2E (Playwright) contra anselmi-roi.pages.dev/vm/.
+# Roda:
+#   • A cada push em main (após deploy do CF Pages — espera 2 min)
+#   • Manualmente
+#   • Diariamente às 09:00 BRT (12:00 UTC) — pega regressão de cache/dados Sisplan
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'vm/**'
+      - 'functions/**'
+      - 'data/**'
+      - 'lib/**'
+      - 'tests/**'
+      - 'package.json'
+      - 'playwright.config.js'
+      - '.github/workflows/e2e.yml'
+  schedule:
+    - cron: '0 12 * * *'   # 09:00 BRT diário
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Instalar deps
+        run: npm install
+
+      - name: Instalar Chromium do Playwright
+        run: npx playwright install chromium --with-deps
+
+      - name: Esperar deploy do Cloudflare Pages propagar
+        if: github.event_name == 'push'
+        run: |
+          echo "Aguardando 90s pra CF Pages processar o deploy..."
+          sleep 90
+
+      - name: Rodar smoke E2E
+        run: npx playwright test --reporter=github
+        env:
+          CI: true
+          VM_TEST_PASSWORD: ${{ secrets.VM_TEST_PASSWORD }}
+
+      - name: Upload trace em caso de falha
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-trace
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7

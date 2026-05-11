@@ -8,3 +8,9 @@ __pycache__/
 node_modules/
 .env
 *.local
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+.wrangler/

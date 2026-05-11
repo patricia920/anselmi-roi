@@ -144,6 +144,38 @@
       }
     }).catch(err => console.warn('[vm-loader] GERENTES load falhou:', err.message));
 
+    // PALETA da coleção: carrega data/paleta_colecao.json e enriquece hex com COR_PLM se nome bate
+    loadJSON('../data/paleta_colecao.json').then(data => {
+      if (!data || !Array.isArray(data.paleta)) return;
+      const paleta = data.paleta.slice();
+      // Enriquecimento: se window.COR_PLM tem cor com mesmo nome (case-insensitive), usa hex do PLM
+      if (window.COR_PLM) {
+        const plmByName = {};
+        Object.values(window.COR_PLM).forEach(c => {
+          if (c && c.name) plmByName[c.name.toLowerCase()] = c.hex;
+          if (c && c.nome) plmByName[c.nome.toLowerCase()] = c.hex;
+        });
+        let enriched = 0;
+        paleta.forEach(p => {
+          const plmHex = plmByName[(p.nome || '').toLowerCase()];
+          if (plmHex && plmHex.replace(/^#/, '') !== (p.hex || '').replace(/^#/, '')) {
+            p._hex_mock = p.hex;
+            p.hex = '#' + plmHex.replace(/^#/, '');
+            enriched++;
+          }
+        });
+        console.info('[vm-loader] PALETA · ', paleta.length, 'cores · ', enriched, 'hex sobrescritos pelo PLM');
+      }
+      window.PALETA_COLECAO_DATA = { colecao: data.colecao, paleta };
+      // Mescla na const PALETA_COLECAO se existir
+      if (typeof window.PALETA_COLECAO !== 'undefined' && Array.isArray(window.PALETA_COLECAO)) {
+        window.PALETA_COLECAO.length = 0;
+        paleta.forEach(p => window.PALETA_COLECAO.push(p));
+        if (typeof window.renderCores === 'function') window.renderCores();
+        if (typeof window.renderPaletaColecao === 'function') window.renderPaletaColecao();
+      }
+    }).catch(err => console.warn('[vm-loader] PALETA load falhou:', err.message));
+
     const [FotoResolver, corPlm] = await Promise.all([fotoResolverP, corPlmP]);
 
     // FotoResolver.load() puxa data/banco_fotos.json (photo.anselmi.ind.br)

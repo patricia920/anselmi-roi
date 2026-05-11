@@ -1,0 +1,14 @@
+{
+  "name": "anselmi-roi",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Anselmi ROI clone — VM + dashboards in-season",
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:install": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}
