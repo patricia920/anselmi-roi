@@ -1,0 +1,126 @@
+name: compute_roi
+
+# Roda os 6 motores ROI depois que os syncs terminam.
+# Disparo automático: workflow_run dos 3 sync workflows
+# Disparo manual: workflow_dispatch (com --dry-run opcional)
+
+on:
+  workflow_run:
+    workflows:
+      - sync_volution
+      - sync_sisplan
+      - query_oracle
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (calcula mas não commita)"
+        type: boolean
+        required: false
+        default: false
+      only:
+        description: "Roda só um motor (ex: overstock). Vazio = todos."
+        type: string
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: compute-roi
+  cancel-in-progress: false
+
+jobs:
+  compute:
+    # Roda no self-hosted runner (mesma máquina dos outros syncs)
+    runs-on: [self-hosted, server_scruffy]
+
+    # Se foi disparado por workflow_run, só prossegue se ele teve sucesso
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install deps
+        run: |
+          # Os motores usam só stdlib (json, gzip, datetime, pathlib).
+          # Mas o requirements.txt do repo já tem pandas; reusamos pra
+          # garantir versão consistente entre runs.
+          pip install --upgrade pip
+          # Se quiser dependências extras, adicione em roi/engine/requirements.txt
+          if [ -f roi/engine/requirements.txt ]; then
+            pip install -r roi/engine/requirements.txt
+          fi
+
+      - name: Bootstrap params-state (idempotente)
+        run: |
+          python3 roi/engine/params_io.py --bootstrap || true
+
+      - name: Run engines
+        env:
+          ANSELMI_PCP_ROOT: ${{ github.workspace }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
+        run: |
+          set -e
+          cd roi/engine
+
+          ENGINES="overstock transfers purchases stock_quality alerts executive"
+          if [ -n "${{ inputs.only }}" ]; then
+            ENGINES="${{ inputs.only }}"
+          fi
+
+          for ENGINE in $ENGINES; do
+            echo "::group::$ENGINE"
+            python3 "$ENGINE.py"
+            echo "::endgroup::"
+          done
+
+      - name: Commit & push reports
+        if: ${{ inputs.dry_run != true }}
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Adiciona apenas os reports gerados pelos motores ROI
+          git add data/volution/overstock-report.json.gz \
+                  data/volution/transfers-report.json.gz \
+                  data/volution/purchases-report.json.gz \
+                  data/volution/stock-quality-report.json.gz \
+                  data/volution/alerts-report.json.gz \
+                  data/volution/executive-report.json.gz \
+                  data/volution/params-state.json 2>/dev/null || true
+
+          # Se nada mudou, não commita
+          if git diff --staged --quiet; then
+            echo "Sem mudanças nos reports. Skipping commit."
+            exit 0
+          fi
+
+          git commit -m "compute_roi: refresh reports $(date -u +%FT%TZ)"
+          git push
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## compute_roi summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Trigger: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          if [ -d data/volution ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Reports em data/volution/" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            ls -lh data/volution/*-report.json.gz 2>/dev/null | awk '{print $5,$9}' >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi

@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anselmi · Qualidade do estoque</title>
+<script src="lib/data-loader.js"></script>
+<script src="lib/foto-resolver.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f5f1ea; --paper-2:#ede7dc; --card:#fbf8f2;
+  --ink:#1a1714; --ink-2:#3d3630; --ink-3:#756b60; --ink-4:#a89c8c;
+  --line:#d9d0c0; --line-2:#c7bca8;
+  --brand-bordo:#5D2A2C; --brand-caramelo:#BB9972; --brand-creme:#F7F1E5;
+
+  /* 4 níveis de classificação (igual ao ROI) */
+  --q1-bg:#dde7d2; --q1-fg:#4a5d3a;     /* verde — Jovem/Boa */
+  --q2-bg:#f0eecf; --q2-fg:#7a722a;     /* amarelo claro — Aceitável */
+  --q3-bg:#f5dcc1; --q3-fg:#a86d1f;     /* âmbar/laranja — Risco */
+  --q4-bg:#f3d4d6; --q4-fg:#8a2a38;     /* rosa/vermelho — Tóxico */
+
+  --r-xs:4px; --r-sm:6px; --r-md:10px; --r-lg:16px;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px;
+  --fs-10:10px; --fs-12:12px; --fs-13:13px; --fs-15:15px; --fs-18:18px; --fs-24:24px; --fs-32:32px;
+  --shadow-sm:0 1px 0 rgba(26,23,20,.04), 0 1px 2px rgba(26,23,20,.04);
+  --shadow-md:0 1px 0 rgba(26,23,20,.04), 0 8px 24px -8px rgba(26,23,20,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:Inter,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:var(--fs-13);line-height:1.4;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:Lora,Georgia,serif;font-weight:500;color:var(--ink);margin:0}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+
+/* === CHROME === */
+.chrome{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--line)}
+.hdr{display:flex;align-items:center;gap:var(--sp-6);padding:var(--sp-3) var(--sp-6);min-height:64px}
+.hdr-brand{display:flex;align-items:center;gap:var(--sp-4);flex:1}
+.home-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--r-sm);color:var(--ink-3)}
+.home-btn:hover{background:var(--paper-2);color:var(--ink)}
+.home-btn svg{width:18px;height:18px}
+.hdr-logo{display:flex;align-items:center;gap:var(--sp-2);font-family:Lora,Georgia,serif;font-weight:600;letter-spacing:.04em;font-size:var(--fs-15)}
+.hdr-logo .dot{width:6px;height:6px;border-radius:50%;background:var(--brand-bordo);display:inline-block;margin-left:2px}
+.hdr-meta{display:flex;flex-direction:column;gap:2px;margin-left:var(--sp-3);padding-left:var(--sp-4);border-left:1px solid var(--line)}
+.crumb{font-size:var(--fs-10);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4)}
+.l2{font-family:Lora,Georgia,serif;font-size:var(--fs-15);color:var(--ink-2)}
+.hdr-kpi{display:flex;gap:var(--sp-5)}
+.hdr-stat{display:flex;flex-direction:column}
+.hdr-stat .v{font-family:Lora,Georgia,serif;font-weight:500;font-size:var(--fs-24);line-height:1.1}
+.hdr-stat .l{font-size:var(--fs-10);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);margin-top:2px}
+.hdr-date{font-size:var(--fs-12);color:var(--ink-3);font-variant-numeric:tabular-nums;border:1px solid var(--line);padding:6px 10px;border-radius:var(--r-sm);background:var(--card)}
+
+/* === TAB NAV === */
+.tab-nav{display:flex;gap:0;padding:0 var(--sp-6);background:var(--paper);border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{display:flex;align-items:center;gap:6px;padding:10px 14px;font-size:var(--fs-12);color:var(--ink-3);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink-2)}
+.tab.active{color:var(--brand-bordo);border-bottom-color:var(--brand-bordo)}
+.tab svg{width:14px;height:14px;opacity:.7}
+
+/* === CONTENT === */
+.content{padding:var(--sp-6) var(--sp-6) 80px;max-width:1500px;margin:0 auto}
+.section-title{font-family:Lora,Georgia,serif;font-size:var(--fs-32);color:var(--brand-bordo);margin-bottom:6px;line-height:1.1}
+.section-sub{font-size:var(--fs-13);color:var(--ink-3);margin-bottom:var(--sp-5);max-width:780px}
+
+/* === Summary toggle (recolher KPI) === */
+.summary-block{margin-bottom:var(--sp-5)}
+.summary-toggle{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);cursor:pointer;font-size:var(--fs-12);color:var(--ink-2);transition:background .12s;width:fit-content}
+.summary-toggle:hover{background:var(--paper-2)}
+.summary-toggle .arr{font-size:10px;color:var(--ink-4);transition:transform .15s}
+.summary-toggle.open .arr{transform:rotate(90deg)}
+.summary-toggle .lbl{font-weight:500;font-family:Lora,Georgia,serif;letter-spacing:.02em}
+.summary-toggle .meta{color:var(--ink-4);font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.1em;margin-left:6px}
+.summary-content{overflow:hidden;max-height:0;transition:max-height .25s ease, margin-top .25s ease;margin-top:0}
+.summary-block.open .summary-content{max-height:2000px;margin-top:var(--sp-3)}
+
+/* === KPI strip executivo === */
+.kpi-strip{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-4)}
+.kpi-card{padding:var(--sp-4) var(--sp-5);background:var(--card);border:1px solid var(--line);border-radius:var(--r-md)}
+.kpi-card .lbl{font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.12em;color:var(--ink-4);margin-bottom:8px}
+.kpi-card .val{font-family:Lora,Georgia,serif;font-weight:500;font-size:32px;color:var(--ink);line-height:1.05}
+.kpi-card .sub{font-size:var(--fs-12);color:var(--ink-3);margin-top:6px}
+.kpi-card.cls-q1{background:var(--q1-bg);border-color:transparent}
+.kpi-card.cls-q1 .val,.kpi-card.cls-q1 .lbl{color:var(--q1-fg)}
+.kpi-card.cls-q2{background:var(--q2-bg);border-color:transparent}
+.kpi-card.cls-q2 .val,.kpi-card.cls-q2 .lbl{color:var(--q2-fg)}
+.kpi-card.cls-q3{background:var(--q3-bg);border-color:transparent}
+.kpi-card.cls-q3 .val,.kpi-card.cls-q3 .lbl{color:var(--q3-fg)}
+.kpi-card.cls-q4{background:var(--q4-bg);border-color:transparent}
+.kpi-card.cls-q4 .val,.kpi-card.cls-q4 .lbl{color:var(--q4-fg)}
+.kpi-card.featured{background:var(--brand-creme);border:2px solid var(--brand-bordo)}
+.kpi-card.featured .val{color:var(--brand-bordo);font-size:38px}
+.kpi-card.featured .lbl{color:var(--brand-bordo)}
+
+/* === MATRIX layout === */
+.matrix-wrap{display:grid;grid-template-columns:1.55fr 1fr;gap:var(--sp-5);margin-bottom:var(--sp-6)}
+
+/* Matrix card (paridade ROI) */
+.matrix-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-5);box-shadow:var(--shadow-sm)}
+.matrix-card-title{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--sp-4)}
+.matrix-card-title h2{font-family:Lora,Georgia,serif;font-size:22px;color:var(--ink);font-weight:500;line-height:1.2}
+.matrix-card-title .help-i{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--paper-2);color:var(--ink-4);font-size:10px;font-style:italic;font-family:Lora,serif;margin-left:6px;cursor:help;vertical-align:middle}
+.help-i:hover{background:var(--ink-4);color:var(--card)}
+
+.matrix-grid{display:grid;grid-template-columns:auto repeat(5,1fr);grid-auto-rows:auto;gap:5px;font-size:var(--fs-12)}
+.axis-x-label{grid-column:2 / span 5;text-align:center;font-size:var(--fs-12);color:var(--ink-3);margin-bottom:6px;font-weight:500}
+.axis-x-tick{font-size:var(--fs-12);color:var(--ink-3);text-align:center;padding:6px 0}
+.axis-y-tick{font-size:var(--fs-11);color:var(--ink-3);writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:center;justify-content:center;padding:0 4px;letter-spacing:.05em}
+.axis-y-master{grid-row:span 5;writing-mode:vertical-rl;transform:rotate(180deg);font-size:var(--fs-12);color:var(--ink-3);font-weight:500;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+.matrix-cell{padding:18px 14px;border-radius:var(--r-sm);display:flex;flex-direction:column;justify-content:center;align-items:flex-end;cursor:pointer;transition:transform .12s, box-shadow .12s;text-align:right;min-height:96px;border:1px solid transparent;position:relative}
+.matrix-cell:hover{transform:scale(1.04);z-index:5;box-shadow:0 8px 20px -8px rgba(0,0,0,0.18)}
+.matrix-cell.cls-q1{background:var(--q1-bg)}
+.matrix-cell.cls-q2{background:var(--q2-bg)}
+.matrix-cell.cls-q3{background:var(--q3-bg)}
+.matrix-cell.cls-q4{background:var(--q4-bg)}
+.matrix-cell .pct{font-family:Lora,Georgia,serif;font-weight:600;font-size:22px;line-height:1;margin-bottom:6px}
+.matrix-cell.cls-q1 .pct{color:var(--q1-fg)}
+.matrix-cell.cls-q2 .pct{color:var(--q2-fg)}
+.matrix-cell.cls-q3 .pct{color:var(--q3-fg)}
+.matrix-cell.cls-q4 .pct{color:var(--q4-fg)}
+.matrix-cell .qtd{font-size:11px;color:var(--ink-2);font-variant-numeric:tabular-nums;line-height:1.3}
+.matrix-cell .money{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums;line-height:1.3}
+.matrix-cell.selected{outline:2px solid var(--brand-bordo);outline-offset:2px;transform:scale(1.04);z-index:6}
+
+.class-totals{display:flex;justify-content:flex-end;gap:var(--sp-5);margin-top:var(--sp-4);padding-top:var(--sp-3);border-top:1px solid var(--paper-2);flex-wrap:wrap}
+.class-totals .ct{display:flex;align-items:center;gap:7px;font-size:var(--fs-13);color:var(--ink-2)}
+.class-totals .ct .swatch{width:10px;height:10px;border-radius:50%}
+.class-totals .ct .swatch.cls-q1{background:var(--q1-fg)}
+.class-totals .ct .swatch.cls-q2{background:var(--q2-fg)}
+.class-totals .ct .swatch.cls-q3{background:var(--q3-fg)}
+.class-totals .ct .swatch.cls-q4{background:var(--q4-fg)}
+.class-totals .ct .pct{font-weight:600;font-variant-numeric:tabular-nums}
+.class-totals .ct .label-c{color:var(--ink-3);font-size:var(--fs-12)}
+
+/* === Side card (donut + breakdown) === */
+.side-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-5);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:var(--sp-3)}
+.side-title{font-family:Lora,Georgia,serif;font-size:var(--fs-18);color:var(--ink);font-weight:500;line-height:1.2}
+.side-sub{font-size:var(--fs-12);color:var(--ink-3);margin-top:-6px}
+.donut-wrap{display:flex;align-items:center;justify-content:center;padding:var(--sp-2) 0}
+.donut{position:relative;width:200px;height:200px}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.donut-center .big{font-family:Lora,Georgia,serif;font-weight:500;font-size:36px;line-height:1;color:var(--q4-fg)}
+.donut-center .lbl{font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.12em;color:var(--ink-3);margin-top:4px}
+.legend-list{display:flex;flex-direction:column;gap:8px}
+.legend-item{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;font-size:var(--fs-13);padding:6px 0;border-bottom:1px solid var(--paper-2)}
+.legend-item:last-child{border-bottom:none}
+.legend-item .swatch{width:11px;height:11px;border-radius:3px}
+.legend-item .swatch.cls-q1{background:var(--q1-fg)}
+.legend-item .swatch.cls-q2{background:var(--q2-fg)}
+.legend-item .swatch.cls-q3{background:var(--q3-fg)}
+.legend-item .swatch.cls-q4{background:var(--q4-fg)}
+.legend-item .name{color:var(--ink-2)}
+.legend-item .pct{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.legend-item .money{color:var(--ink-3);font-variant-numeric:tabular-nums;font-size:var(--fs-12)}
+
+/* === Insights === */
+.insight-strip{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);margin-bottom:var(--sp-6)}
+.insight-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-4) var(--sp-5);display:flex;gap:var(--sp-4);align-items:flex-start}
+.insight-card .icon{flex-shrink:0;width:40px;height:40px;border-radius:var(--r-sm);display:grid;place-items:center;background:var(--q3-bg);color:var(--q3-fg)}
+.insight-card.alert .icon{background:var(--q4-bg);color:var(--q4-fg)}
+.insight-card .body h3{font-family:Lora,Georgia,serif;font-size:var(--fs-15);color:var(--ink);font-weight:500;margin-bottom:4px;line-height:1.3}
+.insight-card .body p{font-size:var(--fs-12);color:var(--ink-3);line-height:1.55;margin:0}
+.insight-card .body strong{color:var(--ink)}
+
+/* === Drill-down === */
+.drill{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-5);box-shadow:var(--shadow-sm)}
+.drill-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:var(--sp-4);flex-wrap:wrap;gap:var(--sp-3)}
+.drill-header h2{font-family:Lora,Georgia,serif;font-size:var(--fs-24);color:var(--ink);font-weight:500;line-height:1.1}
+.drill-header .desc{font-size:var(--fs-12);color:var(--ink-3);margin-top:4px}
+.drill-quadrant{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-12);padding:6px 14px;border-radius:999px;font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+.drill-quadrant.cls-q1{background:var(--q1-bg);color:var(--q1-fg)}
+.drill-quadrant.cls-q2{background:var(--q2-bg);color:var(--q2-fg)}
+.drill-quadrant.cls-q3{background:var(--q3-bg);color:var(--q3-fg)}
+.drill-quadrant.cls-q4{background:var(--q4-bg);color:var(--q4-fg)}
+.drill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:var(--sp-3)}
+.drill-item{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);padding:var(--sp-3);display:flex;gap:var(--sp-3)}
+.drill-thumb{width:80px;aspect-ratio:3/4;flex-shrink:0;background:#fff;border-radius:var(--r-xs);overflow:hidden;display:grid;place-items:center}
+.drill-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.drill-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.drill-info .cat{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-4)}
+.drill-info .sku{font-family:Lora,Georgia,serif;font-size:var(--fs-13);color:var(--ink);line-height:1.2}
+.drill-info .meta{font-size:var(--fs-10);color:var(--ink-3);margin-top:2px;line-height:1.4}
+.drill-info .vals{display:flex;gap:8px;margin-top:auto;padding-top:6px;border-top:1px solid var(--paper-2);font-size:10px}
+.drill-info .vals span{color:var(--ink-3)}
+.drill-info .vals .v{color:var(--q4-fg);font-weight:600;font-variant-numeric:tabular-nums}
+
+@media (max-width:1100px){
+  .matrix-wrap{grid-template-columns:1fr}
+  .kpi-strip{grid-template-columns:1fr 1fr}
+  .insight-strip{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .hdr{flex-wrap:wrap}
+  .hdr-kpi{order:3;width:100%;justify-content:space-between;padding-top:var(--sp-3);border-top:1px solid var(--line)}
+  .hdr-meta{display:none}
+  .matrix-cell{min-height:64px;padding:8px 6px}
+  .matrix-cell .pct{font-size:15px}
+  .matrix-cell .money{display:none}
+  .content{padding:var(--sp-4)}
+}
+</style>
+</head>
+<body>
+
+<!-- ==== CHROME ==== -->
+<div class="chrome">
+  <div class="hdr">
+    <div class="hdr-brand">
+      <button class="home-btn" onclick="location.href='index.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12L12 3L21 12"/><path d="M5 10V20H19V10"/><path d="M9 20V14H15V20"/></svg>
+      </button>
+      <div class="hdr-logo">ANSELMI<span class="dot"></span></div>
+      <div class="hdr-meta">
+        <div class="crumb">IN-SEASON · DASHBOARD</div>
+        <div class="l2">Qualidade do estoque</div>
+      </div>
+    </div>
+    <div class="hdr-kpi">
+      <div class="hdr-stat"><div class="v">122.4K</div><div class="l">Unidades</div></div>
+      <div class="hdr-stat"><div class="v">R$ 24,5M</div><div class="l">Custo</div></div>
+      <div class="hdr-stat"><div class="v" style="color:var(--q4-fg)">26,9%</div><div class="l">Tóxico</div></div>
+    </div>
+    <div class="hdr-date">07/05/2026</div>
+  </div>
+  <div class="tab-nav">
+    <div class="tab" onclick="location.href='index.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg>
+      Visão geral
+    </div>
+    <div class="tab" onclick="location.href='reabastecimento.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12L9 6L13 10L21 4"/></svg>
+      Relatório de reabastecimento
+    </div>
+    <div class="tab" onclick="location.href='excesso.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 7H19V19H5V7Z"/><path d="M9 11H15"/></svg>Relatório de excesso de estoque</div>
+    <div class="tab" onclick="location.href='transferencias.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 10L17 10"/><path d="M14 7L17 10L14 13"/></svg>Relatório de transferências</div>
+    <div class="tab" onclick="location.href='compras.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8H18L17 18H7L6 8Z"/></svg>Relatório de compras</div>
+    <div class="tab active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Qualidade do estoque
+    </div>
+    <div class="tab" onclick="location.href='parametros.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>Parâmetros</div>
+    <div class="tab" onclick="location.href='alertas.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 22H22L12 2Z"/><path d="M12 9V13"/><path d="M12 17V17.01"/></svg>Alertas <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--bordo);margin-left:2px"></span></div>
+  </div>
+</div>
+
+<!-- ==== CONTENT ==== -->
+<div class="content">
+
+  <h1 class="section-title">Qualidade do estoque</h1>
+  <div class="section-sub">Classificação por posição na matriz <b>Idade × Cobertura</b>. Cada par (SKU, loja) é um bucket; o eixo Idade mede semanas desde a primeira recepção na loja, e Cobertura semanas projetadas até zerar pela velocidade de venda atual.</div>
+
+  <!-- Summary block (KPI) recolhível -->
+  <div class="summary-block" id="summary-block">
+    <button class="summary-toggle" onclick="toggleSummary()" id="summary-toggle">
+      <span class="arr">▶</span>
+      <span class="lbl">Resumo executivo</span>
+      <span class="meta">Total + 4 classes</span>
+    </button>
+    <div class="summary-content">
+
+  <!-- KPI strip — 4 classes igual ao ROI -->
+  <div class="kpi-strip">
+    <div class="kpi-card featured">
+      <div class="lbl">Estoque total Anselmi</div>
+      <div class="val">R$ 24,5M</div>
+      <div class="sub">122.368 unidades · custo médio R$ 200</div>
+    </div>
+    <div class="kpi-card cls-q1">
+      <div class="lbl">Jovem / boa</div>
+      <div class="val">12,3%</div>
+      <div class="sub">~15K unid · R$ 3,0M</div>
+    </div>
+    <div class="kpi-card cls-q2">
+      <div class="lbl">Aceitável</div>
+      <div class="val">31,7%</div>
+      <div class="sub">~38K unid · R$ 7,8M</div>
+    </div>
+    <div class="kpi-card cls-q3">
+      <div class="lbl">Risco</div>
+      <div class="val">29,1%</div>
+      <div class="sub">~36K unid · R$ 7,1M</div>
+    </div>
+    <div class="kpi-card cls-q4">
+      <div class="lbl">Tóxico</div>
+      <div class="val">26,9%</div>
+      <div class="sub">~33K unid · R$ 6,6M</div>
+    </div>
+  </div>
+
+    </div><!-- /.summary-content -->
+  </div><!-- /.summary-block -->
+
+  <!-- Matriz + Donut -->
+  <div class="matrix-wrap">
+
+    <div class="matrix-card">
+      <div class="matrix-card-title">
+        <h2>Matriz Idade × Cobertura
+          <span class="help-i" title="Idade: semanas desde a primeira recepção do SKU na loja. Cobertura: semanas projetadas até o estoque zerar (estoque atual ÷ velocidade de venda).">i</span>
+        </h2>
+      </div>
+      <div id="matrix" class="matrix-grid"></div>
+      <div class="class-totals" id="class-totals"></div>
+    </div>
+
+    <div class="side-card">
+      <div class="side-title">Distribuição por classe</div>
+      <div class="side-sub">Dez 2026 vs início do projeto (06/05): tóxico caiu de 28,5% pra 26,9%</div>
+      <div class="donut-wrap">
+        <div class="donut">
+          <svg viewBox="0 0 200 200" style="width:100%;height:100%">
+            <circle cx="100" cy="100" r="70" fill="none" stroke="#e6e9db" stroke-width="2"/>
+            <!-- Donut em 4 partes: q1 12.3%, q2 31.7%, q3 29.1%, q4 26.9% — circ 70 → C=440 -->
+            <circle cx="100" cy="100" r="70" fill="none" stroke="#8a2a38" stroke-width="30"
+              stroke-dasharray="118.4 440" stroke-dashoffset="0" transform="rotate(-90 100 100)" stroke-linecap="butt"/>
+            <circle cx="100" cy="100" r="70" fill="none" stroke="#a86d1f" stroke-width="30"
+              stroke-dasharray="128.0 440" stroke-dashoffset="-118.4" transform="rotate(-90 100 100)" stroke-linecap="butt"/>
+            <circle cx="100" cy="100" r="70" fill="none" stroke="#7a722a" stroke-width="30"
+              stroke-dasharray="139.5 440" stroke-dashoffset="-246.4" transform="rotate(-90 100 100)" stroke-linecap="butt"/>
+            <circle cx="100" cy="100" r="70" fill="none" stroke="#4a5d3a" stroke-width="30"
+              stroke-dasharray="54.1 440" stroke-dashoffset="-385.9" transform="rotate(-90 100 100)" stroke-linecap="butt"/>
+          </svg>
+          <div class="donut-center">
+            <div class="big">26,9%</div>
+            <div class="lbl">Tóxico</div>
+          </div>
+        </div>
+      </div>
+      <div class="legend-list">
+        <div class="legend-item">
+          <div class="swatch cls-q4"></div>
+          <div class="name">Tóxico</div>
+          <div class="pct">26,9%</div>
+          <div class="money">R$ 6,6M</div>
+        </div>
+        <div class="legend-item">
+          <div class="swatch cls-q3"></div>
+          <div class="name">Risco</div>
+          <div class="pct">29,1%</div>
+          <div class="money">R$ 7,1M</div>
+        </div>
+        <div class="legend-item">
+          <div class="swatch cls-q2"></div>
+          <div class="name">Aceitável</div>
+          <div class="pct">31,7%</div>
+          <div class="money">R$ 7,8M</div>
+        </div>
+        <div class="legend-item">
+          <div class="swatch cls-q1"></div>
+          <div class="name">Jovem/Boa</div>
+          <div class="pct">12,3%</div>
+          <div class="money">R$ 3,0M</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Insights -->
+  <div class="insight-strip">
+    <div class="insight-card alert">
+      <div class="icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9V14"/><path d="M12 17.5V18"/><path d="M10.29 3.86L1.82 18A2 2 0 003.55 21H20.45A2 2 0 0022.18 18L13.71 3.86A2 2 0 0010.29 3.86Z"/></svg>
+      </div>
+      <div class="body">
+        <h3>19,8% do estoque é NOVO mas com cobertura &gt;32 semanas</h3>
+        <p>Idade 0–4 sem + Cobertura &gt;32 sem → <strong>18.450 unidades, R$ 5M</strong>. Estoque recém-comprado que vai demorar mais de 8 meses pra girar. Sinal de que a regra de bloqueio de compra está deixando passar referências sem demanda. Olhar critérios de NPI antes da próxima coleção.</p>
+      </div>
+    </div>
+    <div class="insight-card alert">
+      <div class="icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7V12L15 15"/></svg>
+      </div>
+      <div class="body">
+        <h3>Quadrante (Cob &gt;32 + Idade 8–16) tem 15,8% do total</h3>
+        <p>Maior concentração tóxica isolada — <strong>21.390 unid, R$ 4M</strong>. Produto que chegou há 2–4 meses e ainda tem mais de 8 meses pra vender. <strong>Candidato natural a markdown agressivo</strong> ou ação de transferência pra lojas com maior giro daquela categoria.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drill-down -->
+  <div class="drill">
+    <div class="drill-header">
+      <div>
+        <h2 id="drill-title">Quadrante selecionado</h2>
+        <div class="desc" id="drill-desc">Clique em uma célula da matriz acima para ver os SKUs</div>
+      </div>
+      <div class="drill-quadrant" id="drill-chip">—</div>
+    </div>
+    <div class="drill-grid" id="drill-grid"></div>
+  </div>
+
+</div>
+
+<script>
+// === DADOS DA MATRIZ — capturados em 06/05/2026 do ROI Volution (atual) ===
+const BANDAS = ['0-4', '4-8', '8-16', '16-32', '>32'];
+
+// Classificação dos 25 quadrantes (cobertura row × idade col) em 4 níveis: q1 verde / q2 amarelo claro / q3 amarelo escuro / q4 vermelho
+const CLS = [
+  ['q1','q1','q1','q2','q2'],  // cob 0-4
+  ['q1','q1','q2','q2','q2'],  // cob 4-8
+  ['q1','q3','q3','q4','q4'],  // cob 8-16
+  ['q3','q3','q3','q4','q4'],  // cob 16-32
+  ['q3','q3','q4','q4','q4'],  // cob >32
+];
+
+// Dados ATUAIS (07/05/2026): [pct, unidades, custo R$]
+const MATRIX = [
+  // cob 0-4
+  [[0.0, 13, 2390], [0.0, 11, 1374], [0.0, 24, 3728], [0.0, 8, 1938], [0.0, 3, 343]],
+  // cob 4-8
+  [[1.4, 1470, 336448], [0.4, 473, 105607], [0.1, 168, 30978], [0.0, 30, 5132], [0.0, 62, 6801]],
+  // cob 8-16
+  [[10.5, 13350, 2000000], [2.7, 3330, 639508], [0.8, 858, 184621], [0.3, 370, 70086], [0.0, 28, 5800]],
+  // cob 16-32
+  [[12.6, 15950, 3000000], [8.5, 11860, 2000000], [6.5, 7750, 2000000], [1.4, 1840, 327583], [0.3, 520, 79378]],
+  // cob >32
+  [[19.8, 18450, 5000000], [9.4, 12200, 2000000], [15.8, 21390, 4000000], [6.8, 8680, 2000000], [2.6, 3530, 618752]]
+];
+
+const CLS_NAME = { q1: 'Jovem/Boa', q2: 'Aceitável', q3: 'Em risco', q4: 'Tóxico' };
+
+// Fotos reais
+const FOTOS = {
+  "011739C25":"https://photo.anselmi.ind.br/Fotos/11739_c25.jpg",
+  "011739010":"https://photo.anselmi.ind.br/Fotos/11739_10.jpg",
+  "046667010":"https://photo.anselmi.ind.br/Fotos/46667_10.jpg",
+  "011739E42":"https://photo.anselmi.ind.br/Fotos/11739_E42.jpg",
+  "012890010":"https://photo.anselmi.ind.br/Fotos/12890_10.jpg",
+  "011739B79":"https://photo.anselmi.ind.br/Fotos/11739_B79.jpg",
+  "012890353":"https://photo.anselmi.ind.br/Fotos/12890_353.jpg",
+  "046667C25":"https://photo.anselmi.ind.br/Fotos/46667_c25.jpg",
+  "012890B79":"https://photo.anselmi.ind.br/Fotos/12890_B79.jpg",
+  "013005C25":"https://photo.anselmi.ind.br/Fotos/13005_C25.jpg",
+  "017240P09":"https://photo.anselmi.ind.br/Fotos/17240_P09.jpg",
+  "011861010":"https://photo.anselmi.ind.br/Fotos/11861_10.jpg",
+  "024845324":"https://photo.anselmi.ind.br/Fotos/24845-cor-324.jpg",
+  "046052147":"https://photo.anselmi.ind.br/Fotos/46052_147.jpg",
+  "010974D62":"https://photo.anselmi.ind.br/Fotos/10974_B79.jpg",
+  "013187C25":"https://photo.anselmi.ind.br/Fotos/13187_C25.jpg",
+  "046667C32":"https://photo.anselmi.ind.br/Fotos/46667_C32_.jpg",
+  "046667D25":"https://photo.anselmi.ind.br/Fotos/46667_D25.jpg",
+  "012890C25":"https://photo.anselmi.ind.br/Fotos/12890_C25.jpg",
+  "011861C25":"https://photo.anselmi.ind.br/Fotos/11861_C25.jpg"
+};
+
+// Mock SKUs por classe (em produção: derivar do replenishment.json)
+function mockQuadrant(c, i) {
+  const cls = CLS[c][i];
+  const pool = {
+    'q1': [
+      {sku:'011739010', cat:'CASACO FEM', loja:'BH JARDIM BELVEDERE', loja_id:114, cor:'10', idade:6, cob:6, qty:13, valor:2876},
+      {sku:'012890C25', cat:'CAPA FEM', loja:'FARIA LIMA', loja_id:104, cor:'C25', idade:4, cob:5, qty:8, valor:2334},
+      {sku:'013005C25', cat:'TOP FEM', loja:'JK', loja_id:110, cor:'C25', idade:5, cob:7, qty:10, valor:1200}
+    ],
+    'q2': [
+      {sku:'011861010', cat:'CALÇA FEM', loja:'CAMPINAS', loja_id:107, cor:'10', idade:8, cob:14, qty:18, valor:3666},
+      {sku:'011861C25', cat:'CALÇA FEM', loja:'SP HIGIENÓPOLIS', loja_id:115, cor:'C25', idade:6, cob:18, qty:22, valor:4480}
+    ],
+    'q3': [
+      {sku:'011739E42', cat:'CASACO FEM', loja:'CURITIBA', loja_id:102, cor:'E42', idade:18, cob:14, qty:25, valor:5532},
+      {sku:'046667C25', cat:'CALÇA FEM', loja:'MORUMBI', loja_id:109, cor:'C25', idade:12, cob:10, qty:30, valor:5745},
+      {sku:'017240P09', cat:'JAQUETA FEM', loja:'SP ALPHAVILLE', loja_id:113, cor:'P09', idade:20, cob:11, qty:22, valor:6757},
+      {sku:'046667A98', cat:'CALÇA FEM', loja:'PORTO ALEGRE', loja_id:120, cor:'A98', idade:24, cob:18, qty:28, valor:5363}
+    ],
+    'q4': [
+      {sku:'046667010', cat:'CALÇA FEM', loja:'FL CATARINA OUTLET', loja_id:118, cor:'10', idade:42, cob:38, qty:48, valor:9192},
+      {sku:'011739B79', cat:'CASACO FEM', loja:'FL BARIGUI', loja_id:117, cor:'B79', idade:48, cob:45, qty:35, valor:7745},
+      {sku:'012890353', cat:'CAPA FEM', loja:'FL DIAMOND MALL', loja_id:116, cor:'353', idade:36, cob:40, qty:28, valor:7032},
+      {sku:'024845324', cat:'BLUSA FEM', loja:'PORTO ALEGRE BARRA', loja_id:120, cor:'324', idade:74, cob:55, qty:15, valor:1976},
+      {sku:'046052147', cat:'BLUSA FEM', loja:'GRAMADO', loja_id:128, cor:'147', idade:38, cob:35, qty:20, valor:2800},
+      {sku:'010974D62', cat:'BLUSA FEM', loja:'CAMPINAS', loja_id:107, cor:'D62', idade:50, cob:48, qty:18, valor:2790},
+      {sku:'046667C32', cat:'CALÇA FEM', loja:'CATARINA OUTLET', loja_id:118, cor:'C32', idade:60, cob:42, qty:22, valor:4213},
+      {sku:'046667D25', cat:'CALÇA FEM', loja:'TIJUCAS', loja_id:118, cor:'D25', idade:55, cob:38, qty:14, valor:2681}
+    ]
+  };
+  return pool[cls] || [];
+}
+
+// === RENDER ===
+function fmtMoney(v){
+  if (v >= 1000000) return 'R$ ' + (v/1000000).toFixed(1).replace('.',',') + 'M';
+  if (v >= 1000) return 'R$ ' + (v/1000).toFixed(0).replace('.',',') + 'K';
+  return 'R$ ' + v.toFixed(0);
+}
+function fmtQtd(v){
+  if (v >= 1000) return (v/1000).toFixed(2).replace('.',',') + 'K unid.';
+  return v + ' unid.';
+}
+
+function renderMatrix() {
+  const grid = document.getElementById('matrix');
+  let h = '';
+  // Linha 0: corner + label idade
+  h += `<div></div><div class="axis-x-label">Idade →</div>`;
+  // Linha 1: corner + ticks idade
+  h += `<div></div>`;
+  BANDAS.forEach(b => h += `<div class="axis-x-tick">${b}</div>`);
+  // 5 linhas com axis-y-tick + 5 cells
+  for (let c = 0; c < 5; c++) {
+    h += `<div class="axis-y-tick">${BANDAS[c]}</div>`;
+    for (let i = 0; i < 5; i++) {
+      const [pct, qty, money] = MATRIX[c][i];
+      const cls = CLS[c][i];
+      h += `<div class="matrix-cell cls-${cls}" data-c="${c}" data-i="${i}" onclick="selectCell(${c},${i})">
+        <div class="pct">${pct.toFixed(1).replace('.', ',')}%</div>
+        <div class="qtd">${fmtQtd(qty)}</div>
+        <div class="money">${fmtMoney(money)}</div>
+      </div>`;
+    }
+  }
+  grid.innerHTML = h;
+
+  // Class totals (subtotais por classe — igual ROI)
+  const totals = { q1:0, q2:0, q3:0, q4:0 };
+  for (let c=0; c<5; c++) for (let i=0; i<5; i++) totals[CLS[c][i]] += MATRIX[c][i][0];
+  const order = ['q1','q2','q3','q4'];
+  document.getElementById('class-totals').innerHTML = order.map(k => `
+    <div class="ct">
+      <span class="swatch cls-${k}"></span>
+      <span class="pct">${totals[k].toFixed(1).replace('.', ',')}%</span>
+      <span class="label-c">${CLS_NAME[k]}</span>
+    </div>`).join('');
+}
+
+function selectCell(c, i) {
+  document.querySelectorAll('.matrix-cell.selected').forEach(el => el.classList.remove('selected'));
+  const cell = document.querySelector(`.matrix-cell[data-c="${c}"][data-i="${i}"]`);
+  if (cell) cell.classList.add('selected');
+  const [pct, qty, money] = MATRIX[c][i];
+  const cls = CLS[c][i];
+  document.getElementById('drill-title').textContent = `Idade ${BANDAS[i]} sem · Cobertura ${BANDAS[c]} sem`;
+  document.getElementById('drill-desc').innerHTML = `<b>${pct.toFixed(1).replace('.', ',')}%</b> do total · ${qty.toLocaleString('pt-BR')} unidades · ${fmtMoney(money)} em valor de custo`;
+  const chip = document.getElementById('drill-chip');
+  chip.textContent = CLS_NAME[cls];
+  chip.className = 'drill-quadrant cls-' + cls;
+  const items = mockQuadrant(c, i);
+  const grid = document.getElementById('drill-grid');
+  if (!items.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--ink-4);padding:30px">Sem amostras pra exibir neste quadrante.<br><span style="font-size:11px">Em produção, mostraria todos os ${qty.toLocaleString('pt-BR')} SKU×loja deste quadrante.</span></div>`;
+    return;
+  }
+  grid.innerHTML = items.map(s => {
+    // Banco de fotos (data/banco_fotos.json) tem prioridade; FOTOS legado é fallback
+
+    const photo = (window.FotoResolver && window.FotoResolver.getFoto(s.sku)) || FOTOS[s.sku];
+    return `<div class="drill-item">
+      <div class="drill-thumb">${photo ? `<img src="${photo}" alt="${s.sku}" onerror="this.style.display='none'">` : ''}</div>
+      <div class="drill-info">
+        <div class="cat">${s.cat}</div>
+        <div class="sku">${s.sku}</div>
+        <div class="meta">${s.loja}<br><span style="color:var(--ink-4)">cód ${s.loja_id} · cor ${s.cor}</span></div>
+        <div class="vals">
+          <span>Idade <span class="v">${s.idade}sem</span></span>
+          <span>Cob <span class="v">${s.cob}sem</span></span>
+          <span>Qtd <span class="v">${s.qty}</span></span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// === Summary toggle ===
+const SUMMARY_KEY = 'roi_summary_open_stockquality';
+function toggleSummary(){
+  const b = document.getElementById('summary-block');
+  const t = document.getElementById('summary-toggle');
+  const open = !b.classList.contains('open');
+  b.classList.toggle('open', open);
+  t.classList.toggle('open', open);
+  try { localStorage.setItem(SUMMARY_KEY, open ? '1' : '0'); } catch(e){}
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Carrega banco de fotos completo em background; quando chegar, re-renderiza
+  if (window.FotoResolver) {
+    window.FotoResolver.load().then(() => { try { renderMatrix(); } catch(e) {} });
+  }
+
+  renderMatrix();
+  // Pré-seleciona quadrante mais tóxico (cob >32, idade 8-16) — onde mora 15,8% do estoque
+  selectCell(4, 2);
+  let open = false;
+  try { open = localStorage.getItem(SUMMARY_KEY) === '1'; } catch(e){}
+  if (open) {
+    document.getElementById('summary-block').classList.add('open');
+    document.getElementById('summary-toggle').classList.add('open');
+  }
+});
+</script>
+<script>
+// === Caminho B: pipeline anselmi-pcp/data/volution/stock-quality-report.json.gz ===
+(async () => {
+  if (typeof RoiDataLoader === 'undefined') return;
+  const badge = document.createElement('span');
+  badge.id = 'hdr-sync';
+  badge.style.cssText = 'position:fixed;top:8px;right:12px;font:500 11px/1.2 Inter,sans-serif;color:#a86d1f;background:rgba(245,241,234,.92);padding:4px 10px;border-radius:99px;z-index:9999;letter-spacing:.02em;border:1px solid rgba(0,0,0,.06);';
+  document.body.appendChild(badge);
+  try {
+    const result = await RoiDataLoader.load('stock-quality', { fallback: null });
+    RoiDataLoader.syncBadge(badge, result);
+  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anselmi · Parâmetros</title>
+<script src="lib/data-loader.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f5f1ea; --paper-2:#ede7dc; --card:#fbf8f2;
+  --ink:#1a1714; --ink-2:#3d3630; --ink-3:#756b60; --ink-4:#a89c8c;
+  --line:#d9d0c0; --line-2:#c7bca8;
+  --brand-bordo:#5D2A2C; --brand-caramelo:#BB9972; --brand-creme:#F7F1E5;
+  --bordo:#6b1f2a; --bordo-bg:#f2e3e4;
+  --ambar:#a86d1f; --ambar-bg:#f5e8d2;
+  --musgo:#4a5d3a; --musgo-bg:#e6e9db;
+  --r-xs:4px; --r-sm:6px; --r-md:10px; --r-lg:16px;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px;
+  --fs-10:10px; --fs-12:12px; --fs-13:13px; --fs-15:15px; --fs-18:18px; --fs-24:24px; --fs-32:32px;
+  --shadow-sm:0 1px 0 rgba(26,23,20,.04), 0 1px 2px rgba(26,23,20,.04);
+  --shadow-md:0 1px 0 rgba(26,23,20,.04), 0 8px 24px -8px rgba(26,23,20,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:Inter,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:var(--fs-13);line-height:1.4;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:Lora,Georgia,serif;font-weight:500;color:var(--ink);margin:0}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,select{font:inherit;color:inherit}
+
+.chrome{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--line)}
+.hdr{display:flex;align-items:center;gap:var(--sp-6);padding:var(--sp-3) var(--sp-6);min-height:64px}
+.hdr-brand{display:flex;align-items:center;gap:var(--sp-4);flex:1}
+.home-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--r-sm);color:var(--ink-3)}
+.home-btn:hover{background:var(--paper-2);color:var(--ink)}
+.home-btn svg{width:18px;height:18px}
+.hdr-logo{display:flex;align-items:center;gap:var(--sp-2);font-family:Lora,Georgia,serif;font-weight:600;letter-spacing:.04em;font-size:var(--fs-15)}
+.hdr-logo .dot{width:6px;height:6px;border-radius:50%;background:var(--brand-bordo);display:inline-block;margin-left:2px}
+.hdr-meta{display:flex;flex-direction:column;gap:2px;margin-left:var(--sp-3);padding-left:var(--sp-4);border-left:1px solid var(--line)}
+.crumb{font-size:var(--fs-10);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4)}
+.l2{font-family:Lora,Georgia,serif;font-size:var(--fs-15);color:var(--ink-2)}
+.hdr-kpi{display:flex;gap:var(--sp-5)}
+.hdr-stat{display:flex;flex-direction:column}
+.hdr-stat .v{font-family:Lora,Georgia,serif;font-weight:500;font-size:var(--fs-24);line-height:1.1}
+.hdr-stat .l{font-size:var(--fs-10);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);margin-top:2px}
+.hdr-date{font-size:var(--fs-12);color:var(--ink-3);font-variant-numeric:tabular-nums;border:1px solid var(--line);padding:6px 10px;border-radius:var(--r-sm);background:var(--card)}
+
+.tab-nav{display:flex;gap:0;padding:0 var(--sp-6);background:var(--paper);border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{display:flex;align-items:center;gap:6px;padding:10px 14px;font-size:var(--fs-12);color:var(--ink-3);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink-2)}
+.tab.active{color:var(--brand-bordo);border-bottom-color:var(--brand-bordo)}
+.tab svg{width:14px;height:14px;opacity:.7}
+
+/* ===== DIRTY BANNER ===== */
+.dirty-bar{position:sticky;top:64px;z-index:40;background:var(--brand-creme);border-bottom:1px solid var(--brand-bordo);padding:10px var(--sp-6);display:none;align-items:center;justify-content:space-between;gap:var(--sp-3);flex-wrap:wrap}
+.dirty-bar.visible{display:flex}
+.dirty-bar .info{display:flex;align-items:center;gap:8px;color:var(--brand-bordo);font-size:var(--fs-13);font-weight:500}
+.dirty-bar .info svg{width:16px;height:16px}
+.dirty-bar .actions{display:flex;gap:8px}
+.dirty-bar button{padding:7px 14px;border-radius:var(--r-sm);font-size:var(--fs-12);font-weight:500;cursor:pointer;border:1px solid transparent}
+.dirty-bar .btn-discard{background:transparent;color:var(--brand-bordo);border-color:var(--brand-bordo)}
+.dirty-bar .btn-discard:hover{background:var(--paper-2)}
+.dirty-bar .btn-save{background:var(--brand-bordo);color:#fff}
+.dirty-bar .btn-save:hover{background:#7a3a3c}
+
+.content{padding:var(--sp-6) var(--sp-6) 80px;max-width:1500px;margin:0 auto}
+.section-title{font-family:Lora,Georgia,serif;font-size:var(--fs-32);color:var(--brand-bordo);margin-bottom:6px;line-height:1.1}
+.section-sub{font-size:var(--fs-13);color:var(--ink-3);margin-bottom:var(--sp-5);max-width:780px}
+
+/* Quick stats */
+.stats-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--sp-3);margin-bottom:var(--sp-5)}
+.stat{padding:var(--sp-4);background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);cursor:pointer;transition:box-shadow .12s, transform .12s}
+.stat:hover{box-shadow:var(--shadow-md);transform:translateY(-1px);border-color:var(--brand-caramelo)}
+.stat .lbl{font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-4);margin-bottom:6px}
+.stat .v{font-family:Lora,Georgia,serif;font-weight:500;font-size:var(--fs-24);color:var(--ink);line-height:1}
+.stat .desc{font-size:var(--fs-10);color:var(--ink-3);margin-top:6px;line-height:1.4}
+.stat.empty .v{color:var(--ink-4)}
+
+/* Section */
+.psection{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);margin-bottom:var(--sp-4);overflow:hidden}
+.psection-head{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-4) var(--sp-5);cursor:pointer;background:var(--card);border-bottom:1px solid transparent;transition:background .12s;flex-wrap:wrap;gap:var(--sp-3)}
+.psection.open .psection-head{border-bottom-color:var(--paper-2)}
+.psection-head:hover{background:var(--paper-2)}
+.psection-head .ttl{display:flex;align-items:center;gap:var(--sp-3)}
+.psection-head .ttl .arr{font-size:11px;color:var(--ink-4);transition:transform .15s;display:inline-block}
+.psection.open .psection-head .ttl .arr{transform:rotate(90deg)}
+.psection-head .ttl .nm{font-family:Lora,Georgia,serif;font-size:var(--fs-18);color:var(--ink);font-weight:500}
+.psection-head .ttl .badge{padding:3px 9px;border-radius:999px;background:var(--paper-2);color:var(--ink-2);font-size:11px;font-weight:600;font-variant-numeric:tabular-nums}
+.psection-head .ttl .badge.empty{background:var(--ambar-bg);color:var(--ambar)}
+.psection-head .meta{font-size:11px;color:var(--ink-3);font-style:italic;margin-left:auto}
+.psection-head .actions{display:flex;gap:6px}
+.psection-head .actions .btn{padding:6px 12px;border:1px solid var(--line);background:var(--card);border-radius:var(--r-xs);font-size:11px;color:var(--ink-2);cursor:pointer;font-weight:500}
+.psection-head .actions .btn:hover{background:var(--paper-2)}
+.psection-head .actions .btn.primary{background:var(--brand-bordo);color:#fff;border-color:var(--brand-bordo)}
+.psection-head .actions .btn.primary:hover{background:#7a3a3c}
+
+.psection-body{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.psection.open .psection-body{max-height:5000px;padding:var(--sp-4) var(--sp-5)}
+
+/* Editable table */
+.ptable{width:100%;border-collapse:collapse;font-size:var(--fs-12)}
+.ptable th{text-align:left;font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-4);font-weight:500;padding:8px 10px;border-bottom:1px solid var(--paper-2)}
+.ptable td{padding:6px 10px;color:var(--ink-2);border-bottom:1px solid var(--paper-2);font-variant-numeric:tabular-nums;vertical-align:middle}
+.ptable tr:last-child td{border-bottom:none}
+.ptable tr.dirty td{background:rgba(232,200,113,0.08)}
+
+input.inline{width:100%;border:1px solid transparent;background:transparent;padding:4px 6px;border-radius:var(--r-xs);font:inherit;color:var(--ink);font-family:Lora,Georgia,serif;transition:border-color .12s, background .12s}
+input.inline:hover{border-color:var(--line)}
+input.inline:focus{outline:none;border-color:var(--brand-caramelo);background:#fff;box-shadow:0 0 0 2px rgba(187,153,114,0.2)}
+input.inline.num{font-variant-numeric:tabular-nums;text-align:right;font-family:Inter,sans-serif}
+
+select.inline{width:100%;border:1px solid transparent;background:transparent;padding:4px 6px;border-radius:var(--r-xs);font:inherit;color:var(--ink);transition:border-color .12s}
+select.inline:hover{border-color:var(--line)}
+select.inline:focus{outline:none;border-color:var(--brand-caramelo);background:#fff}
+
+.row-actions{display:flex;gap:4px;justify-content:flex-end}
+.icon-btn{width:26px;height:26px;display:grid;place-items:center;border-radius:var(--r-xs);color:var(--ink-4);background:transparent;border:1px solid transparent;cursor:pointer;transition:background .12s, color .12s}
+.icon-btn:hover{background:var(--paper-2);color:var(--ink-2)}
+.icon-btn.del:hover{background:var(--bordo-bg);color:var(--bordo)}
+.icon-btn svg{width:14px;height:14px}
+
+/* Coverage cards */
+.cov-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4)}
+.cov-card{padding:var(--sp-4);background:var(--paper);border-radius:var(--r-sm);border:1px solid var(--line)}
+.cov-card .lbl{font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.12em;color:var(--ink-4);margin-bottom:8px}
+.cov-row{display:grid;grid-template-columns:1.4fr 70px auto 70px;gap:8px;align-items:center;font-size:var(--fs-13);padding:6px 0}
+.cov-row .name{color:var(--ink-2)}
+.cov-row .sep{color:var(--ink-4);text-align:center}
+
+/* Sazonalidade */
+.sz-cols{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-5)}
+.sz-col h4{font-family:Lora,Georgia,serif;font-size:var(--fs-15);color:var(--ink);margin-bottom:8px;font-weight:500}
+.sz-col .meta{font-size:11px;color:var(--ink-3);margin-bottom:var(--sp-3)}
+.sz-col .total{font-size:11px;color:var(--ink-3);margin-top:var(--sp-3);padding-top:var(--sp-3);border-top:1px solid var(--paper-2);display:flex;justify-content:space-between}
+.sz-col .total .v{font-family:Lora,Georgia,serif;color:var(--ink);font-weight:500}
+.sz-col .total.warn .v{color:var(--ambar)}
+.sz-row{display:grid;grid-template-columns:90px 1fr 70px;gap:var(--sp-3);align-items:center;padding:4px 0;font-size:var(--fs-12)}
+.sz-row .month{color:var(--ink-3)}
+.sz-row .bar{height:14px;background:var(--paper-2);border-radius:999px;overflow:hidden;position:relative}
+.sz-row .bar .fill{position:absolute;top:0;left:0;height:100%;background:var(--brand-caramelo);border-radius:999px;transition:width .15s}
+.sz-row.peak .bar .fill{background:var(--brand-bordo)}
+.sz-row.vale .bar .fill{background:var(--ambar)}
+
+/* Empty state */
+.empty-state{text-align:center;padding:var(--sp-6);color:var(--ink-4)}
+.empty-state .icon{margin-bottom:var(--sp-3);color:var(--ambar);opacity:.6}
+.empty-state h4{font-family:Lora,Georgia,serif;color:var(--ink-2);margin-bottom:6px;font-weight:500}
+.empty-state p{font-size:var(--fs-12);margin:0 0 var(--sp-3) 0;line-height:1.6}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(26,23,20,0.5);display:none;z-index:100;align-items:center;justify-content:center;padding:var(--sp-4)}
+.modal-bg.open{display:flex}
+.modal{background:var(--card);border-radius:var(--r-md);box-shadow:0 12px 40px rgba(0,0,0,0.2);width:100%;max-width:500px;overflow:hidden}
+.modal-head{padding:var(--sp-4) var(--sp-5);border-bottom:1px solid var(--paper-2);display:flex;justify-content:space-between;align-items:center}
+.modal-head h3{font-family:Lora,Georgia,serif;font-size:var(--fs-18);color:var(--ink);font-weight:500}
+.modal-head .close{width:30px;height:30px;display:grid;place-items:center;border-radius:var(--r-xs);color:var(--ink-3);background:transparent}
+.modal-head .close:hover{background:var(--paper-2)}
+.modal-body{padding:var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-4)}
+.modal-body .field{display:flex;flex-direction:column;gap:4px}
+.modal-body .field label{font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-4)}
+.modal-body .field input,.modal-body .field select{padding:8px 10px;border:1px solid var(--line);border-radius:var(--r-xs);background:#fff;font:inherit;color:var(--ink)}
+.modal-body .field input:focus,.modal-body .field select:focus{outline:none;border-color:var(--brand-caramelo);box-shadow:0 0 0 2px rgba(187,153,114,0.2)}
+.modal-body .field-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)}
+.modal-foot{padding:var(--sp-4) var(--sp-5);border-top:1px solid var(--paper-2);display:flex;justify-content:flex-end;gap:8px}
+.modal-foot button{padding:8px 16px;border-radius:var(--r-sm);font-size:var(--fs-13);font-weight:500;cursor:pointer;border:1px solid transparent}
+.modal-foot .btn-cancel{background:transparent;color:var(--ink-2);border-color:var(--line)}
+.modal-foot .btn-cancel:hover{background:var(--paper-2)}
+.modal-foot .btn-ok{background:var(--brand-bordo);color:#fff}
+.modal-foot .btn-ok:hover{background:#7a3a3c}
+
+/* Activity */
+.activity{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-4) var(--sp-5)}
+.activity-title{font-family:Lora,Georgia,serif;font-size:var(--fs-15);color:var(--ink);margin-bottom:var(--sp-3);font-weight:500}
+.act-item{display:flex;gap:var(--sp-3);padding:var(--sp-2) 0;border-bottom:1px solid var(--paper-2);font-size:var(--fs-12);align-items:flex-start}
+.act-item:last-child{border-bottom:none}
+.act-item .who{flex:0 0 110px;color:var(--ink-2);font-weight:500}
+.act-item .what{flex:1;color:var(--ink-3)}
+.act-item .what .target{padding:2px 8px;border-radius:999px;background:#EDE7F5;color:#4a3d6e;font-size:10px;font-weight:500;margin:0 4px}
+.act-item .when{flex:0 0 110px;text-align:right;color:var(--ink-4);font-size:11px;font-variant-numeric:tabular-nums}
+
+@media (max-width:1100px){
+  .stats-strip{grid-template-columns:repeat(3,1fr)}
+  .cov-grid{grid-template-columns:1fr}
+  .sz-cols{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .hdr{flex-wrap:wrap}
+  .hdr-kpi{order:3;width:100%;justify-content:space-between;padding-top:var(--sp-3);border-top:1px solid var(--line)}
+  .hdr-meta{display:none}
+  .stats-strip{grid-template-columns:1fr 1fr}
+  .content{padding:var(--sp-4)}
+}
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="hdr">
+    <div class="hdr-brand">
+      <button class="home-btn" onclick="confirmNav('index.html')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12L12 3L21 12"/><path d="M5 10V20H19V10"/><path d="M9 20V14H15V20"/></svg>
+      </button>
+      <div class="hdr-logo">ANSELMI<span class="dot"></span></div>
+      <div class="hdr-meta">
+        <div class="crumb">IN-SEASON · CONFIGURAÇÃO</div>
+        <div class="l2">Parâmetros</div>
+      </div>
+    </div>
+    <div class="hdr-kpi">
+      <div class="hdr-stat"><div class="v" id="kpi-total">38</div><div class="l">Regras ativas</div></div>
+      <div class="hdr-stat"><div class="v">5</div><div class="l">Categorias</div></div>
+      <div class="hdr-stat"><div class="v" id="kpi-empty" style="color:var(--ambar)">1</div><div class="l">Vazia</div></div>
+    </div>
+    <div class="hdr-date">07/05/2026</div>
+  </div>
+  <div class="tab-nav">
+    <div class="tab" onclick="confirmNav('index.html')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg>Visão geral</div>
+    <div class="tab" onclick="confirmNav('reabastecimento.html')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12L9 6L13 10L21 4"/></svg>Relatório de reabastecimento</div>
+    <div class="tab" onclick="confirmNav('excesso.html')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 7H19V19H5V7Z"/></svg>Relatório de excesso de estoque</div>
+    <div class="tab" onclick="confirmNav('transferencias.html')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 10L17 10"/><path d="M14 7L17 10L14 13"/></svg>Relatório de transferências</div>
+    <div class="tab" onclick="confirmNav('compras.html')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8H18L17 18H7L6 8Z"/></svg>Relatório de compras</div>
+    <div class="tab" onclick="confirmNav('stock-quality.html')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Qualidade do estoque</div>
+    <div class="tab active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>Parâmetros</div>
+    <div class="tab" onclick="confirmNav('alertas.html')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 22H22L12 2Z"/><path d="M12 9V13"/><path d="M12 17V17.01"/></svg>Alertas <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--bordo);margin-left:2px"></span></div>
+  </div>
+</div>
+
+<!-- Dirty banner -->
+<div class="dirty-bar" id="dirty-bar">
+  <div class="info">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7V12"/><path d="M12 16V16.01"/></svg>
+    <span><b id="dirty-count">0</b> alterações não salvas</span>
+  </div>
+  <div class="actions">
+    <button class="btn-discard" onclick="discardChanges()">Descartar</button>
+    <button class="btn-save" onclick="saveChanges()">Salvar alterações</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <h1 class="section-title">Parâmetros</h1>
+  <div class="section-sub">Configuração de regras que alimentam todos os motores. Edite valores diretamente nos campos abaixo, ou use os botões + Nova / Excluir. Alterações ficam pendentes até você clicar em Salvar.</div>
+
+  <!-- Stats strip -->
+  <div class="stats-strip">
+    <div class="stat" onclick="openSection('bloqueios')"><div class="lbl">Bloqueios</div><div class="v" id="cnt-bloqueios">11</div><div class="desc" id="cnt-bloqueios-desc">4 entrega · 7 compra</div></div>
+    <div class="stat" onclick="openSection('cobertura')"><div class="lbl">Cobertura</div><div class="v">2 + <span id="cnt-cob-esp">1</span></div><div class="desc">2 canais · específicas</div></div>
+    <div class="stat" onclick="openSection('estoque-minimo')"><div class="lbl">Estoque mínimo</div><div class="v" id="cnt-emin">25</div><div class="desc">campanha Dia das Mães</div></div>
+    <div class="stat" onclick="openSection('sazonalidade')"><div class="lbl">Sazonalidade</div><div class="v">2</div><div class="desc">O/I + P/V · 24 valores</div></div>
+    <div class="stat empty" onclick="openSection('capacidades')"><div class="lbl">Capacidades</div><div class="v" id="cnt-cap">0</div><div class="desc" style="color:var(--ambar)" id="cnt-cap-desc">em construção</div></div>
+  </div>
+
+  <!-- BLOQUEIOS -->
+  <div class="psection open" id="sec-bloqueios">
+    <div class="psection-head">
+      <div class="ttl" onclick="toggleSection('bloqueios')">
+        <span class="arr">▶</span><span class="nm">Bloqueios</span>
+        <span class="badge" id="badge-bloqueios">11 ativos</span>
+      </div>
+      <span class="meta">Última edição: hoje · 17:16</span>
+      <div class="actions">
+        <button class="btn primary" onclick="openModal('bloqueio')">+ Novo</button>
+      </div>
+    </div>
+    <div class="psection-body">
+      <table class="ptable">
+        <thead>
+          <tr><th style="width:40%">Nome</th><th style="width:15%">Tipo</th><th style="width:15%">Início</th><th style="width:20%">Última edição</th><th style="width:10%;text-align:right">Ações</th></tr>
+        </thead>
+        <tbody id="tbl-bloqueios"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- COBERTURA -->
+  <div class="psection" id="sec-cobertura">
+    <div class="psection-head">
+      <div class="ttl" onclick="toggleSection('cobertura')">
+        <span class="arr">▶</span><span class="nm">Cobertura</span>
+        <span class="badge">2 gerais + <span id="cnt-cob-esp2">1</span> específica</span>
+      </div>
+      <span class="meta">Edite Min/Max em semanas</span>
+      <div class="actions">
+        <button class="btn primary" onclick="openModal('cobertura-esp')">+ Específica</button>
+      </div>
+    </div>
+    <div class="psection-body">
+      <div class="cov-grid">
+        <div class="cov-card">
+          <div class="lbl">Cobertura geral · por canal</div>
+          <div id="cov-geral"></div>
+        </div>
+        <div class="cov-card">
+          <div class="lbl">Cobertura específica · por NC produto</div>
+          <div id="cov-esp"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESTOQUE MÍNIMO -->
+  <div class="psection" id="sec-estoque-minimo">
+    <div class="psection-head">
+      <div class="ttl" onclick="toggleSection('estoque-minimo')">
+        <span class="arr">▶</span><span class="nm">Estoque mínimo</span>
+        <span class="badge" id="badge-emin">25 regras ativas</span>
+      </div>
+      <span class="meta">Edição inline · clique nas células</span>
+      <div class="actions">
+        <button class="btn primary" onclick="openModal('emin')">+ Nova</button>
+      </div>
+    </div>
+    <div class="psection-body">
+      <table class="ptable">
+        <thead>
+          <tr><th style="width:25%">Nome</th><th style="width:35%">Descrição</th><th style="width:15%">Início</th><th style="width:15%">Fim</th><th style="width:10%;text-align:right">Ações</th></tr>
+        </thead>
+        <tbody id="tbl-emin"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SAZONALIDADE -->
+  <div class="psection" id="sec-sazonalidade">
+    <div class="psection-head">
+      <div class="ttl" onclick="toggleSection('sazonalidade')">
+        <span class="arr">▶</span><span class="nm">Sazonalidade</span>
+        <span class="badge">2 coleções · 24 valores</span>
+      </div>
+      <span class="meta">Edite cada % mensal · barras refletem em tempo real</span>
+      <div class="actions">
+        <button class="btn" onclick="resetSeasonality()">↺ Restaurar ROI</button>
+      </div>
+    </div>
+    <div class="psection-body">
+      <div class="sz-cols">
+        <div class="sz-col">
+          <h4>Coleção Outono / Inverno</h4>
+          <div class="meta">Filtro: ProductClassificationLevel5 = OUTONO/INVERNO · Pico Jun-Jul</div>
+          <div id="sz-oi"></div>
+          <div class="total" id="sz-oi-total"><span>Soma deve totalizar 100%</span><span class="v">100,00%</span></div>
+        </div>
+        <div class="sz-col">
+          <h4>Coleção Primavera / Verão</h4>
+          <div class="meta">Filtro: ProductClassificationLevel5 = PRIMAVERA/VERÃO · Pico Out-Dez</div>
+          <div id="sz-pv"></div>
+          <div class="total" id="sz-pv-total"><span>Soma deve totalizar 100%</span><span class="v">100,00%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAPACIDADES -->
+  <div class="psection" id="sec-capacidades">
+    <div class="psection-head">
+      <div class="ttl" onclick="toggleSection('capacidades')">
+        <span class="arr">▶</span><span class="nm">Capacidades das lojas</span>
+        <span class="badge empty" id="badge-cap">0 cadastradas</span>
+      </div>
+      <span class="meta">Pati + Fê em construção</span>
+      <div class="actions">
+        <button class="btn primary" onclick="openModal('capacidade')">+ Nova</button>
+      </div>
+    </div>
+    <div class="psection-body">
+      <div id="cap-content"></div>
+    </div>
+  </div>
+
+  <!-- ATIVIDADE -->
+  <div class="activity">
+    <div class="activity-title">Atividade da semana</div>
+    <div id="activity-list"></div>
+  </div>
+
+</div>
+
+<!-- ===== MODAIS ===== -->
+
+<!-- Modal Bloqueio -->
+<div class="modal-bg" id="modal-bloqueio">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-bloqueio-title">Novo bloqueio</h3>
+      <button class="close" onclick="closeModal('bloqueio')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Nome</label><input id="mb-name" placeholder="Ex: Devolução de Maio"></div>
+      <div class="field-row">
+        <div class="field"><label>Tipo</label>
+          <select id="mb-type"><option value="Delivery">Entrega</option><option value="Purchase">Compra</option></select>
+        </div>
+        <div class="field"><label>Data início</label><input type="date" id="mb-start"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('bloqueio')">Cancelar</button>
+      <button class="btn-ok" onclick="saveBloqueio()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Cobertura Específica -->
+<div class="modal-bg" id="modal-cobertura-esp">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Nova cobertura específica</h3>
+      <button class="close" onclick="closeModal('cobertura-esp')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>NC Produtos (Marca · Estação · Ano)</label><input id="mc-nc" placeholder="Ex: Anselmi · OUTONO/INVERNO · 2026"></div>
+      <div class="field-row">
+        <div class="field"><label>Mínimo (semanas)</label><input type="number" id="mc-min" min="0" value="3"></div>
+        <div class="field"><label>Máximo (semanas)</label><input type="number" id="mc-max" min="0" value="6"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('cobertura-esp')">Cancelar</button>
+      <button class="btn-ok" onclick="saveCobertura()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Estoque mínimo -->
+<div class="modal-bg" id="modal-emin">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Nova regra de estoque mínimo</h3>
+      <button class="close" onclick="closeModal('emin')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Nome</label><input id="me-name" placeholder="Ex: Faria Lima 22/04 — Sisplan"></div>
+      <div class="field"><label>Descrição</label><input id="me-desc" placeholder="Ex: Estoque Mínimo Dia das Mães"></div>
+      <div class="field-row">
+        <div class="field"><label>Data início</label><input type="date" id="me-start"></div>
+        <div class="field"><label>Data fim</label><input type="date" id="me-end"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('emin')">Cancelar</button>
+      <button class="btn-ok" onclick="saveEmin()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Capacidade -->
+<div class="modal-bg" id="modal-capacidade">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Nova capacidade de loja</h3>
+      <button class="close" onclick="closeModal('capacidade')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field"><label>Loja</label>
+          <select id="mcap-loja"><option>FARIA LIMA</option><option>JK</option><option>MORUMBI</option><option>BH JARDIM BELVEDERE</option><option>CURITIBA</option><option>SP HIGIENÓPOLIS</option><option>SP ALPHAVILLE</option><option>FL BRASÍLIA</option><option>FL DIAMOND MALL</option><option>FL BARIGUI</option><option>E-COMMERCE</option></select>
+        </div>
+        <div class="field"><label>Categoria</label><input id="mcap-cat" placeholder="Ex: Casaco FEM"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>DV Min (dias)</label><input type="number" id="mcap-dv-min" min="0" value="30"></div>
+        <div class="field"><label>DV Max (dias)</label><input type="number" id="mcap-dv-max" min="0" value="60"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Profundidade Min</label><input type="number" id="mcap-pf-min" min="0" value="2"></div>
+        <div class="field"><label>Profundidade Max</label><input type="number" id="mcap-pf-max" min="0" value="6"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Volumetria Min</label><input type="number" id="mcap-vol-min" min="0" value="20"></div>
+        <div class="field"><label>Volumetria Max</label><input type="number" id="mcap-vol-max" min="0" value="80"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('capacidade')">Cancelar</button>
+      <button class="btn-ok" onclick="saveCapacidade()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== ESTADO DEFAULT (snapshot ROI 06/05/2026) =====
+const DEFAULT_STATE = {
+  bloqueios: [
+    {id:2165, name:'Devolução de Maio', type:'Delivery', startDate:'2026-05-06', updateDate:'2026-05-06 17:16'},
+    {id:2157, name:'COLEÇÃO INVERNO2026', type:'Delivery', startDate:'2024-10-18', updateDate:'2026-05-06 13:30'},
+    {id:2131, name:'Primavera/Verão Baixa venda - Sisplan', type:'Delivery', startDate:'2026-04-09', updateDate:'2026-04-27 21:40'},
+    {id:2124, name:'COMPRA', type:'Purchase', startDate:'2026-04-24', updateDate:'2026-04-24 20:49'},
+    {id:2120, name:'Códigos com cores que ainda estavam gerando nas compras', type:'Purchase', startDate:'2026-04-24', updateDate:'2026-04-24 17:19'},
+    {id:2118, name:'Cores Que não são mais comercializadas', type:'Purchase', startDate:'2026-04-20', updateDate:'2026-04-24 11:39'},
+    {id:2107, name:'Bloqueio peças aleatórias - Compra', type:'Purchase', startDate:'2026-04-20', updateDate:'2026-04-20 21:10'},
+    {id:2104, name:'Falhados e Promoções', type:'Purchase', startDate:'2026-04-20', updateDate:'2026-04-20 20:49'},
+    {id:2098, name:'Calçados não comercializados', type:'Purchase', startDate:'2026-04-20', updateDate:'2026-04-20 19:30'},
+    {id:2095, name:'Bloqueio Geral Compra', type:'Purchase', startDate:'2026-04-15', updateDate:'2026-04-20 18:15'},
+    {id:2090, name:'Falhas técnicas - Entrega', type:'Delivery', startDate:'2026-04-10', updateDate:'2026-04-10 14:00'}
+  ],
+  cobertura: {
+    geral: [
+      {channel:'E-Commerce', min:8, max:20},
+      {channel:'Loja Física', min:2, max:4}
+    ],
+    especifica: [
+      {id:449, nc:'Anselmi · OUTONO/INVERNO · 2026', min:3, max:6}
+    ]
+  },
+  estoqueMinimo: [
+    {id:2598, name:'Leblon 14/04 - Sisplan', desc:'Estoque Mínimo Dias das mães', start:'2026-04-18', end:'2026-06-30'},
+    {id:2594, name:'Porto Alegre Iguatemi 20/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-20', end:'2026-06-30'},
+    {id:2592, name:'Florianópolis 20/04 - Sisplan', desc:'Estoque Mínimo Dias das Mães', start:'2026-04-20', end:'2026-06-30'},
+    {id:2590, name:'Balneário 20/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-20', end:'2026-06-30'},
+    {id:2588, name:'Gramado 20/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-20', end:'2026-06-30'},
+    {id:2586, name:'Tijucas 28/04', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-28', end:'2026-06-30'},
+    {id:2584, name:'Porto Alegre Barra 20/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-20', end:'2026-06-30'},
+    {id:2576, name:'Brasília 20/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-20', end:'2026-06-30'},
+    {id:2574, name:'Diamond 20/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-20', end:'2026-06-30'},
+    {id:2572, name:'BH Belvedere 15/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-18', end:'2026-06-30'},
+    {id:2568, name:'Rio de Janeiro 20/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-20', end:'2026-06-30'},
+    {id:2566, name:'Curitiba 20/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-20', end:'2026-06-30'},
+    {id:2564, name:'Barigui 20/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-20', end:'2026-06-30'},
+    {id:2562, name:'Morumbi 14/04 - sisplan', desc:'Estoque mínimo Dia das Mães', start:'2026-04-18', end:'2026-06-30'},
+    {id:2560, name:'Higienopolis 14/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-18', end:'2026-06-30'},
+    {id:2558, name:'Catarina Outlet 20/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-20', end:'2026-06-30'},
+    {id:2556, name:'Campinas 14/04 - Sisplan', desc:'Estoque Mínimo Dias das Mães', start:'2026-04-18', end:'2026-06-30'},
+    {id:2554, name:'Alphaville 14/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-18', end:'2026-06-30'},
+    {id:2581, name:'VM nº 08', desc:'Entrada 14 de Maio', start:'2026-05-11', end:'2026-06-30'},
+    {id:2479, name:'Faria Lima 22/04 (após estoque sobre venda)', desc:'Solicitação de Reforço Gerente', start:'2026-04-22', end:'2026-05-22'},
+    {id:2475, name:'Geral (vendas 30 dias)', desc:'Ref. diferentes das: 029856 046125 046667 046531 028871 011739', start:'2026-04-20', end:'2026-05-16'},
+    {id:2547, name:'Faria Lima - 14/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-18', end:'2026-06-30'},
+    {id:2549, name:'JK 20/04 - Sisplan', desc:'Estoque Mínimo Dia das Mães', start:'2026-04-20', end:'2026-06-30'},
+    {id:2537, name:'Dia das mães - Cashmere', desc:'27 de Abril', start:'2026-04-26', end:'2026-05-30'},
+    {id:2533, name:'Dia das Mães', desc:'27 de Abril', start:'2026-04-26', end:'2026-05-09'}
+  ],
+  sazonalidade: {
+    OI: [8.47, 4.51, 3.85, 7.03, 11.43, 14.44, 14.06, 7.69, 5.00, 4.91, 7.22, 11.41],
+    PV: [4.51, 4.24, 5.73, 7.90, 10.19, 7.84, 7.81, 9.37, 10.28, 10.58, 9.75, 11.79]
+  },
+  capacidades: []
+};
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+// === ESTADO ATUAL E DIRTY TRACKING ===
+const STORAGE_KEY = 'roi_params_state_v1';
+const DIRTY_KEY = 'roi_params_dirty_v1';
+let STATE = null;
+let SAVED_STATE = null;
+let DIRTY_COUNT = 0;
+
+function loadState(){
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      SAVED_STATE = JSON.parse(saved);
+      STATE = JSON.parse(JSON.stringify(SAVED_STATE));
+      return;
+    }
+  } catch(e){}
+  SAVED_STATE = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  STATE = JSON.parse(JSON.stringify(DEFAULT_STATE));
+}
+function persistSaved(){
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(SAVED_STATE)); } catch(e){}
+}
+function markDirty(){
+  DIRTY_COUNT = computeDirty();
+  document.getElementById('dirty-bar').classList.toggle('visible', DIRTY_COUNT > 0);
+  document.getElementById('dirty-count').textContent = DIRTY_COUNT;
+}
+function computeDirty(){
+  return JSON.stringify(STATE) === JSON.stringify(SAVED_STATE) ? 0 : countChanges();
+}
+function countChanges(){
+  let c = 0;
+  // Bloqueios: count diffs (added, edited, removed)
+  const sB = SAVED_STATE.bloqueios.map(b=>b.id);
+  const tB = STATE.bloqueios.map(b=>b.id);
+  c += tB.filter(id => !sB.includes(id)).length; // added
+  c += sB.filter(id => !tB.includes(id)).length; // removed
+  for (const sb of SAVED_STATE.bloqueios) {
+    const tb = STATE.bloqueios.find(b=>b.id===sb.id);
+    if (tb && JSON.stringify(tb) !== JSON.stringify(sb)) c++;
+  }
+  // Cobertura
+  if (JSON.stringify(STATE.cobertura) !== JSON.stringify(SAVED_STATE.cobertura)) {
+    c += STATE.cobertura.geral.filter((g,i) => JSON.stringify(g) !== JSON.stringify(SAVED_STATE.cobertura.geral[i])).length;
+    const sE = SAVED_STATE.cobertura.especifica.map(e=>e.id);
+    const tE = STATE.cobertura.especifica.map(e=>e.id);
+    c += tE.filter(id => !sE.includes(id)).length;
+    c += sE.filter(id => !tE.includes(id)).length;
+    for (const se of SAVED_STATE.cobertura.especifica) {
+      const te = STATE.cobertura.especifica.find(e=>e.id===se.id);
+      if (te && JSON.stringify(te) !== JSON.stringify(se)) c++;
+    }
+  }
+  // Estoque mínimo
+  const sM = SAVED_STATE.estoqueMinimo.map(b=>b.id);
+  const tM = STATE.estoqueMinimo.map(b=>b.id);
+  c += tM.filter(id => !sM.includes(id)).length;
+  c += sM.filter(id => !tM.includes(id)).length;
+  for (const sm of SAVED_STATE.estoqueMinimo) {
+    const tm = STATE.estoqueMinimo.find(b=>b.id===sm.id);
+    if (tm && JSON.stringify(tm) !== JSON.stringify(sm)) c++;
+  }
+  // Sazonalidade — count changed months
+  STATE.sazonalidade.OI.forEach((v,i) => { if (Math.abs(v - SAVED_STATE.sazonalidade.OI[i]) > 0.001) c++; });
+  STATE.sazonalidade.PV.forEach((v,i) => { if (Math.abs(v - SAVED_STATE.sazonalidade.PV[i]) > 0.001) c++; });
+  // Capacidades
+  const sC = SAVED_STATE.capacidades.map(b=>b.id);
+  const tC = STATE.capacidades.map(b=>b.id);
+  c += tC.filter(id => !sC.includes(id)).length;
+  c += sC.filter(id => !tC.includes(id)).length;
+  return c;
+}
+
+function saveChanges(){
+  SAVED_STATE = JSON.parse(JSON.stringify(STATE));
+  persistSaved();
+  markDirty();
+  // pulse the badge
+  const bar = document.getElementById('dirty-bar');
+  bar.style.background = 'var(--musgo-bg)';
+  bar.querySelector('.info').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12L10 17L20 7"/></svg> <span>Alterações salvas</span>';
+  bar.querySelector('.info').style.color = 'var(--musgo)';
+  setTimeout(() => { bar.style.background=''; bar.querySelector('.info').style.color=''; markDirty(); renderAll(); }, 1500);
+}
+function discardChanges(){
+  if (DIRTY_COUNT === 0) return;
+  if (!confirm('Descartar todas as ' + DIRTY_COUNT + ' alterações pendentes?')) return;
+  STATE = JSON.parse(JSON.stringify(SAVED_STATE));
+  markDirty();
+  renderAll();
+}
+function confirmNav(url){
+  if (DIRTY_COUNT > 0 && !confirm('Você tem ' + DIRTY_COUNT + ' alterações não salvas. Sair sem salvar?')) return;
+  location.href = url;
+}
+
+// ===== RENDER =====
+function renderBloqueios(){
+  const tb = document.getElementById('tbl-bloqueios');
+  tb.innerHTML = STATE.bloqueios.map((b,idx) => {
+    const orig = SAVED_STATE.bloqueios.find(o=>o.id===b.id);
+    const isDirty = !orig || JSON.stringify(orig) !== JSON.stringify(b);
+    return `<tr class="${isDirty?'dirty':''}">
+      <td><input class="inline" type="text" value="${escapeHtml(b.name)}" onchange="updateBloqueio(${idx},'name',this.value)"></td>
+      <td><select class="inline" onchange="updateBloqueio(${idx},'type',this.value)"><option value="Delivery"${b.type==='Delivery'?' selected':''}>Entrega</option><option value="Purchase"${b.type==='Purchase'?' selected':''}>Compra</option></select></td>
+      <td><input class="inline" type="date" value="${b.startDate}" onchange="updateBloqueio(${idx},'startDate',this.value)"></td>
+      <td>${b.updateDate}</td>
+      <td><div class="row-actions"><button class="icon-btn del" title="Excluir" onclick="deleteBloqueio(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6H21"/><path d="M8 6V4A2 2 0 0110 2H14A2 2 0 0116 4V6"/><path d="M19 6L18 20A2 2 0 0116 22H8A2 2 0 016 20L5 6"/></svg></button></div></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('badge-bloqueios').textContent = STATE.bloqueios.length + ' ativos';
+  const dlv = STATE.bloqueios.filter(b=>b.type==='Delivery').length;
+  const prc = STATE.bloqueios.filter(b=>b.type==='Purchase').length;
+  document.getElementById('cnt-bloqueios').textContent = STATE.bloqueios.length;
+  document.getElementById('cnt-bloqueios-desc').textContent = dlv + ' entrega · ' + prc + ' compra';
+}
+function updateBloqueio(idx, field, value){
+  STATE.bloqueios[idx][field] = value;
+  STATE.bloqueios[idx].updateDate = nowStr();
+  markDirty();
+  renderBloqueios();
+}
+function deleteBloqueio(idx){
+  if (!confirm('Excluir "' + STATE.bloqueios[idx].name + '"?')) return;
+  STATE.bloqueios.splice(idx,1);
+  markDirty();
+  renderBloqueios();
+}
+function saveBloqueio(){
+  const name = document.getElementById('mb-name').value.trim();
+  if (!name) { alert('Informe o nome'); return; }
+  STATE.bloqueios.unshift({
+    id: nextId('bloqueios'),
+    name,
+    type: document.getElementById('mb-type').value,
+    startDate: document.getElementById('mb-start').value || todayISO(),
+    updateDate: nowStr()
+  });
+  markDirty();
+  renderBloqueios();
+  closeModal('bloqueio');
+  document.getElementById('mb-name').value = '';
+}
+
+function renderCobertura(){
+  // Geral
+  const g = document.getElementById('cov-geral');
+  g.innerHTML = STATE.cobertura.geral.map((c,i) => {
+    const orig = SAVED_STATE.cobertura.geral[i];
+    const dirty = orig && (orig.min!==c.min || orig.max!==c.max);
+    return `<div class="cov-row" ${dirty?'style="background:rgba(232,200,113,0.1);border-radius:4px"':''}>
+      <span class="name">${c.channel}</span>
+      <input class="inline num" type="number" min="0" value="${c.min}" onchange="updateCobGeral(${i},'min',+this.value)">
+      <span class="sep">—</span>
+      <input class="inline num" type="number" min="0" value="${c.max}" onchange="updateCobGeral(${i},'max',+this.value)">
+    </div>`;
+  }).join('');
+
+  // Específica
+  const e = document.getElementById('cov-esp');
+  e.innerHTML = STATE.cobertura.especifica.length
+    ? STATE.cobertura.especifica.map((c,i) => {
+        const orig = SAVED_STATE.cobertura.especifica.find(o=>o.id===c.id);
+        const dirty = !orig || JSON.stringify(orig) !== JSON.stringify(c);
+        return `<div class="cov-row" ${dirty?'style="background:rgba(232,200,113,0.1);border-radius:4px"':''} data-row="${c.id}">
+          <input class="inline" type="text" value="${escapeHtml(c.nc)}" onchange="updateCobEsp(${i},'nc',this.value)" style="font-family:Inter,sans-serif;font-size:12px">
+          <input class="inline num" type="number" min="0" value="${c.min}" onchange="updateCobEsp(${i},'min',+this.value)">
+          <span class="sep">—</span>
+          <input class="inline num" type="number" min="0" value="${c.max}" onchange="updateCobEsp(${i},'max',+this.value)">
+          <button class="icon-btn del" style="margin-left:4px" onclick="deleteCobEsp(${i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6H21"/><path d="M8 6V4A2 2 0 0110 2H14A2 2 0 0116 4V6"/><path d="M19 6L18 20A2 2 0 0116 22H8A2 2 0 016 20L5 6"/></svg></button>
+        </div>`;
+      }).join('')
+    : '<div style="font-size:11px;color:var(--ink-4);padding:8px;font-style:italic">Nenhuma cobertura específica.</div>';
+  document.getElementById('cnt-cob-esp').textContent = STATE.cobertura.especifica.length;
+  document.getElementById('cnt-cob-esp2').textContent = STATE.cobertura.especifica.length;
+}
+function updateCobGeral(i, field, value){ STATE.cobertura.geral[i][field] = value; markDirty(); renderCobertura(); }
+function updateCobEsp(i, field, value){ STATE.cobertura.especifica[i][field] = value; markDirty(); renderCobertura(); }
+function deleteCobEsp(i){
+  if (!confirm('Excluir "' + STATE.cobertura.especifica[i].nc + '"?')) return;
+  STATE.cobertura.especifica.splice(i,1); markDirty(); renderCobertura();
+}
+function saveCobertura(){
+  const nc = document.getElementById('mc-nc').value.trim();
+  if (!nc) { alert('Informe o NC'); return; }
+  STATE.cobertura.especifica.push({
+    id: nextId('cobesp'),
+    nc,
+    min: +document.getElementById('mc-min').value,
+    max: +document.getElementById('mc-max').value
+  });
+  markDirty(); renderCobertura(); closeModal('cobertura-esp');
+  document.getElementById('mc-nc').value = '';
+}
+
+function renderEmin(){
+  const tb = document.getElementById('tbl-emin');
+  tb.innerHTML = STATE.estoqueMinimo.map((m,idx) => {
+    const orig = SAVED_STATE.estoqueMinimo.find(o=>o.id===m.id);
+    const dirty = !orig || JSON.stringify(orig) !== JSON.stringify(m);
+    return `<tr class="${dirty?'dirty':''}">
+      <td><input class="inline" type="text" value="${escapeHtml(m.name)}" onchange="updateEmin(${idx},'name',this.value)"></td>
+      <td><input class="inline" type="text" value="${escapeHtml(m.desc)}" onchange="updateEmin(${idx},'desc',this.value)"></td>
+      <td><input class="inline" type="date" value="${m.start}" onchange="updateEmin(${idx},'start',this.value)"></td>
+      <td><input class="inline" type="date" value="${m.end}" onchange="updateEmin(${idx},'end',this.value)"></td>
+      <td><div class="row-actions"><button class="icon-btn del" title="Excluir" onclick="deleteEmin(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6H21"/><path d="M8 6V4A2 2 0 0110 2H14A2 2 0 0116 4V6"/><path d="M19 6L18 20A2 2 0 0116 22H8A2 2 0 016 20L5 6"/></svg></button></div></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('badge-emin').textContent = STATE.estoqueMinimo.length + ' regras ativas';
+  document.getElementById('cnt-emin').textContent = STATE.estoqueMinimo.length;
+}
+function updateEmin(idx, field, value){ STATE.estoqueMinimo[idx][field] = value; markDirty(); renderEmin(); }
+function deleteEmin(idx){
+  if (!confirm('Excluir "' + STATE.estoqueMinimo[idx].name + '"?')) return;
+  STATE.estoqueMinimo.splice(idx,1); markDirty(); renderEmin();
+}
+function saveEmin(){
+  const name = document.getElementById('me-name').value.trim();
+  if (!name) { alert('Informe o nome'); return; }
+  STATE.estoqueMinimo.unshift({
+    id: nextId('emin'),
+    name,
+    desc: document.getElementById('me-desc').value,
+    start: document.getElementById('me-start').value || todayISO(),
+    end: document.getElementById('me-end').value || todayISO()
+  });
+  markDirty(); renderEmin(); closeModal('emin');
+  document.getElementById('me-name').value = '';
+  document.getElementById('me-desc').value = '';
+}
+
+function renderSazonalidade(){
+  const renderCol = (elId, totalId, dados, peakMonths, savedDados) => {
+    const max = Math.max(...dados);
+    const min = Math.min(...dados);
+    const html = dados.map((pct, i) => {
+      const dirty = Math.abs(pct - savedDados[i]) > 0.001;
+      const isPeak = peakMonths.includes(MESES[i]);
+      const isVale = pct === min;
+      const cls = isPeak ? 'peak' : (isVale ? 'vale' : '');
+      return `<div class="sz-row ${cls}" ${dirty?'style="background:rgba(232,200,113,0.1);border-radius:4px;margin:0 -4px;padding:4px"':''}>
+        <span class="month">${MESES[i]}</span>
+        <div class="bar"><div class="fill" style="width:${(pct/max)*100}%"></div></div>
+        <input class="inline num" type="number" step="0.01" min="0" max="100" value="${pct.toFixed(2)}" onchange="updateSz('${elId.includes('oi')?'OI':'PV'}',${i},+this.value)">
+      </div>`;
+    }).join('');
+    document.getElementById(elId).innerHTML = html;
+    const sum = dados.reduce((a,b)=>a+b,0);
+    const totEl = document.getElementById(totalId);
+    totEl.classList.toggle('warn', Math.abs(sum-100) > 0.5);
+    totEl.querySelector('.v').textContent = sum.toFixed(2).replace('.',',') + '%';
+    if (Math.abs(sum-100) > 0.5) {
+      totEl.querySelector('.v').textContent += ' (deveria ser 100)';
+    }
+  };
+  renderCol('sz-oi', 'sz-oi-total', STATE.sazonalidade.OI, ['Junho','Julho'], SAVED_STATE.sazonalidade.OI);
+  renderCol('sz-pv', 'sz-pv-total', STATE.sazonalidade.PV, ['Outubro','Dezembro'], SAVED_STATE.sazonalidade.PV);
+}
+function updateSz(col, i, value){ STATE.sazonalidade[col][i] = value; markDirty(); renderSazonalidade(); }
+function resetSeasonality(){
+  if (!confirm('Restaurar Sazonalidade aos valores originais do ROI?')) return;
+  STATE.sazonalidade = JSON.parse(JSON.stringify(DEFAULT_STATE.sazonalidade));
+  markDirty(); renderSazonalidade();
+}
+
+function renderCapacidades(){
+  const c = document.getElementById('cap-content');
+  if (!STATE.capacidades.length) {
+    c.innerHTML = `<div class="empty-state">
+      <div class="icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10H21"/><path d="M8 6V4"/><path d="M16 6V4"/></svg></div>
+      <h4>Nenhuma capacidade cadastrada ainda</h4>
+      <p>Cada regra define <strong>DV</strong> (idade média), <strong>Profundidade</strong> (qtd por SKU) e <strong>Volumetria</strong> (total), com mínimo e máximo, por (Loja × Categoria).</p>
+      <button class="btn primary" onclick="openModal('capacidade')" style="padding:8px 16px;font-size:13px;border-radius:6px;background:var(--brand-bordo);color:#fff;border:1px solid var(--brand-bordo);cursor:pointer">+ Nova capacidade</button>
+    </div>`;
+  } else {
+    c.innerHTML = `<table class="ptable">
+      <thead><tr><th>Loja</th><th>Categoria</th><th>DV (min-max)</th><th>Profund. (min-max)</th><th>Vol. (min-max)</th><th style="text-align:right">Ações</th></tr></thead>
+      <tbody>${STATE.capacidades.map((cap,i) => {
+        const orig = SAVED_STATE.capacidades.find(o=>o.id===cap.id);
+        const dirty = !orig;
+        return `<tr class="${dirty?'dirty':''}">
+          <td>${cap.loja}</td>
+          <td>${cap.categoria}</td>
+          <td>${cap.dv_min} — ${cap.dv_max}</td>
+          <td>${cap.pf_min} — ${cap.pf_max}</td>
+          <td>${cap.vol_min} — ${cap.vol_max}</td>
+          <td><div class="row-actions"><button class="icon-btn del" onclick="deleteCap(${i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6H21"/><path d="M8 6V4A2 2 0 0110 2H14A2 2 0 0116 4V6"/><path d="M19 6L18 20A2 2 0 0116 22H8A2 2 0 016 20L5 6"/></svg></button></div></td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+  }
+  document.getElementById('badge-cap').textContent = STATE.capacidades.length + ' cadastrada' + (STATE.capacidades.length===1?'':'s');
+  document.getElementById('cnt-cap').textContent = STATE.capacidades.length;
+  document.getElementById('cnt-cap-desc').textContent = STATE.capacidades.length ? 'cadastradas' : 'em construção';
+}
+function deleteCap(i){
+  if (!confirm('Excluir capacidade?')) return;
+  STATE.capacidades.splice(i,1); markDirty(); renderCapacidades();
+}
+function saveCapacidade(){
+  STATE.capacidades.unshift({
+    id: nextId('cap'),
+    loja: document.getElementById('mcap-loja').value,
+    categoria: document.getElementById('mcap-cat').value || '—',
+    dv_min: +document.getElementById('mcap-dv-min').value,
+    dv_max: +document.getElementById('mcap-dv-max').value,
+    pf_min: +document.getElementById('mcap-pf-min').value,
+    pf_max: +document.getElementById('mcap-pf-max').value,
+    vol_min: +document.getElementById('mcap-vol-min').value,
+    vol_max: +document.getElementById('mcap-vol-max').value
+  });
+  markDirty(); renderCapacidades(); closeModal('capacidade');
+}
+
+function renderActivity(){
+  const items = [
+    {who:'Cassia Barros', what:'Editou', target:'Capacidades das lojas', when:'06/05 19:34'},
+    {who:'Cassia Barros', what:'Editou', target:'Sazonalidade · Coleção Outono/Inverno', when:'06/05 19:30'},
+    {who:'Cassia Barros', what:'Editou', target:'Sazonalidade · Coleção Primavera/Verão', when:'06/05 19:24'},
+    {who:'Cassia Barros', what:'Editou', target:'Sazonalidade · Coleção', when:'06/05 19:23'},
+    {who:'Evelyn Gheller', what:'Editou', target:'Bloqueio · Devolução de Maio', when:'06/05 17:16'},
+    {who:'Evelyn Gheller', what:'Editou', target:'Bloqueio · COLEÇÃO INVERNO2026', when:'06/05 13:30'}
+  ];
+  document.getElementById('activity-list').innerHTML = items.map(a => `
+    <div class="act-item">
+      <div class="who">${a.who}</div>
+      <div class="what">${a.what} <span class="target">${a.target}</span></div>
+      <div class="when">${a.when}</div>
+    </div>`).join('');
+}
+
+function renderAll(){
+  renderBloqueios();
+  renderCobertura();
+  renderEmin();
+  renderSazonalidade();
+  renderCapacidades();
+  // KPIs
+  const total = STATE.bloqueios.length + 2 + STATE.cobertura.especifica.length + STATE.estoqueMinimo.length + 2 + STATE.capacidades.length;
+  document.getElementById('kpi-total').textContent = total;
+  document.getElementById('kpi-empty').textContent = STATE.capacidades.length === 0 ? 1 : 0;
+}
+
+// Helpers
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function nowStr(){ const d=new Date(); return d.toISOString().slice(0,10).split('-').reverse().join('/') + ' ' + d.toTimeString().slice(0,5); }
+function nextId(prefix){ return Date.now() + Math.floor(Math.random()*1000); }
+
+function toggleSection(id){ document.getElementById('sec-'+id).classList.toggle('open'); }
+function openSection(id){
+  document.getElementById('sec-'+id).classList.add('open');
+  document.getElementById('sec-'+id).scrollIntoView({behavior:'smooth', block:'start'});
+}
+function openModal(id){ document.getElementById('modal-'+id).classList.add('open'); }
+function closeModal(id){ document.getElementById('modal-'+id).classList.remove('open'); }
+
+window.addEventListener('beforeunload', (e) => {
+  if (DIRTY_COUNT > 0) { e.preventDefault(); e.returnValue = ''; }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadState();
+  renderAll();
+  renderActivity();
+  markDirty();
+});
+</script>
+<script>
+// === Caminho B: parâmetros editáveis — write-back via /api/edit-file no anselmi-pcp ===
+// Por enquanto, persiste em localStorage (ver TODO no doc). Badge explicita o modo.
+(async () => {
+  const badge = document.createElement('span');
+  badge.id = 'hdr-sync';
+  badge.style.cssText = 'position:fixed;top:8px;right:12px;font:500 11px/1.2 Inter,sans-serif;color:#a86d1f;background:rgba(245,241,234,.92);padding:4px 10px;border-radius:99px;z-index:9999;letter-spacing:.02em;border:1px solid rgba(0,0,0,.06);';
+  document.body.appendChild(badge);
+  // Tenta puxar o estado canônico do repo (params-state.json não é gzipado)
+  try {
+    const r = await fetch('https://anselmi-producao.pages.dev/data/volution/params-state.json', { cache:'no-store' });
+    if (r.ok) {
+      const state = await r.json();
+      const ts = state.exported_at ? new Date(state.exported_at) : null;
+      if (ts) {
+        const dd = String(ts.getDate()).padStart(2,'0');
+        const mm = String(ts.getMonth()+1).padStart(2,'0');
+        const hh = String(ts.getHours()).padStart(2,'0');
+        const mi = String(ts.getMinutes()).padStart(2,'0');
+        badge.textContent = 'Última sync · ' + dd + '/' + mm + ' · ' + hh + ':' + mi;
+        badge.style.color = 'var(--bordo, #5D2A2C)';
+      } else {
+        badge.textContent = 'Sincronizado com repo';
+      }
+      // Hidrata localStorage com state remoto (a UI já lê de localStorage)
+      if (state.params) localStorage.setItem('roi_params_state_v1', JSON.stringify(state.params));
+      return;
+    }
+    throw new Error('HTTP ' + r.status);
+  } catch (e) {
+    badge.textContent = 'Modo demo · localStorage';
+  }
+})();
+</script>
+</body>
+</html>

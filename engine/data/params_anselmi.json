@@ -1,0 +1,147 @@
+{
+  "_meta": {
+    "fonte": "ROI Volution / endpoints API + DOM scraping",
+    "captura": "2026-05-06",
+    "auth": "Header Authorization: Bearer <jwt> + CompanyId: 1173"
+  },
+
+  "cobertura": {
+    "_endpoints": {
+      "geral": "GET /api/generalcoverages/general",
+      "especifica": "POST /api/specificCoverages body=\"{}\"",
+      "lojas_especificas": "(vazio na Anselmi)",
+      "excecoes": "(vazio na Anselmi)",
+      "variacoes": "POST /api/variationcoverages body=\"{}\""
+    },
+    "geral": {
+      "e_commerce": { "min": 8, "max": 20 },
+      "loja_fisica": { "min": 2, "max": 4 }
+    },
+    "especifica": [
+      {
+        "id": 449,
+        "tipologia": "Anselmi",
+        "combinacao": "Anselmi · OUTONO/INVERNO · 2026",
+        "combinationId": 34060,
+        "min": 3,
+        "max": 6
+      }
+    ],
+    "lojas_especificas": [],
+    "excecoes": [],
+    "variacoes": []
+  },
+
+  "sazonalidade": {
+    "_endpoints": {
+      "lista": "POST /api/Seasonalities/Query body=\"{\\\"first\\\":0,\\\"size\\\":50}\"",
+      "header": "GET /api/Seasonalities/{id}",
+      "detalhe_mensal": "GET /api/seasonalities/{id}/Data"
+    },
+    "_obs": "2 Sazonalidades ativas — Cassia Barros recriou hoje 06/05 às 19:24 e 19:30 (eram 6 antes). Ambas filtram por ProductClassificationLevel5. Cada uma tem 12 valores mensais que somam 100%. Quantidades históricas confirmam: O/I total ~170K unid de venda histórica, P/V ~95K — Anselmi vende quase 2x mais em outono/inverno.",
+
+    "outono_inverno": {
+      "id": 71,
+      "name": "Coleção Outono/Inverno",
+      "startDate": "2026-01-01",
+      "endDate": "2026-12-31",
+      "filter": "ProductClassificationLevel5 = OUTONO / INVERNO",
+      "soma_pct": 100.02,
+      "soma_qtd_historica": 170849,
+      "meses": [
+        { "mes": "Janeiro",   "period": 1,  "pct_atual": 8.47,  "pct_anterior": 8.47,  "qtd_historica": 14488 },
+        { "mes": "Fevereiro", "period": 2,  "pct_atual": 4.51,  "pct_anterior": 4.51,  "qtd_historica": 7707 },
+        { "mes": "Março",     "period": 3,  "pct_atual": 3.85,  "pct_anterior": 3.85,  "qtd_historica": 6577 },
+        { "mes": "Abril",     "period": 4,  "pct_atual": 7.03,  "pct_anterior": 7.03,  "qtd_historica": 12022 },
+        { "mes": "Maio",      "period": 5,  "pct_atual": 11.43, "pct_anterior": 11.43, "qtd_historica": 19529 },
+        { "mes": "Junho",     "period": 6,  "pct_atual": 14.44, "pct_anterior": 14.44, "qtd_historica": 24664 },
+        { "mes": "Julho",     "period": 7,  "pct_atual": 14.06, "pct_anterior": 14.06, "qtd_historica": 24021 },
+        { "mes": "Agosto",    "period": 8,  "pct_atual": 7.69,  "pct_anterior": 7.69,  "qtd_historica": 13127 },
+        { "mes": "Setembro",  "period": 9,  "pct_atual": 5.00,  "pct_anterior": 5.00,  "qtd_historica": 8543 },
+        { "mes": "Outubro",   "period": 10, "pct_atual": 4.91,  "pct_anterior": 4.91,  "qtd_historica": 8385 },
+        { "mes": "Novembro",  "period": 11, "pct_atual": 7.22,  "pct_anterior": 7.22,  "qtd_historica": 12333 },
+        { "mes": "Dezembro",  "period": 12, "pct_atual": 11.41, "pct_anterior": 11.41, "qtd_historica": 19453 }
+      ],
+      "_pico": "Junho (14,44%) e Julho (14,06%) — meio do inverno BR",
+      "_vale": "Março (3,85%)"
+    },
+
+    "primavera_verao": {
+      "id": 75,
+      "name": "Coleção Primavera/Verão",
+      "startDate": "2026-01-01",
+      "endDate": "2026-12-31",
+      "filter": "ProductClassificationLevel5 = PRIMAVERA / VERÃO",
+      "soma_pct": 99.99,
+      "soma_qtd_historica": 95485,
+      "meses": [
+        { "mes": "Janeiro",   "period": 1,  "pct_atual": 4.51,  "pct_anterior": 4.51,  "qtd_historica": 4308 },
+        { "mes": "Fevereiro", "period": 2,  "pct_atual": 4.24,  "pct_anterior": 4.24,  "qtd_historica": 4049 },
+        { "mes": "Março",     "period": 3,  "pct_atual": 5.73,  "pct_anterior": 5.73,  "qtd_historica": 5472 },
+        { "mes": "Abril",     "period": 4,  "pct_atual": 7.90,  "pct_anterior": 7.90,  "qtd_historica": 7543 },
+        { "mes": "Maio",      "period": 5,  "pct_atual": 10.19, "pct_anterior": 10.19, "qtd_historica": 9725 },
+        { "mes": "Junho",     "period": 6,  "pct_atual": 7.84,  "pct_anterior": 7.84,  "qtd_historica": 7483 },
+        { "mes": "Julho",     "period": 7,  "pct_atual": 7.81,  "pct_anterior": 7.81,  "qtd_historica": 7456 },
+        { "mes": "Agosto",    "period": 8,  "pct_atual": 9.37,  "pct_anterior": 9.37,  "qtd_historica": 8940 },
+        { "mes": "Setembro",  "period": 9,  "pct_atual": 10.28, "pct_anterior": 10.28, "qtd_historica": 9807 },
+        { "mes": "Outubro",   "period": 10, "pct_atual": 10.58, "pct_anterior": 10.58, "qtd_historica": 10100 },
+        { "mes": "Novembro",  "period": 11, "pct_atual": 9.75,  "pct_anterior": 9.75,  "qtd_historica": 9304 },
+        { "mes": "Dezembro",  "period": 12, "pct_atual": 11.79, "pct_anterior": 11.79, "qtd_historica": 11298 }
+      ],
+      "_pico": "Dezembro (11,79%) e Outubro (10,58%) — entrada de verão e Natal",
+      "_vale": "Fevereiro (4,24%)"
+    },
+
+    "_observacao_critica": "Esta sazonalidade POR COLEÇÃO é DIFERENTE da curva 53-semanas de /curves-report (essa é agregada/global, soma 100,04%). O motor de Excesso/Compras provavelmente usa a curva DA COLEÇÃO do produto (resolvida via ProductClassificationLevel5). Para o clone, isso simplifica MUITO: 24 valores mensais (12+12) em vez de 53 semanais e a granularidade mensal já é suficiente."
+  },
+
+  "estoque_minimo": {
+    "_total": 25,
+    "_obs": "Lista completa capturada via DOM com scroll programático. Produtivo+Exposição por SKU×Tamanho×Loja só são acessíveis via UI individualmente. IDs vão de 2475 a 2598 (intervalo de ~1 mês de cadastros).",
+    "regras_ativas": [
+      { "id": 2475, "name": "Geral (vendas 30 dias)", "description": "Ref. diferentes das: 029856 046125 046667 046531 028871 011739", "data_inicio": "20/04/2026", "data_fim": "16/05/2026" },
+      { "id": 2479, "name": "Faria Lima 22/04 até 20/05 (após estoque sobre venda)", "description": "Solicitação de Reforço Gerente", "data_inicio": "22/04/2026", "data_fim": "22/05/2026" },
+      { "id": 2533, "name": "Dia das Mães", "description": "27/ de Abril", "data_inicio": "26/04/2026", "data_fim": "09/05/2026" },
+      { "id": 2537, "name": "Dia das mães - Cashmere", "description": "27 de Abril", "data_inicio": "26/04/2026", "data_fim": "30/05/2026" },
+      { "id": 2547, "name": "Faria Lima - 14/04 - Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "18/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2549, "name": "JK 20/04 - Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "20/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2554, "name": "Alphaville 14/04 - Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "18/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2556, "name": "Campinas 14/04 - Sisplan", "description": "Estoque Mínimo Dias das Mães", "data_inicio": "18/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2558, "name": "Catarina Outlet 20/04 - Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "20/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2560, "name": "Higienopolis 14/04 - Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "18/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2562, "name": "Morumbi 14/04 - sisplan", "description": "Estoque mínimo Dia das Mães", "data_inicio": "18/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2564, "name": "Barigui 20/04 - Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "20/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2566, "name": "Curitiba 20/04 - Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "20/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2568, "name": "Rio de Janeiro 20/04 - Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "20/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2572, "name": "BH Belvedere 15/04 - Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "18/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2574, "name": "Diamond 20/04 - Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "20/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2576, "name": "Brasilia 20/04 - Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "20/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2579, "name": "Porto Alegre Barra 20/04 - Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "20/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2581, "name": "VM nº 08", "description": "Entrada 14 de Maio", "data_inicio": "11/05/2026", "data_fim": "30/06/2026" },
+      { "id": 2586, "name": "Tijucas 28/04", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "28/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2588, "name": "Gramado 20/04 - Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "20/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2590, "name": "Balneário 20/04 - Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "20/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2592, "name": "Florianópolis 20/04 - Sisplan", "description": "Estoque Mínimo Dias das Mães", "data_inicio": "20/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2594, "name": "Porto Alegre Iguatemi 20/04 -Sisplan", "description": "Estoque Mínimo Dia das Mães", "data_inicio": "20/04/2026", "data_fim": "30/06/2026" },
+      { "id": 2598, "name": "Leblon 14/04 - Sisplan", "description": "Estoque Mínimo Dias das mães", "data_inicio": "18/04/2026", "data_fim": "30/06/2026" }
+    ],
+    "_padroes_observados": {
+      "23_de_25_sao_dia_das_maes": "Janela 18-20/04/2026 → 30/06/2026, criadas com sufixo 'Sisplan'. Cada uma cobre 1 loja específica.",
+      "tipo_geral": "1 entrada (id 2475 'Geral') que aplica a TODAS as referências EXCETO 6 listadas (029856 046125 046667 046531 028871 011739)",
+      "tipo_evento": "1 entrada VM nº 08 (id 2581) entrada nova de 14 de Maio",
+      "casos_especiais": "Cashmere (id 2537), Faria Lima 22/04 (id 2479) Solicitação de Reforço Gerente"
+    }
+  },
+
+  "capacidades_lojas": {
+    "_endpoint": "POST /api/Capacities/Query body=\"{}\"",
+    "_total": 0,
+    "_obs": "0 cadastradas. Pati + Fê estão alinhando agora (em curso 06/05/2026). Cassia editou Capacidades às 19:34:12 hoje (visível no log Atividade)."
+  },
+
+  "bloqueios_resumo": {
+    "_obs": "Detalhe completo em bloqueios_anselmi.json",
+    "total": 11,
+    "tipos": { "Delivery": 4, "Purchase": 7 }
+  }
+}

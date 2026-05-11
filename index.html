@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anselmi · Análises ROI · Tela Inicial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f5f1ea; --paper-2:#ede7dc; --card:#fbf8f2;
+  --ink:#1a1714; --ink-2:#3d3630; --ink-3:#756b60; --ink-4:#a89c8c;
+  --line:#d9d0c0; --line-2:#c7bca8;
+  --brand-bordo:#5D2A2C; --brand-caramelo:#BB9972; --brand-creme:#F7F1E5;
+  --bordo:#6b1f2a; --bordo-bg:#f2e3e4;
+  --ambar:#a86d1f; --ambar-bg:#f5e8d2;
+  --musgo:#4a5d3a; --musgo-bg:#e6e9db;
+  --r-xs:4px; --r-sm:6px; --r-md:10px;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px;
+  --fs-10:10px; --fs-12:12px; --fs-13:13px; --fs-15:15px; --fs-18:18px; --fs-24:24px; --fs-32:32px;
+  --shadow-sm:0 1px 0 rgba(26,23,20,.04), 0 1px 2px rgba(26,23,20,.04);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:Inter,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:var(--fs-13);line-height:1.4}
+h1,h2,h3,h4{font-family:Lora,Georgia,serif;font-weight:500;color:var(--ink);margin:0}
+a{color:inherit;text-decoration:none}
+
+/* === CHROME === */
+.chrome{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--line)}
+.hdr{display:flex;align-items:center;gap:var(--sp-6);padding:var(--sp-3) var(--sp-6);min-height:64px}
+.hdr-brand{display:flex;align-items:center;gap:var(--sp-4);flex:1}
+.home-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--r-sm);color:var(--ink-3)}
+.home-btn svg{width:18px;height:18px}
+.hdr-logo{display:flex;align-items:center;font-family:Lora,Georgia,serif;font-weight:600;letter-spacing:.04em;font-size:var(--fs-15)}
+.hdr-logo .dot{width:6px;height:6px;border-radius:50%;background:var(--brand-bordo);display:inline-block;margin-left:2px}
+.hdr-meta{display:flex;flex-direction:column;gap:2px;margin-left:var(--sp-3);padding-left:var(--sp-4);border-left:1px solid var(--line)}
+.crumb{font-size:var(--fs-10);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4)}
+.l2{font-family:Lora,Georgia,serif;font-size:var(--fs-15);color:var(--ink-2)}
+.hdr-kpi{display:flex;gap:var(--sp-5)}
+.hdr-stat{display:flex;flex-direction:column}
+.hdr-stat .v{font-family:Lora,Georgia,serif;font-weight:500;font-size:var(--fs-24);line-height:1.1}
+.hdr-stat .l{font-size:var(--fs-10);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);margin-top:2px}
+.hdr-date{font-size:var(--fs-12);color:var(--ink-3);font-variant-numeric:tabular-nums;border:1px solid var(--line);padding:6px 10px;border-radius:var(--r-sm);background:var(--card)}
+
+/* === TAB NAV === */
+.tab-nav{display:flex;gap:0;padding:0 var(--sp-6);border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{padding:10px 14px;font-size:var(--fs-12);color:var(--ink-3);display:flex;align-items:center;gap:6px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tab svg{width:14px;height:14px;opacity:.7}
+.tab:hover{color:var(--ink-2)}
+.tab .ck{font-size:9px;color:var(--ink-4);margin-left:2px}
+
+/* === SECTION === */
+.section-label{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-5) var(--sp-6) var(--sp-3);font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.16em;color:var(--ink-4)}
+.section-label .line{flex:1;height:1px;background:var(--line)}
+
+/* === GRID DE CARDS === */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:var(--sp-3);padding:0 var(--sp-6)}
+.tile{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-4);transition:box-shadow .15s, transform .15s;cursor:pointer;display:flex;flex-direction:column;gap:var(--sp-3);min-height:170px}
+.tile:hover{box-shadow:0 1px 0 rgba(26,23,20,.04), 0 8px 24px -8px rgba(26,23,20,.12);transform:translateY(-1px);border-color:var(--brand-caramelo)}
+.tile-num{position:absolute;top:14px;right:18px;font-family:Lora,Georgia,serif;font-style:italic;color:var(--ink-4);font-size:var(--fs-12);letter-spacing:.05em}
+.tile-icon{width:32px;height:32px;display:grid;place-items:center;color:var(--brand-bordo)}
+.tile-icon svg{width:20px;height:20px}
+.tile-title{font-family:Lora,Georgia,serif;font-size:var(--fs-18);color:var(--ink);margin:0 0 4px}
+.tile-desc{font-size:var(--fs-12);color:var(--ink-3);line-height:1.5;flex:1}
+.tile-foot{display:flex;align-items:flex-end;justify-content:space-between;padding-top:var(--sp-2);border-top:1px solid var(--paper-2)}
+.tile-val{font-family:Lora,Georgia,serif;font-weight:500;font-size:var(--fs-32);color:var(--ink);line-height:1}
+.tile-val.alert{color:var(--bordo)}
+.tile-val.warn{color:var(--ambar)}
+.tile-val.good{color:var(--musgo)}
+.tile-tag{font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.12em;color:var(--ink-4);margin-bottom:2px}
+.tile.disabled{opacity:.5;cursor:not-allowed}
+.tile.disabled:hover{transform:none;box-shadow:var(--shadow-sm);border-color:var(--line)}
+.badge-soon{position:absolute;top:14px;left:18px;background:var(--ambar-bg);color:var(--ambar);font-size:9px;letter-spacing:.1em;padding:2px 6px;border-radius:var(--r-xs);text-transform:uppercase}
+.tile.featured{border-color:var(--brand-bordo);background:var(--brand-creme)}
+
+/* === HERO === */
+.hero{padding:var(--sp-6) var(--sp-6) 0;display:flex;flex-direction:column;gap:6px}
+.hero h1{font-size:var(--fs-32);color:var(--brand-bordo)}
+.hero p{color:var(--ink-3);font-size:var(--fs-13);margin:0;max-width:780px}
+
+footer{padding:var(--sp-6);text-align:center;color:var(--ink-4);font-size:var(--fs-10);margin-top:var(--sp-6)}
+
+@media (max-width:760px){
+  .hdr{flex-wrap:wrap}
+  .hdr-kpi{order:3;width:100%;justify-content:space-between;padding-top:var(--sp-3);border-top:1px solid var(--line)}
+  .hero h1{font-size:var(--fs-24)}
+}
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="hdr">
+    <div class="hdr-brand">
+      <button class="home-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12L12 3L21 12"/><path d="M5 10V20H19V10"/></svg></button>
+      <div class="hdr-logo">ANSELMI<span class="dot"></span></div>
+      <div class="hdr-meta">
+        <div class="crumb">ANÁLISES ROI</div>
+        <div class="l2">Tela Inicial</div>
+      </div>
+    </div>
+    <div class="hdr-kpi">
+      <div class="hdr-stat"><div class="v">2.321</div><div class="l">Linhas</div></div>
+      <div class="hdr-stat"><div class="v">463</div><div class="l">SKUs</div></div>
+      <div class="hdr-stat"><div class="v">21</div><div class="l">Lojas</div></div>
+    </div>
+    <div class="hdr-date">07/05/2026</div>
+  </div>
+  <div class="tab-nav">
+    <div class="tab" style="color:var(--brand-bordo);border-bottom-color:var(--brand-bordo)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/></svg>
+      Visão geral <span class="ck">▾</span>
+    </div>
+    <div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12L9 6L13 10L21 4"/></svg>Relatório de reabastecimento</div>
+    <div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 7H19V19H5V7Z"/></svg>Relatório de excesso de estoque</div>
+    <div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 10L17 10"/><path d="M14 7L17 10L14 13"/></svg>Relatório de transferências</div>
+    <div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8H18L17 18H7L6 8Z"/></svg>Relatório de compras</div>
+    <div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/></svg>Qualidade do estoque</div>
+    <div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>Parâmetros</div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Análises ROI · Anselmi</h1>
+  <p>Painel de análises in-season substituindo o ROI Volution. Reabastecimento, excesso, transferências, compras e qualidade de estoque a partir do mesmo pipeline Sisplan + Oracle do PCP. <b>MVP em construção</b> — Reabastecimento ativo (fórmulas validadas 13/14 vs ROI), demais em fila.</p>
+</div>
+
+<div class="section-label">VISÕES <div class="line"></div></div>
+
+<div class="grid">
+
+  <a class="tile featured" href="reabastecimento.html">
+    <div class="tile-num">01</div>
+    <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12L9 6L13 10L21 4"/><path d="M21 4H17"/><path d="M21 4V8"/></svg></div>
+    <div>
+      <div class="tile-title">Relatório de reabastecimento</div>
+      <div class="tile-desc">Sugestão de envio do CD para as lojas. Formula validada: Pedido = max(0, Estoque ideal − Estoque atual − Recepções).</div>
+    </div>
+    <div class="tile-foot">
+      <div><div class="tile-tag">Pedido sugerido</div><div class="tile-val good">3.641</div></div>
+      <div style="text-align:right"><div class="tile-tag">Linhas</div><div style="font-family:Lora,serif;font-size:var(--fs-15);color:var(--ink)">2.321</div></div>
+    </div>
+  </a>
+
+  <a class="tile featured" href="excesso.html">
+    <div class="tile-num">02</div>
+    <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 7H19V19H5V7Z"/><path d="M9 11H15"/><path d="M9 15H13"/></svg></div>
+    <div>
+      <div class="tile-title">Relatório de excesso de estoque</div>
+      <div class="tile-desc">Sobra projetada em 12, 28 e 53 semanas usando curva sazonal por coleção. R$ 23M sobrará em 12 semanas.</div>
+    </div>
+    <div class="tile-foot">
+      <div><div class="tile-tag">Sobra 12 sem</div><div class="tile-val alert">117K</div></div>
+      <div style="text-align:right"><div class="tile-tag">Custo</div><div style="font-family:Lora,serif;font-size:var(--fs-15);color:var(--bordo)">R$ 23M</div></div>
+    </div>
+  </a>
+
+  <a class="tile featured" href="transferencias.html">
+    <div class="tile-num">03</div>
+    <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 10L17 10"/><path d="M14 7L17 10L14 13"/><path d="M17 14L7 14"/><path d="M10 11L7 14L10 17"/></svg></div>
+    <div>
+      <div class="tile-title">Relatório de transferências</div>
+      <div class="tile-desc">Redistribuição loja → loja. Qtd = min(sobra origem, déficit destino). Apenas 13% das sugestões são aceitas hoje.</div>
+    </div>
+    <div class="tile-foot">
+      <div><div class="tile-tag">Sugestões</div><div class="tile-val">3.766</div></div>
+      <div style="text-align:right"><div class="tile-tag">Aceite ROI</div><div style="font-family:Lora,serif;font-size:var(--fs-15);color:var(--bordo)">13%</div></div>
+    </div>
+  </a>
+
+  <a class="tile featured" href="compras.html">
+    <div class="tile-num">04</div>
+    <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8H18L17 18H7L6 8Z"/><path d="M9 8V5C9 3.9 9.9 3 11 3H13C14.1 3 15 3.9 15 5V8"/></svg></div>
+    <div>
+      <div class="tile-title">Relatório de compras</div>
+      <div class="tile-desc">Sugestão de pedido ao fornecedor. Defaults Anselmi: lead 3 sem · period 4 sem · cob_dep 1 sem.</div>
+    </div>
+    <div class="tile-foot">
+      <div><div class="tile-tag">Pedido ajustado</div><div class="tile-val">12.877</div></div>
+      <div style="text-align:right"><div class="tile-tag">Custo</div><div style="font-family:Lora,serif;font-size:var(--fs-15);color:var(--ink)">R$ 2,76M</div></div>
+    </div>
+  </a>
+
+  <a class="tile featured" href="stock-quality.html">
+    <div class="tile-num">05</div>
+    <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+    <div>
+      <div class="tile-title">Qualidade do estoque</div>
+      <div class="tile-desc">Matriz Idade × Cobertura. 28,5% do estoque hoje classificado como tóxico — R$ 7,07M imobilizado.</div>
+    </div>
+    <div class="tile-foot">
+      <div><div class="tile-tag">Tóxico</div><div class="tile-val alert">28,5%</div></div>
+      <div style="text-align:right"><div class="tile-tag">R$</div><div style="font-family:Lora,serif;font-size:var(--fs-15);color:var(--bordo)">R$ 7,07M</div></div>
+    </div>
+  </a>
+
+  <div class="tile disabled">
+    <span class="badge-soon">Sprint 3</span>
+    <div class="tile-num">06</div>
+    <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12C3 12 6 5 12 5C18 5 21 12 21 12C21 12 18 19 12 19C6 19 3 12 3 12Z"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <div>
+      <div class="tile-title">Bestseller + Cross-sell</div>
+      <div class="tile-desc">Top SKU do mês + produtos com maior co-venda. Alimenta sortimento e merchandising visual.</div>
+    </div>
+    <div class="tile-foot">
+      <div><div class="tile-tag">Top atual</div><div style="font-family:Lora,serif;font-size:var(--fs-18);color:var(--ink);line-height:1.1">CASACO 011739C25</div></div>
+      <div style="text-align:right"><div class="tile-tag">Vendas</div><div style="font-family:Lora,serif;font-size:var(--fs-15);color:var(--musgo)">R$ 64,7K</div></div>
+    </div>
+  </div>
+
+  <a class="tile featured" href="parametros.html">
+    <div class="tile-num">07</div>
+    <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg></div>
+    <div>
+      <div class="tile-title">Parâmetros</div>
+      <div class="tile-desc">Hub central de configuração. Bloqueios, Cobertura, Estoque mínimo, Sazonalidade, Capacidades.</div>
+    </div>
+    <div class="tile-foot">
+      <div><div class="tile-tag">Regras ativas</div><div class="tile-val">38</div></div>
+      <div style="text-align:right"><div class="tile-tag">Categorias</div><div style="font-family:Lora,serif;font-size:var(--fs-15);color:var(--ink)">5</div></div>
+    </div>
+  </a>
+
+  <a class="tile featured" href="centro-empresa.html">
+    <div class="tile-num">08</div>
+    <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22V8"/><path d="M5 12L12 4L19 12"/><path d="M5 22H19"/></svg></div>
+    <div>
+      <div class="tile-title">Centro da empresa</div>
+      <div class="tile-desc">Dashboard executivo. Vendas YTD R$ 43M (+28%), Margem R$ 15,64M (+59%), GMROII 105%, DV 47d.</div>
+    </div>
+    <div class="tile-foot">
+      <div><div class="tile-tag">Vendas YTD</div><div class="tile-val good">R$ 43M</div></div>
+      <div style="text-align:right"><div class="tile-tag">Margem</div><div style="font-family:Lora,serif;font-size:var(--fs-15);color:var(--musgo)">+59%</div></div>
+    </div>
+  </a>
+
+  <a class="tile featured" href="alertas.html">
+    <div class="tile-num">09</div>
+    <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 22H22L12 2Z"/><path d="M12 9V13"/><path d="M12 17V17.01"/></svg></div>
+    <div>
+      <div class="tile-title">Alertas</div>
+      <div class="tile-desc">957 alertas operacionais ativos. Sem Vendas (840), Dados Base (60), Retardamento (57).</div>
+    </div>
+    <div class="tile-foot">
+      <div><div class="tile-tag">Sem Vendas</div><div class="tile-val alert">840</div></div>
+      <div style="text-align:right"><div class="tile-tag">Total</div><div style="font-family:Lora,serif;font-size:var(--fs-15);color:var(--bordo)">957</div></div>
+    </div>
+  </a>
+
+</div>
+
+<footer>
+  Painel ROI Anselmi · construído sobre o pipeline Sisplan + Oracle existente · clone interno do ROI Volution
+</footer>
+
+</body>
+</html>

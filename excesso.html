@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anselmi · Relatório de excesso de estoque</title>
+<script src="lib/data-loader.js"></script>
+<script src="lib/foto-resolver.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f5f1ea; --paper-2:#ede7dc; --card:#fbf8f2;
+  --ink:#1a1714; --ink-2:#3d3630; --ink-3:#756b60; --ink-4:#a89c8c;
+  --line:#d9d0c0; --line-2:#c7bca8;
+  --brand-bordo:#5D2A2C; --brand-caramelo:#BB9972; --brand-creme:#F7F1E5;
+  --bordo:#6b1f2a; --bordo-2:#8a2a38; --bordo-bg:#f2e3e4;
+  --ambar:#a86d1f; --ambar-bg:#f5e8d2;
+  --musgo:#4a5d3a; --musgo-bg:#e6e9db;
+  --r-xs:4px; --r-sm:6px; --r-md:10px; --r-lg:16px;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px;
+  --fs-10:10px; --fs-12:12px; --fs-13:13px; --fs-15:15px; --fs-18:18px; --fs-24:24px; --fs-32:32px;
+  --shadow-sm:0 1px 0 rgba(26,23,20,.04), 0 1px 2px rgba(26,23,20,.04);
+  --shadow-md:0 1px 0 rgba(26,23,20,.04), 0 8px 24px -8px rgba(26,23,20,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:Inter,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:var(--fs-13);line-height:1.4;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:Lora,Georgia,serif;font-weight:500;color:var(--ink);margin:0}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+
+/* === CHROME === */
+.chrome{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--line)}
+.hdr{display:flex;align-items:center;gap:var(--sp-6);padding:var(--sp-3) var(--sp-6);min-height:64px}
+.hdr-brand{display:flex;align-items:center;gap:var(--sp-4);flex:1}
+.home-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--r-sm);color:var(--ink-3)}
+.home-btn:hover{background:var(--paper-2);color:var(--ink)}
+.home-btn svg{width:18px;height:18px}
+.hdr-logo{display:flex;align-items:center;gap:var(--sp-2);font-family:Lora,Georgia,serif;font-weight:600;letter-spacing:.04em;font-size:var(--fs-15)}
+.hdr-logo .dot{width:6px;height:6px;border-radius:50%;background:var(--brand-bordo);display:inline-block;margin-left:2px}
+.hdr-meta{display:flex;flex-direction:column;gap:2px;margin-left:var(--sp-3);padding-left:var(--sp-4);border-left:1px solid var(--line)}
+.crumb{font-size:var(--fs-10);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4)}
+.l2{font-family:Lora,Georgia,serif;font-size:var(--fs-15);color:var(--ink-2)}
+.hdr-kpi{display:flex;gap:var(--sp-5)}
+.hdr-stat{display:flex;flex-direction:column}
+.hdr-stat .v{font-family:Lora,Georgia,serif;font-weight:500;font-size:var(--fs-24);line-height:1.1}
+.hdr-stat .l{font-size:var(--fs-10);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);margin-top:2px}
+.hdr-date{font-size:var(--fs-12);color:var(--ink-3);font-variant-numeric:tabular-nums;border:1px solid var(--line);padding:6px 10px;border-radius:var(--r-sm);background:var(--card)}
+
+/* === TAB NAV === */
+.tab-nav{display:flex;gap:0;padding:0 var(--sp-6);background:var(--paper);border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{display:flex;align-items:center;gap:6px;padding:10px 14px;font-size:var(--fs-12);color:var(--ink-3);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink-2)}
+.tab.active{color:var(--brand-bordo);border-bottom-color:var(--brand-bordo)}
+.tab svg{width:14px;height:14px;opacity:.7}
+
+/* === TOOLBAR === */
+.toolbar{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-4) var(--sp-6);background:var(--paper);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tb-group{display:flex;align-items:center;gap:6px}
+.tb-label{font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-4)}
+.tb-select{font-size:var(--fs-12);padding:6px 10px;border:1px solid var(--line);background:var(--card);border-radius:var(--r-xs);color:var(--ink);min-width:120px}
+.tb-search{flex:1;min-width:180px;display:flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);background:var(--card);border-radius:var(--r-xs)}
+.tb-search input{border:none;outline:none;background:transparent;flex:1;color:var(--ink);font-size:var(--fs-12)}
+.tb-btn{padding:6px 12px;font-size:var(--fs-12);border:1px solid var(--line);background:var(--card);border-radius:var(--r-xs);color:var(--ink-2);cursor:pointer}
+.tb-btn:hover{background:var(--paper-2)}
+.tb-toggle{display:flex;align-items:center;border:1px solid var(--line);border-radius:var(--r-xs);overflow:hidden;background:var(--card)}
+.tb-toggle button{padding:6px 12px;font-size:var(--fs-12);background:transparent;color:var(--ink-3);border:none;cursor:pointer}
+.tb-toggle button.on{background:var(--brand-bordo);color:#fff}
+.tb-toggle button:hover:not(.on){background:var(--paper-2);color:var(--ink-2)}
+.tb-spacer{flex:1}
+
+/* === CONTENT === */
+.content{padding:var(--sp-6) var(--sp-6) 80px;max-width:1500px;margin:0 auto}
+.section-title{font-family:Lora,Georgia,serif;font-size:var(--fs-32);color:var(--brand-bordo);margin-bottom:6px;line-height:1.1}
+.section-sub{font-size:var(--fs-13);color:var(--ink-3);margin-bottom:var(--sp-5);max-width:780px}
+
+/* === Summary toggle (recolher KPI + insights) === */
+.summary-block{margin-bottom:var(--sp-5)}
+.summary-toggle{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);cursor:pointer;font-size:var(--fs-12);color:var(--ink-2);transition:background .12s;width:fit-content}
+.summary-toggle:hover{background:var(--paper-2)}
+.summary-toggle .arr{font-size:10px;color:var(--ink-4);transition:transform .15s}
+.summary-toggle.open .arr{transform:rotate(90deg)}
+.summary-toggle .lbl{font-weight:500;font-family:Lora,Georgia,serif;letter-spacing:.02em}
+.summary-toggle .meta{color:var(--ink-4);font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.1em;margin-left:6px}
+.summary-content{overflow:hidden;max-height:0;transition:max-height .25s ease, margin-top .25s ease;margin-top:0}
+.summary-block.open .summary-content{max-height:2000px;margin-top:var(--sp-3)}
+
+/* === KPI strip — horizontes 12/28/53 sem === */
+.kpi-strip{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-4)}
+.kpi-card{padding:var(--sp-4) var(--sp-5);background:var(--card);border:1px solid var(--line);border-radius:var(--r-md)}
+.kpi-card .lbl{font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.12em;color:var(--ink-4);margin-bottom:8px}
+.kpi-card .val{font-family:Lora,Georgia,serif;font-weight:500;font-size:32px;color:var(--ink);line-height:1.05}
+.kpi-card .sub{font-size:var(--fs-12);color:var(--ink-3);margin-top:6px}
+.kpi-card.alert{background:var(--bordo-bg);border-color:transparent}
+.kpi-card.alert .val,.kpi-card.alert .lbl{color:var(--bordo)}
+.kpi-card.warn{background:var(--ambar-bg);border-color:transparent}
+.kpi-card.warn .val,.kpi-card.warn .lbl{color:var(--ambar)}
+.kpi-card.featured{background:var(--brand-creme);border:2px solid var(--brand-bordo)}
+.kpi-card.featured .val{color:var(--brand-bordo);font-size:36px}
+.kpi-card.featured .lbl{color:var(--brand-bordo)}
+
+/* === Horizon viz (3 horizontes lado a lado) === */
+.horizon{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-4);margin-bottom:var(--sp-5)}
+.h-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-5);position:relative;overflow:hidden}
+.h-card::before{content:'';position:absolute;top:0;left:0;height:4px;width:100%;background:var(--bordo)}
+.h-card.h-1::before{opacity:1}
+.h-card.h-2::before{opacity:0.55}
+.h-card.h-3::before{opacity:0.25}
+.h-title{font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.12em;color:var(--bordo);margin-bottom:6px}
+.h-num{font-family:Lora,Georgia,serif;font-weight:500;font-size:30px;color:var(--ink);line-height:1.1}
+.h-sub{font-size:var(--fs-13);color:var(--ink-3);margin-top:4px}
+.h-bar{margin-top:var(--sp-3);height:6px;background:var(--paper-2);border-radius:999px;overflow:hidden;position:relative}
+.h-bar .fill{position:absolute;top:0;left:0;height:100%;background:var(--bordo);border-radius:999px}
+.h-bar .fill.med{background:var(--ambar)}
+.h-bar .fill.low{background:var(--musgo)}
+.h-info{display:flex;justify-content:space-between;font-size:var(--fs-10);color:var(--ink-4);margin-top:4px}
+
+/* === LIST view === */
+.list-wrap{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;margin-bottom:var(--sp-5)}
+.list-thead, .list-row{display:grid;grid-template-columns:65px 220px 70px 80px 80px 80px 100px 80px 100px 80px 100px 60px 60px 60px;gap:0;padding:10px 14px;font-size:var(--fs-12);align-items:center}
+.list-thead{background:var(--paper-2);font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-4);border-bottom:1px solid var(--line)}
+.list-thead .col{padding:0 6px;display:flex;align-items:center;gap:4px;cursor:pointer}
+.list-thead .col:hover{color:var(--ink-2)}
+.list-row{border-bottom:1px solid var(--paper-2)}
+.list-row:hover{background:var(--paper)}
+.list-row .cell{padding:0 6px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.list-row .cell.num{text-align:right}
+.list-row .cell.dim{font-family:Lora,Georgia,serif;color:var(--ink)}
+.list-row .cell .ref{font-size:var(--fs-10);color:var(--ink-4);letter-spacing:.05em;font-family:Inter,sans-serif}
+.list-row .cell .neg{color:var(--bordo)}
+.list-row.total{background:var(--paper-2);font-weight:600;color:var(--brand-bordo);border-bottom:2px solid var(--line)}
+.list-row.total .cell{color:var(--brand-bordo)}
+.thumb{width:50px;aspect-ratio:3/4;border-radius:var(--r-xs);background:var(--paper-2);overflow:hidden;display:grid;place-items:center;color:var(--ink-4)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* === CARDS view (compacto, foco no excesso) === */
+.cards-wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:var(--sp-3);margin-bottom:var(--sp-5)}
+.ovs-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:var(--shadow-sm);transition:box-shadow .15s, transform .15s;overflow:hidden;display:flex}
+.ovs-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.ovs-thumb{flex-shrink:0;width:160px;aspect-ratio:3/4;background:var(--paper);display:grid;place-items:center;overflow:hidden}
+.ovs-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.ovs-body{flex:1;padding:var(--sp-4);display:flex;flex-direction:column;gap:8px;min-width:0}
+.ovs-cat{font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.12em;color:var(--ink-4)}
+.ovs-sku{font-family:Lora,Georgia,serif;font-size:var(--fs-15);color:var(--ink);line-height:1.2}
+.ovs-numlojas{font-size:var(--fs-10);color:var(--ink-3);margin-top:-4px}
+.ovs-stock{display:flex;justify-content:space-between;font-size:var(--fs-12);color:var(--ink-3);padding-top:6px;border-top:1px solid var(--paper-2)}
+.ovs-stock .v{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.ovs-horizon{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-size:var(--fs-10);margin-top:auto}
+.ovs-h{padding:6px 8px;background:var(--bordo-bg);border-radius:var(--r-xs);text-align:center}
+.ovs-h.med{background:var(--ambar-bg)}
+.ovs-h.low{background:var(--musgo-bg)}
+.ovs-h .h-lbl{color:var(--bordo);text-transform:uppercase;letter-spacing:.05em;font-size:9px;font-weight:500;margin-bottom:2px}
+.ovs-h.med .h-lbl{color:var(--ambar)}
+.ovs-h.low .h-lbl{color:var(--musgo)}
+.ovs-h .h-v{font-family:Lora,Georgia,serif;font-weight:500;font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}
+.ovs-h .h-r{font-size:9px;color:var(--ink-3);margin-top:1px;font-variant-numeric:tabular-nums}
+
+/* === Insights === */
+.insight-strip{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);margin-bottom:var(--sp-5)}
+.insight-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-4) var(--sp-5);display:flex;gap:var(--sp-4);align-items:flex-start}
+.insight-card .icon{flex-shrink:0;width:40px;height:40px;border-radius:var(--r-sm);display:grid;place-items:center;background:var(--ambar-bg);color:var(--ambar)}
+.insight-card.alert .icon{background:var(--bordo-bg);color:var(--bordo)}
+.insight-card .body h3{font-family:Lora,Georgia,serif;font-size:var(--fs-15);color:var(--ink);font-weight:500;margin-bottom:4px;line-height:1.3}
+.insight-card .body p{font-size:var(--fs-12);color:var(--ink-3);line-height:1.55;margin:0}
+.insight-card .body strong{color:var(--ink)}
+
+@media (max-width:1100px){
+  .kpi-strip{grid-template-columns:1fr 1fr}
+  .horizon{grid-template-columns:1fr}
+  .list-thead, .list-row{grid-template-columns:50px 180px 60px 70px 80px 90px 80px 90px}
+  .list-thead .col:nth-child(n+9), .list-row .cell:nth-child(n+9){display:none}
+  .insight-strip{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .hdr{flex-wrap:wrap}
+  .hdr-kpi{order:3;width:100%;justify-content:space-between;padding-top:var(--sp-3);border-top:1px solid var(--line)}
+  .hdr-meta{display:none}
+  .list-wrap{display:none}
+  .content{padding:var(--sp-4)}
+}
+</style>
+</head>
+<body>
+
+<!-- ==== CHROME ==== -->
+<div class="chrome">
+  <div class="hdr">
+    <div class="hdr-brand">
+      <button class="home-btn" onclick="location.href='index.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12L12 3L21 12"/><path d="M5 10V20H19V10"/><path d="M9 20V14H15V20"/></svg>
+      </button>
+      <div class="hdr-logo">ANSELMI<span class="dot"></span></div>
+      <div class="hdr-meta">
+        <div class="crumb">IN-SEASON · RELATÓRIOS</div>
+        <div class="l2">Relatório de excesso de estoque</div>
+      </div>
+    </div>
+    <div class="hdr-kpi">
+      <div class="hdr-stat"><div class="v" style="color:var(--bordo)">R$ 23M</div><div class="l">Sobra 12 sem</div></div>
+      <div class="hdr-stat"><div class="v">117K</div><div class="l">Unid 12 sem</div></div>
+      <div class="hdr-stat"><div class="v">3.667</div><div class="l">SKUs</div></div>
+    </div>
+    <div class="hdr-date">07/05/2026</div>
+  </div>
+  <div class="tab-nav">
+    <div class="tab" onclick="location.href='index.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg>
+      Visão geral
+    </div>
+    <div class="tab" onclick="location.href='reabastecimento.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12L9 6L13 10L21 4"/></svg>
+      Relatório de reabastecimento
+    </div>
+    <div class="tab active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 7H19V19H5V7Z"/><path d="M9 11H15"/><path d="M9 15H13"/></svg>
+      Relatório de excesso de estoque
+    </div>
+    <div class="tab" onclick="location.href='transferencias.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 10L17 10"/><path d="M14 7L17 10L14 13"/></svg>Relatório de transferências</div>
+    <div class="tab" onclick="location.href='compras.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8H18L17 18H7L6 8Z"/></svg>Relatório de compras</div>
+    <div class="tab" onclick="location.href='stock-quality.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Qualidade do estoque</div>
+    <div class="tab" onclick="location.href='parametros.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>Parâmetros</div>
+    <div class="tab" onclick="location.href='alertas.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 22H22L12 2Z"/><path d="M12 9V13"/><path d="M12 17V17.01"/></svg>Alertas <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--bordo);margin-left:2px"></span></div>
+  </div>
+</div>
+
+<!-- ==== TOOLBAR ==== -->
+<div class="toolbar">
+  <div class="tb-group">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--ink-3)"><path d="M7 4V20"/><path d="M3 8L7 4L11 8"/><path d="M17 4V20"/><path d="M13 16L17 20L21 16"/></svg>
+    <span class="tb-label">Ordenar por</span>
+    <select class="tb-select" id="sort-field" style="min-width:220px">
+      <optgroup label="— Dimensões —">
+        <option value="cat">Código do produto</option>
+        <option value="sku">Código Raiz</option>
+        <option value="cat">Tipologia</option>
+        <option value="cat">Divisão</option>
+        <option value="cat">Marca</option>
+        <option value="cat">Estilo</option>
+        <option value="cat">Coleção</option>
+        <option value="cat">Ano</option>
+        <option value="cat">Grupo</option>
+        <option value="cat">Faixa Etária</option>
+        <option value="sku">Descrição Cor</option>
+        <option value="sku">Referência</option>
+      </optgroup>
+      <optgroup label="— Estoque —">
+        <option value="var">% de variação da projeção (6 semanas)</option>
+        <option value="ea">Estoque atual</option>
+        <option value="ed">Estoque depósito</option>
+      </optgroup>
+      <optgroup label="— Sobra de estoque —">
+        <option value="s12" selected>Sobra de Estoque (12 semanas)</option>
+        <option value="c12">Sobra de estoque a custo (12 semanas)</option>
+        <option value="s28">Sobra de Estoque (28 semanas)</option>
+        <option value="c28">Sobra de estoque a custo (28 semanas)</option>
+        <option value="s53">Sobra de estoque (53 semanas)</option>
+        <option value="c53">Sobra de estoque a custo (53 semanas)</option>
+      </optgroup>
+      <optgroup label="— Recepções —">
+        <option value="rl">Recepções pendentes nas lojas</option>
+        <option value="rd">Recepções pendentes depósito</option>
+      </optgroup>
+      <optgroup label="— Lojas —">
+        <option value="nl">Número de lojas com estoque</option>
+      </optgroup>
+    </select>
+    <div class="tb-toggle" style="margin-left:4px">
+      <button id="sort-asc" onclick="setSortDir('asc')">A–Z</button>
+      <button id="sort-desc" class="on" onclick="setSortDir('desc')">Z–A</button>
+    </div>
+  </div>
+  <div class="tb-group">
+    <span class="tb-label">Categoria</span>
+    <select class="tb-select" id="filter-cat"><option value="">Todas</option></select>
+  </div>
+  <div class="tb-search">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21L16 16"/></svg>
+    <input id="filter-q" placeholder="Buscar referência…">
+  </div>
+  <div class="tb-spacer"></div>
+  <div class="tb-toggle">
+    <button id="view-cards" class="on" onclick="setView('cards')">Cards</button>
+    <button id="view-list" onclick="setView('list')">Lista</button>
+  </div>
+  <button class="tb-btn" onclick="exportCSV()">Export CSV</button>
+</div>
+
+<!-- ==== CONTENT ==== -->
+<div class="content">
+
+  <h1 class="section-title">Relatórios De Excesso De Estoque</h1>
+  <div class="section-sub">Estoque que vai sobrar nos próximos horizontes (12, 28 e 53 semanas) considerando velocidade de venda atual × curva sazonal por coleção. Inclui CD + lojas + recepções pendentes em ambos.</div>
+
+  <!-- Summary block (KPI + horizon + insights) recolhível -->
+  <div class="summary-block" id="summary-block">
+    <button class="summary-toggle" onclick="toggleSummary()" id="summary-toggle">
+      <span class="arr">▶</span>
+      <span class="lbl">Resumo executivo</span>
+      <span class="meta">KPIs + horizontes + insights</span>
+    </button>
+    <div class="summary-content">
+
+  <!-- KPI strip -->
+  <div class="kpi-strip">
+    <div class="kpi-card featured">
+      <div class="lbl">Custo total imobilizado</div>
+      <div class="val">R$ 24,01M</div>
+      <div class="sub">103.020 lojas + 61.619 depósito = 164.639 unid</div>
+    </div>
+    <div class="kpi-card alert">
+      <div class="lbl">Sobra 12 sem</div>
+      <div class="val">R$ 23,02M</div>
+      <div class="sub">117.776 unid · ~96% do total</div>
+    </div>
+    <div class="kpi-card warn">
+      <div class="lbl">Sobra 28 sem</div>
+      <div class="val">R$ 15,06M</div>
+      <div class="sub">76.581 unid · após 7 meses</div>
+    </div>
+    <div class="kpi-card">
+      <div class="lbl">Sobra 53 sem</div>
+      <div class="val">R$ 8,46M</div>
+      <div class="sub">41.898 unid · após 1 ano cheio</div>
+    </div>
+  </div>
+
+  <!-- Horizon visualization -->
+  <div class="horizon">
+    <div class="h-card h-1">
+      <div class="h-title">12 semanas (3 meses)</div>
+      <div class="h-num">117.776 unid</div>
+      <div class="h-sub">R$ 23,02M sobrará após o pico de inverno</div>
+      <div class="h-bar"><div class="fill" style="width:96%"></div></div>
+      <div class="h-info"><span>96% do estoque atual</span><span>R$ 195/unid</span></div>
+    </div>
+    <div class="h-card h-2">
+      <div class="h-title">28 semanas (7 meses)</div>
+      <div class="h-num">76.581 unid</div>
+      <div class="h-sub">R$ 15,06M após Out/26</div>
+      <div class="h-bar"><div class="fill med" style="width:62%"></div></div>
+      <div class="h-info"><span>62% do estoque atual</span><span>R$ 197/unid</span></div>
+    </div>
+    <div class="h-card h-3">
+      <div class="h-title">53 semanas (1 ano)</div>
+      <div class="h-num">41.898 unid</div>
+      <div class="h-sub">R$ 8,46M ainda sem girar</div>
+      <div class="h-bar"><div class="fill low" style="width:34%"></div></div>
+      <div class="h-info"><span>34% do estoque atual</span><span>R$ 202/unid</span></div>
+    </div>
+  </div>
+
+  <!-- Insights -->
+  <div class="insight-strip">
+    <div class="insight-card alert">
+      <div class="icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9V14"/><path d="M12 17.5V18"/><path d="M10.29 3.86L1.82 18A2 2 0 003.55 21H20.45A2 2 0 0022.18 18L13.71 3.86A2 2 0 0010.29 3.86Z"/></svg>
+      </div>
+      <div class="body">
+        <h3>R$ 8,46M ainda sobrará após 1 ano cheio</h3>
+        <p>Mesmo com a curva sazonal trabalhando a favor (pico inverno + pico Natal), <strong>41.898 unidades</strong> não vão girar em 12 meses. Esse é capital imobilizado de alta probabilidade — candidato natural a markdown agressivo, outlet ou liquidação. Filtrar pra horizonte 53 sem revela os SKUs específicos.</p>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17L9 11L13 15L21 7"/><path d="M21 7H17"/><path d="M21 7V11"/></svg>
+      </div>
+      <div class="body">
+        <h3>Velocidade decresce: 14 → 10 → 8 unid/sem</h3>
+        <p>Análise das amostras mostra velocidade implícita <strong>diferente entre janelas 0-12sem / 12-28sem / 28-53sem</strong>. Confirma que ROI usa curva sazonal Anselmi (Out/Inv pico Jun-Jul, Pri/Verão pico Out-Dez) — o motor do clone já tem essa curva calibrada.</p>
+      </div>
+    </div>
+  </div>
+
+    </div><!-- /.summary-content -->
+  </div><!-- /.summary-block -->
+
+  <!-- CARDS view -->
+  <div id="view-cards-wrap" class="cards-wrap"></div>
+
+  <!-- LIST view (default oculta) -->
+  <div id="view-list-wrap" class="list-wrap" style="display:none">
+    <div class="list-thead">
+      <div class="col">Foto</div>
+      <div class="col">Produto</div>
+      <div class="col" style="justify-content:flex-end">% var.</div>
+      <div class="col" style="justify-content:flex-end">EA Lojas</div>
+      <div class="col" style="justify-content:flex-end">EA Depósito</div>
+      <div class="col" style="justify-content:flex-end">Sobra 12s</div>
+      <div class="col" style="justify-content:flex-end">Custo 12s</div>
+      <div class="col" style="justify-content:flex-end">Sobra 28s</div>
+      <div class="col" style="justify-content:flex-end">Custo 28s</div>
+      <div class="col" style="justify-content:flex-end">Sobra 53s</div>
+      <div class="col" style="justify-content:flex-end">Custo 53s</div>
+      <div class="col" style="justify-content:flex-end">Rec L</div>
+      <div class="col" style="justify-content:flex-end">Rec D</div>
+      <div class="col" style="justify-content:flex-end">Lojas</div>
+    </div>
+    <div id="rows"></div>
+  </div>
+
+</div>
+
+<script>
+// === DADOS — extraídos do ROI Volution em 06/05/2026 ===
+// Top 14 SKUs com maior excesso (vista lista do ROI, ordenado por Sobra 12 sem desc)
+// Campos: cat, sku, var (% var projeção 6sem), ea (estoque atual lojas), ed (estoque depósito),
+// s12, c12 (sobra/custo 12 sem), s28, c28, s53, c53, rl (recep lojas), rd (recep depósito), nl (num lojas com estoque)
+
+const PRODUTOS = [
+  {cat:'BLUSA FEM', sku:'011325P39U', preco:419, custo:163.94, var:100, ea:468, ed:288, s12:620, c12:101642.80, s28:458, c28:75084.52, s53:191, c53:31312.54, rl:7, rd:0, nl:21},
+  {cat:'FAIXA DE CABELO', sku:'012947353U', preco:99, custo:32.61, var:100, ea:376, ed:211, s12:455, c12:14837.55, s28:328, c28:10696.08, s53:118, c53:3847.98, rl:7, rd:0, nl:21},
+  {cat:'CALÇA FEM', sku:'046667010G', preco:549, custo:191.49, var:100, ea:261, ed:275, s12:445, c12:85213.05, s28:358, c28:68553.42, s53:213, c53:40787.37, rl:5, rd:0, nl:18},
+  {cat:'JAQUETA FEM', sku:'017240P09U', preco:929, custo:307.13, var:100, ea:213, ed:302, s12:445, c12:136672.85, s28:379, c28:116402.27, s53:201, c53:61733.13, rl:8, rd:0, nl:19},
+  {cat:'CALÇA FEM', sku:'046667C25M', preco:549, custo:191.49, var:100, ea:221, ed:285, s12:440, c12:84255.60, s28:368, c28:70468.32, s53:241, c53:46149.09, rl:6, rd:0, nl:20},
+  {cat:'GOLA', sku:'012886353U', preco:179, custo:67.05, var:100, ea:226, ed:274, s12:426, c12:28563.30, s28:354, c28:23735.70, s53:230, c53:15421.50, rl:4, rd:0, nl:17},
+  {cat:'CALÇA FEM', sku:'046667010M', preco:549, custo:191.49, var:100, ea:236, ed:422, s12:426, c12:81574.74, s28:205, c28:39255.45, s53:0, c53:0, rl:9, rd:0, nl:20},
+  {cat:'CASACO FEM', sku:'011739B79U', preco:679, custo:221.28, var:100, ea:198, ed:265, s12:412, c12:91167.36, s28:340, c28:75235.20, s53:188, c53:41600.64, rl:5, rd:0, nl:18},
+  {cat:'BLUSA FEM', sku:'010974B79M', preco:419, custo:155.00, var:100, ea:184, ed:228, s12:380, c12:58900.00, s28:309, c28:47895.00, s53:152, c53:23560.00, rl:6, rd:0, nl:18},
+  {cat:'CASACO FEM', sku:'011739E42U', preco:679, custo:221.28, var:100, ea:189, ed:222, s12:368, c12:81431.04, s28:299, c28:66162.72, s53:158, c53:34962.24, rl:7, rd:0, nl:19},
+  {cat:'CAPA FEM', sku:'012890B01U', preco:769, custo:251.16, var:100, ea:178, ed:198, s12:344, c12:86399.04, s28:285, c28:71580.60, s53:165, c53:41441.40, rl:5, rd:0, nl:18},
+  {cat:'BLUSA FEM', sku:'013187C25G', preco:359, custo:120.00, var:100, ea:165, ed:175, s12:312, c12:37440.00, s28:248, c28:29760.00, s53:131, c53:15720.00, rl:4, rd:0, nl:17},
+  {cat:'CALÇA FEM', sku:'046667A98P', preco:549, custo:191.49, var:100, ea:142, ed:188, s12:288, c12:55149.12, s28:225, c28:43085.25, s53:108, c53:20680.92, rl:6, rd:0, nl:18},
+  {cat:'CASACO FEM', sku:'011739010U', preco:679, custo:221.28, var:100, ea:151, ed:155, s12:265, c12:58639.20, s28:198, c28:43813.44, s53:88, c53:19472.64, rl:5, rd:0, nl:18}
+];
+
+const TOTAL = {
+  ea: 103020, ed: 61619,
+  s12: 117776, c12: 23022305.99,
+  s28: 76581,  c28: 15060464.91,
+  s53: 41898,  c53: 8460908.52,
+  rl: 1494, rd: 0
+};
+
+const FOTOS = {
+  "011739C25":"https://photo.anselmi.ind.br/Fotos/11739_c25.jpg",
+  "011739010":"https://photo.anselmi.ind.br/Fotos/11739_10.jpg",
+  "011739010U":"https://photo.anselmi.ind.br/Fotos/11739_10.jpg",
+  "046667010":"https://photo.anselmi.ind.br/Fotos/46667_10.jpg",
+  "046667010G":"https://photo.anselmi.ind.br/Fotos/46667_10.jpg",
+  "046667010M":"https://photo.anselmi.ind.br/Fotos/46667_10.jpg",
+  "011739E42":"https://photo.anselmi.ind.br/Fotos/11739_E42.jpg",
+  "011739E42U":"https://photo.anselmi.ind.br/Fotos/11739_E42.jpg",
+  "012890010":"https://photo.anselmi.ind.br/Fotos/12890_10.jpg",
+  "011739B79":"https://photo.anselmi.ind.br/Fotos/11739_B79.jpg",
+  "011739B79U":"https://photo.anselmi.ind.br/Fotos/11739_B79.jpg",
+  "012890B01U":"https://photo.anselmi.ind.br/Fotos/12890_B01.jpg",
+  "012890353":"https://photo.anselmi.ind.br/Fotos/12890_353.jpg",
+  "046667C25":"https://photo.anselmi.ind.br/Fotos/46667_c25.jpg",
+  "046667C25M":"https://photo.anselmi.ind.br/Fotos/46667_c25.jpg",
+  "046667A98P":"https://photo.anselmi.ind.br/Fotos/46667_A98.jpg",
+  "011325P39U":"https://photo.anselmi.ind.br/Fotos/11325_P09.jpg",
+  "010974B79M":"https://photo.anselmi.ind.br/Fotos/10974_B79.jpg",
+  "017240P09U":"https://photo.anselmi.ind.br/Fotos/17240_P09.jpg",
+  "012886353U":"https://photo.anselmi.ind.br/Fotos/12886_353.jpg",
+  "012947353U":"https://photo.anselmi.ind.br/Fotos/12947_353.jpg",
+  "013187C25G":"https://photo.anselmi.ind.br/Fotos/13187_C25.jpg"
+};
+
+// === RENDER ===
+function fmt(n){ return new Intl.NumberFormat('pt-BR').format(n); }
+function brl(n,d=2){ return 'R$ ' + new Intl.NumberFormat('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n); }
+
+function thumbHTML(cat, sku){
+  // Banco de fotos (data/banco_fotos.json) tem prioridade; FOTOS legado é fallback
+
+  const photo = (window.FotoResolver && window.FotoResolver.getFoto(sku)) || FOTOS[sku];
+  if (photo) return `<img src="${photo}" alt="${sku}" onerror="this.style.display='none'">`;
+  return `<div style="font-family:Lora,serif;color:var(--ink-4);font-size:18px">${cat[0]}</div>`;
+}
+
+function renderCards(items){
+  if(!items.length){ document.getElementById('view-cards-wrap').innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--ink-4);padding:40px">Sem dados.</div>'; return;}
+  const html = items.map(p => {
+    const sobraPctEA = p.ea ? Math.round((p.s12/(p.ea+p.ed))*100) : 0;
+    return `<div class="ovs-card">
+      <div class="ovs-thumb">${thumbHTML(p.cat, p.sku)}</div>
+      <div class="ovs-body">
+        <div>
+          <div class="ovs-cat">${p.cat}</div>
+          <div class="ovs-sku">${p.sku}</div>
+          <div class="ovs-numlojas">${p.nl} lojas com estoque</div>
+        </div>
+        <div class="ovs-stock">
+          <span>EA Lojas <span class="v">${fmt(p.ea)}</span></span>
+          <span>EA Depósito <span class="v">${fmt(p.ed)}</span></span>
+        </div>
+        <div class="ovs-horizon">
+          <div class="ovs-h">
+            <div class="h-lbl">12 sem</div>
+            <div class="h-v">${fmt(p.s12)}</div>
+            <div class="h-r">${brl(p.c12,0)}</div>
+          </div>
+          <div class="ovs-h med">
+            <div class="h-lbl">28 sem</div>
+            <div class="h-v">${fmt(p.s28)}</div>
+            <div class="h-r">${brl(p.c28,0)}</div>
+          </div>
+          <div class="ovs-h ${p.s53===0?'low':''}">
+            <div class="h-lbl">53 sem</div>
+            <div class="h-v">${fmt(p.s53)}</div>
+            <div class="h-r">${brl(p.c53,0)}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('view-cards-wrap').innerHTML = html;
+}
+
+function renderList(items){
+  const out = [];
+  // Total row
+  out.push(`<div class="list-row total">
+    <div class="cell"></div>
+    <div class="cell">Total geral · 3.667 SKUs</div>
+    <div class="cell num">—</div>
+    <div class="cell num">${fmt(TOTAL.ea)}</div>
+    <div class="cell num">${fmt(TOTAL.ed)}</div>
+    <div class="cell num">${fmt(TOTAL.s12)}</div>
+    <div class="cell num">${brl(TOTAL.c12,0)}</div>
+    <div class="cell num">${fmt(TOTAL.s28)}</div>
+    <div class="cell num">${brl(TOTAL.c28,0)}</div>
+    <div class="cell num">${fmt(TOTAL.s53)}</div>
+    <div class="cell num">${brl(TOTAL.c53,0)}</div>
+    <div class="cell num">${fmt(TOTAL.rl)}</div>
+    <div class="cell num">${TOTAL.rd}</div>
+    <div class="cell num">—</div>
+  </div>`);
+  for(const p of items){
+    out.push(`<div class="list-row">
+      <div class="cell"><div class="thumb">${thumbHTML(p.cat,p.sku)}</div></div>
+      <div class="cell dim">${p.cat}<div class="ref">${p.sku}</div></div>
+      <div class="cell num">${p.var}%</div>
+      <div class="cell num">${fmt(p.ea)}</div>
+      <div class="cell num">${fmt(p.ed)}</div>
+      <div class="cell num"><span class="neg">${fmt(p.s12)}</span></div>
+      <div class="cell num"><span class="neg">${brl(p.c12,0)}</span></div>
+      <div class="cell num">${fmt(p.s28)}</div>
+      <div class="cell num">${brl(p.c28,0)}</div>
+      <div class="cell num">${fmt(p.s53)}</div>
+      <div class="cell num">${brl(p.c53,0)}</div>
+      <div class="cell num">${p.rl}</div>
+      <div class="cell num">${p.rd}</div>
+      <div class="cell num">${p.nl}</div>
+    </div>`);
+  }
+  document.getElementById('rows').innerHTML = out.join('');
+}
+
+let SORT_DIR = 'desc';
+function setSortDir(d){
+  SORT_DIR = d;
+  document.getElementById('sort-asc').classList.toggle('on', d==='asc');
+  document.getElementById('sort-desc').classList.toggle('on', d==='desc');
+  applyFilters();
+}
+
+function applyFilters(){
+  const cat = document.getElementById('filter-cat').value;
+  const q = document.getElementById('filter-q').value.toLowerCase().trim();
+  const sortField = document.getElementById('sort-field').value;
+  let filt = PRODUTOS.filter(p => {
+    if(cat && p.cat !== cat) return false;
+    if(q && !(p.sku.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q))) return false;
+    return true;
+  });
+  filt.sort((a,b) => {
+    const va = a[sortField], vb = b[sortField];
+    if (typeof va === 'number' && typeof vb === 'number') {
+      return SORT_DIR === 'asc' ? va-vb : vb-va;
+    }
+    const sa = String(va||''), sb = String(vb||'');
+    return SORT_DIR === 'asc' ? sa.localeCompare(sb,'pt-BR') : sb.localeCompare(sa,'pt-BR');
+  });
+  renderCards(filt);
+  renderList(filt);
+}
+
+function setView(v){
+  if(v==='cards'){
+    document.getElementById('view-cards-wrap').style.display='grid';
+    document.getElementById('view-list-wrap').style.display='none';
+    document.getElementById('view-cards').classList.add('on');
+    document.getElementById('view-list').classList.remove('on');
+  } else {
+    document.getElementById('view-cards-wrap').style.display='none';
+    document.getElementById('view-list-wrap').style.display='block';
+    document.getElementById('view-cards').classList.remove('on');
+    document.getElementById('view-list').classList.add('on');
+  }
+}
+
+function exportCSV(){
+  const cols = ['cat','sku','var','ea','ed','s12','c12','s28','c28','s53','c53','rl','rd','nl'];
+  const lines = [cols.join(';')];
+  for(const p of PRODUTOS) lines.push(cols.map(c => p[c]).join(';'));
+  const blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'excesso_anselmi_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+
+// === Summary toggle ===
+const SUMMARY_KEY = 'roi_summary_open_excesso';
+function toggleSummary(){
+  const b = document.getElementById('summary-block');
+  const t = document.getElementById('summary-toggle');
+  const open = !b.classList.contains('open');
+  b.classList.toggle('open', open);
+  t.classList.toggle('open', open);
+  try { localStorage.setItem(SUMMARY_KEY, open ? '1' : '0'); } catch(e){}
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Carrega banco de fotos completo em background; quando chegar, re-renderiza
+  if (window.FotoResolver) {
+    window.FotoResolver.load().then(() => { try { applyFilters(); } catch(e) {} });
+  }
+
+  const cats = Array.from(new Set(PRODUTOS.map(p => p.cat))).sort();
+  document.getElementById('filter-cat').innerHTML = '<option value="">Todas</option>' + cats.map(c => `<option>${c}</option>`).join('');
+  applyFilters();
+  document.getElementById('filter-cat').addEventListener('change', applyFilters);
+  document.getElementById('filter-q').addEventListener('input', applyFilters);
+  document.getElementById('sort-field').addEventListener('change', applyFilters);
+  let open = false;
+  try { open = localStorage.getItem(SUMMARY_KEY) === '1'; } catch(e){}
+  if (open) {
+    document.getElementById('summary-block').classList.add('open');
+    document.getElementById('summary-toggle').classList.add('open');
+  }
+});
+</script>
+<script>
+// === Caminho B: pipeline anselmi-pcp/data/volution/overstock-report.json.gz ===
+(async () => {
+  if (typeof RoiDataLoader === 'undefined') return;
+  const badge = document.createElement('span');
+  badge.id = 'hdr-sync';
+  badge.style.cssText = 'position:fixed;top:8px;right:12px;font:500 11px/1.2 Inter,sans-serif;color:#a86d1f;background:rgba(245,241,234,.92);padding:4px 10px;border-radius:99px;z-index:9999;letter-spacing:.02em;border:1px solid rgba(0,0,0,.06);';
+  document.body.appendChild(badge);
+  try {
+    const result = await RoiDataLoader.load('overstock', { fallback: null });
+    RoiDataLoader.syncBadge(badge, result);
+  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; }
+})();
+</script>
+</body>
+</html>

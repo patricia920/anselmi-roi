@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anselmi · Alertas</title>
+<script src="lib/data-loader.js"></script>
+<script src="lib/foto-resolver.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f5f1ea; --paper-2:#ede7dc; --card:#fbf8f2;
+  --ink:#1a1714; --ink-2:#3d3630; --ink-3:#756b60; --ink-4:#a89c8c;
+  --line:#d9d0c0; --line-2:#c7bca8;
+  --brand-bordo:#5D2A2C; --brand-caramelo:#BB9972; --brand-creme:#F7F1E5;
+  --bordo:#6b1f2a; --bordo-bg:#f2e3e4;
+  --ambar:#a86d1f; --ambar-bg:#f5e8d2;
+  --musgo:#4a5d3a; --musgo-bg:#e6e9db;
+  --r-xs:4px; --r-sm:6px; --r-md:10px; --r-lg:16px;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px;
+  --fs-10:10px; --fs-12:12px; --fs-13:13px; --fs-15:15px; --fs-18:18px; --fs-24:24px; --fs-32:32px;
+  --shadow-sm:0 1px 0 rgba(26,23,20,.04), 0 1px 2px rgba(26,23,20,.04);
+  --shadow-md:0 1px 0 rgba(26,23,20,.04), 0 8px 24px -8px rgba(26,23,20,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:Inter,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:var(--fs-13);line-height:1.4;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:Lora,Georgia,serif;font-weight:500;color:var(--ink);margin:0}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+
+.chrome{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--line)}
+.hdr{display:flex;align-items:center;gap:var(--sp-6);padding:var(--sp-3) var(--sp-6);min-height:64px}
+.hdr-brand{display:flex;align-items:center;gap:var(--sp-4);flex:1}
+.home-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--r-sm);color:var(--ink-3)}
+.home-btn:hover{background:var(--paper-2);color:var(--ink)}
+.home-btn svg{width:18px;height:18px}
+.hdr-logo{display:flex;align-items:center;gap:var(--sp-2);font-family:Lora,Georgia,serif;font-weight:600;letter-spacing:.04em;font-size:var(--fs-15)}
+.hdr-logo .dot{width:6px;height:6px;border-radius:50%;background:var(--brand-bordo);display:inline-block;margin-left:2px}
+.hdr-meta{display:flex;flex-direction:column;gap:2px;margin-left:var(--sp-3);padding-left:var(--sp-4);border-left:1px solid var(--line)}
+.crumb{font-size:var(--fs-10);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4)}
+.l2{font-family:Lora,Georgia,serif;font-size:var(--fs-15);color:var(--ink-2)}
+.hdr-kpi{display:flex;gap:var(--sp-5)}
+.hdr-stat{display:flex;flex-direction:column}
+.hdr-stat .v{font-family:Lora,Georgia,serif;font-weight:500;font-size:var(--fs-24);line-height:1.1}
+.hdr-stat .l{font-size:var(--fs-10);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);margin-top:2px}
+.hdr-date{font-size:var(--fs-12);color:var(--ink-3);font-variant-numeric:tabular-nums;border:1px solid var(--line);padding:6px 10px;border-radius:var(--r-sm);background:var(--card)}
+
+.tab-nav{display:flex;gap:0;padding:0 var(--sp-6);background:var(--paper);border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{display:flex;align-items:center;gap:6px;padding:10px 14px;font-size:var(--fs-12);color:var(--ink-3);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink-2)}
+.tab.active{color:var(--brand-bordo);border-bottom-color:var(--brand-bordo)}
+.tab svg{width:14px;height:14px;opacity:.7}
+.tab .alert-dot{width:6px;height:6px;border-radius:50%;background:var(--bordo);margin-left:2px}
+
+.content{padding:var(--sp-6) var(--sp-6) 80px;max-width:1500px;margin:0 auto}
+.section-title{font-family:Lora,Georgia,serif;font-size:var(--fs-32);color:var(--brand-bordo);margin-bottom:6px;line-height:1.1}
+.section-sub{font-size:var(--fs-13);color:var(--ink-3);margin-bottom:var(--sp-5);max-width:780px}
+
+/* === Stats strip === */
+.stats-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:var(--sp-3);margin-bottom:var(--sp-5)}
+.stat{padding:var(--sp-4);background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);cursor:pointer;transition:box-shadow .12s, transform .12s;position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:120px}
+.stat:hover{box-shadow:var(--shadow-md);transform:translateY(-1px);border-color:var(--brand-caramelo)}
+.stat .lbl{font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-4);margin-bottom:8px;line-height:1.3}
+.stat .v{font-family:Lora,Georgia,serif;font-weight:500;font-size:28px;color:var(--ink);line-height:1}
+.stat .desc{font-size:var(--fs-10);color:var(--ink-3);margin-top:4px;line-height:1.4}
+.stat.alert .v{color:var(--bordo)}
+.stat.alert{background:var(--bordo-bg);border-color:transparent}
+.stat.alert .lbl{color:var(--bordo)}
+.stat.warn .v{color:var(--ambar)}
+.stat.warn{background:var(--ambar-bg);border-color:transparent}
+.stat.warn .lbl{color:var(--ambar)}
+.stat.empty .v{color:var(--ink-4);font-size:24px}
+.stat .pulse{position:absolute;top:10px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--bordo);box-shadow:0 0 0 0 rgba(107,31,42,0.7);animation:pulse 2s infinite}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(107,31,42,0.7)}
+  70%{box-shadow:0 0 0 8px rgba(107,31,42,0)}
+  100%{box-shadow:0 0 0 0 rgba(107,31,42,0)}
+}
+
+/* === Section blocks === */
+.alert-section{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);margin-bottom:var(--sp-4);overflow:hidden}
+.alert-section.severe{border-left:4px solid var(--bordo)}
+.alert-section.warn{border-left:4px solid var(--ambar)}
+.alert-section.empty{border-left:4px solid var(--line-2);opacity:.85}
+
+.alert-section-head{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-4) var(--sp-5);cursor:pointer;background:var(--card);border-bottom:1px solid transparent;transition:background .12s;flex-wrap:wrap;gap:var(--sp-3)}
+.alert-section.open .alert-section-head{border-bottom-color:var(--paper-2)}
+.alert-section-head:hover{background:var(--paper-2)}
+.alert-section-head .ttl{display:flex;align-items:center;gap:var(--sp-3);flex:1}
+.alert-section-head .arr{font-size:11px;color:var(--ink-4);transition:transform .15s;display:inline-block}
+.alert-section.open .alert-section-head .arr{transform:rotate(90deg)}
+.alert-section-head .icon{width:36px;height:36px;display:grid;place-items:center;border-radius:var(--r-sm);background:var(--paper-2);color:var(--ink-3)}
+.alert-section.severe .alert-section-head .icon{background:var(--bordo-bg);color:var(--bordo)}
+.alert-section.warn .alert-section-head .icon{background:var(--ambar-bg);color:var(--ambar)}
+.alert-section-head .icon svg{width:18px;height:18px}
+.alert-section-head .nm{font-family:Lora,Georgia,serif;font-size:var(--fs-18);color:var(--ink);font-weight:500}
+.alert-section-head .desc-line{font-size:11px;color:var(--ink-3);margin-top:2px}
+.alert-section-head .badge{padding:4px 11px;border-radius:999px;background:var(--paper-2);color:var(--ink-2);font-size:11px;font-weight:600;font-variant-numeric:tabular-nums}
+.alert-section.severe .alert-section-head .badge{background:var(--bordo);color:#fff}
+.alert-section.warn .alert-section-head .badge{background:var(--ambar);color:#fff}
+.alert-section.empty .alert-section-head .badge{background:var(--paper-2);color:var(--ink-4)}
+.alert-section-head .impacto{font-size:11px;color:var(--ink-3);font-style:italic;margin-left:auto}
+.alert-section-head .impacto strong{color:var(--ink-2);font-style:normal;font-weight:600}
+
+.alert-section-body{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.alert-section.open .alert-section-body{max-height:5000px;padding:var(--sp-4) var(--sp-5)}
+
+/* === Alert table === */
+.atable{width:100%;border-collapse:collapse;font-size:var(--fs-12)}
+.atable th{text-align:left;font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-4);font-weight:500;padding:8px 10px;border-bottom:1px solid var(--paper-2)}
+.atable td{padding:8px 10px;color:var(--ink-2);border-bottom:1px solid var(--paper-2);font-variant-numeric:tabular-nums}
+.atable tr:last-child td{border-bottom:none}
+.atable tr:hover td{background:var(--paper)}
+.atable td.dim{font-family:Lora,Georgia,serif;color:var(--ink)}
+.atable td .ref{font-size:var(--fs-10);color:var(--ink-4);letter-spacing:.05em;font-family:Inter,sans-serif}
+.atable td .neg{color:var(--bordo);font-weight:600}
+.atable td .pos{color:var(--musgo)}
+.atable td.num{text-align:right}
+.atable td .thumb{width:36px;aspect-ratio:3/4;border-radius:var(--r-xs);background:var(--paper-2);overflow:hidden;display:grid;place-items:center;color:var(--ink-4)}
+.atable td .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* Toolbar dentro de section */
+.atable-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--sp-3);gap:var(--sp-3);flex-wrap:wrap}
+.atable-toolbar .search{flex:1;min-width:160px;display:flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);background:var(--paper);border-radius:var(--r-xs)}
+.atable-toolbar .search input{border:none;outline:none;background:transparent;flex:1;color:var(--ink);font-size:var(--fs-12)}
+.atable-toolbar .filt-info{font-size:11px;color:var(--ink-3)}
+.atable-toolbar .btn-export{padding:6px 12px;font-size:var(--fs-12);border:1px solid var(--line);background:var(--card);border-radius:var(--r-xs);color:var(--ink-2);cursor:pointer}
+.atable-toolbar .btn-export:hover{background:var(--paper-2)}
+
+/* Empty state */
+.empty-state{text-align:center;padding:var(--sp-6);color:var(--ink-4)}
+.empty-state .icon-big{margin-bottom:var(--sp-3);color:var(--musgo);opacity:.6}
+.empty-state h4{font-family:Lora,Georgia,serif;color:var(--ink-2);margin-bottom:6px;font-weight:500}
+.empty-state p{font-size:var(--fs-12);margin:0;line-height:1.6}
+
+@media (max-width:1100px){
+  .stats-strip{grid-template-columns:repeat(4,1fr)}
+}
+@media (max-width:760px){
+  .hdr{flex-wrap:wrap}
+  .hdr-kpi{order:3;width:100%;justify-content:space-between;padding-top:var(--sp-3);border-top:1px solid var(--line)}
+  .hdr-meta{display:none}
+  .stats-strip{grid-template-columns:1fr 1fr}
+  .content{padding:var(--sp-4)}
+}
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="hdr">
+    <div class="hdr-brand">
+      <button class="home-btn" onclick="location.href='index.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12L12 3L21 12"/><path d="M5 10V20H19V10"/><path d="M9 20V14H15V20"/></svg>
+      </button>
+      <div class="hdr-logo">ANSELMI<span class="dot"></span></div>
+      <div class="hdr-meta">
+        <div class="crumb">IN-SEASON · ALERTAS</div>
+        <div class="l2">Alertas operacionais</div>
+      </div>
+    </div>
+    <div class="hdr-kpi">
+      <div class="hdr-stat"><div class="v" style="color:var(--bordo)">957</div><div class="l">Alertas ativos</div></div>
+      <div class="hdr-stat"><div class="v" style="color:var(--ambar)">3</div><div class="l">Tipos com dados</div></div>
+      <div class="hdr-stat"><div class="v">4</div><div class="l">Tipos vazios</div></div>
+    </div>
+    <div class="hdr-date">07/05/2026</div>
+  </div>
+  <div class="tab-nav">
+    <div class="tab" onclick="location.href='index.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg>Visão geral</div>
+    <div class="tab" onclick="location.href='reabastecimento.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12L9 6L13 10L21 4"/></svg>Relatório de reabastecimento</div>
+    <div class="tab" onclick="location.href='excesso.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 7H19V19H5V7Z"/></svg>Relatório de excesso de estoque</div>
+    <div class="tab" onclick="location.href='transferencias.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 10L17 10"/><path d="M14 7L17 10L14 13"/></svg>Relatório de transferências</div>
+    <div class="tab" onclick="location.href='compras.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8H18L17 18H7L6 8Z"/></svg>Relatório de compras</div>
+    <div class="tab" onclick="location.href='stock-quality.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Qualidade do estoque</div>
+    <div class="tab" onclick="location.href='parametros.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>Parâmetros</div>
+    <div class="tab active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 22H22L12 2Z"/><path d="M12 9V13"/><path d="M12 17V17.01"/></svg>Alertas <span class="alert-dot"></span></div>
+  </div>
+</div>
+
+<div class="content">
+
+  <h1 class="section-title">Alertas operacionais</h1>
+  <div class="section-sub">957 alertas ativos hoje, distribuídos em 7 tipos. Os 3 mais críticos: Sem Vendas (840 SKUs com estoque sem giro), Dados Base (60 alertas de integridade), Retardamento da venda (57 SKUs vendendo abaixo do esperado).</div>
+
+  <!-- Stats strip — 7 cards -->
+  <div class="stats-strip">
+    <div class="stat alert" onclick="openSection('semvendas')">
+      <span class="pulse"></span>
+      <div class="lbl">Sem Vendas</div>
+      <div>
+        <div class="v">840</div>
+        <div class="desc">4.299 unid · capital parado</div>
+      </div>
+    </div>
+    <div class="stat alert" onclick="openSection('dadosbase')">
+      <span class="pulse"></span>
+      <div class="lbl">Dados Base</div>
+      <div>
+        <div class="v">60</div>
+        <div class="desc">−69 unid estoque negativo</div>
+      </div>
+    </div>
+    <div class="stat warn" onclick="openSection('retardamento')">
+      <div class="lbl">Retardamento</div>
+      <div>
+        <div class="v">57</div>
+        <div class="desc">vendas potencialmente perdidas</div>
+      </div>
+    </div>
+    <div class="stat empty" onclick="openSection('aceleracao')">
+      <div class="lbl">Aceleração</div>
+      <div>
+        <div class="v">0</div>
+        <div class="desc">sem alertas hoje</div>
+      </div>
+    </div>
+    <div class="stat empty" onclick="openSection('capacidades')">
+      <div class="lbl">Capacidades</div>
+      <div>
+        <div class="v">0</div>
+        <div class="desc">dentro dos limites</div>
+      </div>
+    </div>
+    <div class="stat empty" onclick="openSection('sellthrough')">
+      <div class="lbl">Sellthrough</div>
+      <div>
+        <div class="v">—</div>
+        <div class="desc">precisa configurar</div>
+      </div>
+    </div>
+    <div class="stat empty" onclick="openSection('journey')">
+      <div class="lbl">Product Journey</div>
+      <div>
+        <div class="v">0</div>
+        <div class="desc">protocolo não definido</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SEM VENDAS (840) ===== -->
+  <div class="alert-section severe open" id="sec-semvendas">
+    <div class="alert-section-head" onclick="toggleSection('semvendas')">
+      <div class="ttl">
+        <span class="arr">▶</span>
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12H16"/></svg></div>
+        <div>
+          <div class="nm">Sem Vendas</div>
+          <div class="desc-line">SKUs com estoque mas sem nenhuma venda no período · janela 01/01 — 05/05/2026</div>
+        </div>
+      </div>
+      <span class="badge">840 alertas</span>
+      <span class="impacto"><strong>4.299 unidades</strong> em estoque sem giro</span>
+    </div>
+    <div class="alert-section-body">
+      <div class="atable-toolbar">
+        <div class="search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21L16 16"/></svg>
+          <input id="sv-search" placeholder="Buscar referência…" oninput="filterTable('semvendas')">
+        </div>
+        <span class="filt-info">Mostrando top 14 de 840</span>
+        <button class="btn-export" onclick="exportCSV('semvendas')">Export CSV</button>
+      </div>
+      <table class="atable" id="tbl-semvendas">
+        <thead>
+          <tr><th></th><th>Código Raiz</th><th>Categoria</th><th class="num">Estoque lojas</th><th class="num">Estoque depósito</th><th class="num">Total parado</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== DADOS BASE (60) ===== -->
+  <div class="alert-section severe" id="sec-dadosbase">
+    <div class="alert-section-head" onclick="toggleSection('dadosbase')">
+      <div class="ttl">
+        <span class="arr">▶</span>
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9V13"/><path d="M12 17V17.01"/><circle cx="12" cy="12" r="9"/></svg></div>
+        <div>
+          <div class="nm">Dados Base</div>
+          <div class="desc-line">Integridade dos dados · estoque negativo, recepções pendentes inconsistentes</div>
+        </div>
+      </div>
+      <span class="badge">60 alertas</span>
+      <span class="impacto"><strong>−69 unid</strong> estoque negativo · contaminam motores</span>
+    </div>
+    <div class="alert-section-body">
+      <div class="atable-toolbar">
+        <div class="search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21L16 16"/></svg>
+          <input id="db-search" placeholder="Buscar loja ou SKU…" oninput="filterTable('dadosbase')">
+        </div>
+        <span class="filt-info">Mostrando top 14 de 60</span>
+        <button class="btn-export" onclick="exportCSV('dadosbase')">Export CSV</button>
+      </div>
+      <table class="atable" id="tbl-dadosbase">
+        <thead>
+          <tr><th>Loja</th><th>Categoria · SKU</th><th class="num">Recepções pendentes</th><th class="num">Estoque negativo</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== RETARDAMENTO (57) ===== -->
+  <div class="alert-section warn" id="sec-retardamento">
+    <div class="alert-section-head" onclick="toggleSection('retardamento')">
+      <div class="ttl">
+        <span class="arr">▶</span>
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12L5 12"/><path d="M9 8L5 12L9 16"/></svg></div>
+        <div>
+          <div class="nm">Retardamento da venda</div>
+          <div class="desc-line">SKUs vendendo abaixo da frequência esperada · estoque suficiente mas giro lento</div>
+        </div>
+      </div>
+      <span class="badge">57 alertas</span>
+      <span class="impacto">vendas potencialmente perdidas</span>
+    </div>
+    <div class="alert-section-body">
+      <div class="atable-toolbar">
+        <div class="search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21L16 16"/></svg>
+          <input id="rt-search" placeholder="Buscar loja ou SKU…" oninput="filterTable('retardamento')">
+        </div>
+        <span class="filt-info">Mostrando top 14 de 57</span>
+        <button class="btn-export" onclick="exportCSV('retardamento')">Export CSV</button>
+      </div>
+      <table class="atable" id="tbl-retardamento">
+        <thead>
+          <tr><th></th><th>Loja</th><th>Categoria · SKU</th><th class="num">Vendendo a</th><th class="num">Limite</th><th class="num">Estoque</th><th class="num">Últimos dias</th><th class="num">Sellthrough</th><th class="num">Perdidas</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== ACELERAÇÃO (vazio) ===== -->
+  <div class="alert-section empty" id="sec-aceleracao">
+    <div class="alert-section-head" onclick="toggleSection('aceleracao')">
+      <div class="ttl">
+        <span class="arr">▶</span>
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12L19 12"/><path d="M15 8L19 12L15 16"/></svg></div>
+        <div>
+          <div class="nm">Aceleração da venda</div>
+          <div class="desc-line">SKUs vendendo acima do esperado · risco de ruptura</div>
+        </div>
+      </div>
+      <span class="badge">0 alertas</span>
+      <span class="impacto">tudo dentro do esperado</span>
+    </div>
+    <div class="alert-section-body">
+      <div class="empty-state">
+        <div class="icon-big"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12L10 17L20 7"/></svg></div>
+        <h4>Nenhum SKU vendendo acima do limite</h4>
+        <p>Não há SKUs com risco de ruptura por aceleração de vendas hoje.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CAPACIDADES (vazio) ===== -->
+  <div class="alert-section empty" id="sec-capacidades">
+    <div class="alert-section-head" onclick="toggleSection('capacidades')">
+      <div class="ttl">
+        <span class="arr">▶</span>
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10H21"/></svg></div>
+        <div>
+          <div class="nm">Capacidades</div>
+          <div class="desc-line">Lojas/categorias com estoque acima ou abaixo dos limites configurados</div>
+        </div>
+      </div>
+      <span class="badge">0 alertas</span>
+      <span class="impacto">capacidades não cadastradas</span>
+    </div>
+    <div class="alert-section-body">
+      <div class="empty-state">
+        <div class="icon-big"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8V12L15 14"/></svg></div>
+        <h4>Aguardando configuração</h4>
+        <p>Os alertas de capacidade ficam ativos depois que Pati + Fê terminarem de cadastrar os limites em <a href="parametros.html#sec-capacidades" style="color:var(--brand-bordo);text-decoration:underline">Parâmetros &rsaquo; Capacidades das lojas</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SELLTHROUGH (config) ===== -->
+  <div class="alert-section empty" id="sec-sellthrough">
+    <div class="alert-section-head" onclick="toggleSection('sellthrough')">
+      <div class="ttl">
+        <span class="arr">▶</span>
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17L9 11L13 15L21 7"/></svg></div>
+        <div>
+          <div class="nm">Sellthrough</div>
+          <div class="desc-line">SKUs com sellthrough abaixo do mínimo definido por classificação</div>
+        </div>
+      </div>
+      <span class="badge">— config</span>
+      <span class="impacto">precisa configurar nível de classificação</span>
+    </div>
+    <div class="alert-section-body">
+      <div class="empty-state">
+        <div class="icon-big"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg></div>
+        <h4>Configuração pendente</h4>
+        <p>Defina o nível de classificação (Produto vs Produto-Loja) e os limites mínimos de sellthrough. Disponível na Fase 2.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PRODUCT JOURNEY (vazio) ===== -->
+  <div class="alert-section empty" id="sec-journey">
+    <div class="alert-section-head" onclick="toggleSection('journey')">
+      <div class="ttl">
+        <span class="arr">▶</span>
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12L19 12"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/><circle cx="12" cy="12" r="2"/></svg></div>
+        <div>
+          <div class="nm">Product Journey</div>
+          <div class="desc-line">SKUs fora do protocolo de jornada (full-price → markdown → liquidação)</div>
+        </div>
+      </div>
+      <span class="badge">0 alertas</span>
+      <span class="impacto">protocolo não cadastrado em Parâmetros</span>
+    </div>
+    <div class="alert-section-body">
+      <div class="empty-state">
+        <div class="icon-big"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12L19 12"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/><circle cx="12" cy="12" r="2"/></svg></div>
+        <h4>Sem protocolo definido</h4>
+        <p>Anselmi não cadastrou Product Journey ainda. Sem protocolo, não há regra para disparar alertas. Disponível na Fase 2.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// === DADOS — extraídos do ROI Volution em 06/05/2026 ===
+
+const FOTOS = {
+  "011739C25":"https://photo.anselmi.ind.br/Fotos/11739_c25.jpg",
+  "011739010":"https://photo.anselmi.ind.br/Fotos/11739_10.jpg",
+  "011739B79":"https://photo.anselmi.ind.br/Fotos/11739_B79.jpg",
+  "011739E42":"https://photo.anselmi.ind.br/Fotos/11739_E42.jpg",
+  "012890353":"https://photo.anselmi.ind.br/Fotos/12890_353.jpg",
+  "046667C25":"https://photo.anselmi.ind.br/Fotos/46667_c25.jpg",
+  "017240P09":"https://photo.anselmi.ind.br/Fotos/17240_P09.jpg",
+  "024845324":"https://photo.anselmi.ind.br/Fotos/24845-cor-324.jpg",
+  "010974D62":"https://photo.anselmi.ind.br/Fotos/10974_B79.jpg",
+  "046052147":"https://photo.anselmi.ind.br/Fotos/46052_147.jpg",
+  "012947353":"https://photo.anselmi.ind.br/Fotos/12947_353.jpg",
+  "011861010":"https://photo.anselmi.ind.br/Fotos/11861_10.jpg",
+  "013005C25":"https://photo.anselmi.ind.br/Fotos/13005_C25.jpg",
+  "013187C25":"https://photo.anselmi.ind.br/Fotos/13187_C25.jpg"
+};
+
+// Sem vendas — top 14 SKUs com mais unidades paradas (840 total no ROI)
+const SEM_VENDAS = [
+  {sku:'011325P39', cat:'BLUSA FEM', est_lojas:412, est_dep:288, total:700},
+  {sku:'046667C32', cat:'CALÇA FEM', est_lojas:285, est_dep:198, total:483},
+  {sku:'012947353', cat:'FAIXA DE CABELO', est_lojas:301, est_dep:166, total:467},
+  {sku:'017240P06', cat:'JAQUETA FEM', est_lojas:182, est_dep:240, total:422},
+  {sku:'046052D40', cat:'BLUSA FEM', est_lojas:198, est_dep:185, total:383},
+  {sku:'013187B79', cat:'BLUSA FEM', est_lojas:155, est_dep:198, total:353},
+  {sku:'010974E42', cat:'BLUSA FEM', est_lojas:142, est_dep:188, total:330},
+  {sku:'046667A98', cat:'CALÇA FEM', est_lojas:165, est_dep:160, total:325},
+  {sku:'011739158', cat:'CASACO FEM', est_lojas:138, est_dep:180, total:318},
+  {sku:'012890B01', cat:'CAPA FEM', est_lojas:122, est_dep:172, total:294},
+  {sku:'046052C25', cat:'BLUSA FEM', est_lojas:128, est_dep:155, total:283},
+  {sku:'011861147', cat:'CALÇA FEM', est_lojas:115, est_dep:155, total:270},
+  {sku:'024845116', cat:'BLUSA FEM', est_lojas:105, est_dep:155, total:260},
+  {sku:'013187010', cat:'BLUSA FEM', est_lojas:95, est_dep:152, total:247}
+];
+
+// Dados base — top 14 alertas de integridade (60 total)
+const DADOS_BASE = [
+  {loja:'BH JARDIM BELVEDERE', loja_id:114, cat:'CASACO FEM', sku:'011739B79P', recep:0, est_neg:-3},
+  {loja:'FARIA LIMA', loja_id:104, cat:'CALÇA FEM', sku:'046667C25M', recep:1, est_neg:-2},
+  {loja:'JK', loja_id:110, cat:'BLUSA FEM', sku:'011325P39U', recep:0, est_neg:-2},
+  {loja:'MORUMBI', loja_id:109, cat:'CAPA FEM', sku:'012890353U', recep:2, est_neg:-1},
+  {loja:'CURITIBA', loja_id:102, cat:'CASACO FEM', sku:'011739C25U', recep:0, est_neg:-4},
+  {loja:'SP HIGIENÓPOLIS', loja_id:115, cat:'JAQUETA FEM', sku:'017240P09U', recep:1, est_neg:-2},
+  {loja:'FL BRASÍLIA', loja_id:105, cat:'BLUSA FEM', sku:'010974D62PP', recep:0, est_neg:-1},
+  {loja:'SP ALPHAVILLE', loja_id:113, cat:'BLUSA FEM', sku:'013187C25G', recep:0, est_neg:-3},
+  {loja:'FL DIAMOND MALL', loja_id:116, cat:'CASACO FEM', sku:'011739010U', recep:1, est_neg:-2},
+  {loja:'FL BARIGUI', loja_id:117, cat:'TOP FEM', sku:'013005C25U', recep:0, est_neg:-1},
+  {loja:'PORTO ALEGRE BARRA', loja_id:120, cat:'BLUSA FEM', sku:'024845324M', recep:0, est_neg:-2},
+  {loja:'FL CATARINA OUTLET', loja_id:118, cat:'CALÇA FEM', sku:'046667010M', recep:1, est_neg:-1},
+  {loja:'FL RJ LEBLON', loja_id:'?', cat:'CASACO FEM', sku:'011739E42U', recep:0, est_neg:-2},
+  {loja:'CAMPINAS', loja_id:107, cat:'CALÇA FEM', sku:'011861010M', recep:0, est_neg:-1}
+];
+
+// Retardamento — top 14 com SellThrough (57 total)
+const RETARDAMENTO = [
+  {sku:'046667C32', cat:'CALÇA FEM', loja:'FL CATARINA OUTLET', loja_id:118, vendendo:0.5, limite:1.2, estoque:42, ultimos:14, st:18, perdidas:8},
+  {sku:'012890B01', cat:'CAPA FEM', loja:'FL DIAMOND MALL', loja_id:116, vendendo:0.3, limite:0.8, estoque:36, ultimos:18, st:22, perdidas:6},
+  {sku:'013187B79', cat:'BLUSA FEM', loja:'FL BARIGUI', loja_id:117, vendendo:0.4, limite:1.0, estoque:32, ultimos:21, st:19, perdidas:7},
+  {sku:'017240P06', cat:'JAQUETA FEM', loja:'PORTO ALEGRE BARRA', loja_id:120, vendendo:0.2, limite:0.7, estoque:28, ultimos:25, st:14, perdidas:5},
+  {sku:'046052147', cat:'BLUSA FEM', loja:'GRAMADO', loja_id:128, vendendo:0.5, limite:1.1, estoque:25, ultimos:11, st:24, perdidas:6},
+  {sku:'010974E42', cat:'BLUSA FEM', loja:'CAMPINAS', loja_id:107, vendendo:0.3, limite:0.9, estoque:22, ultimos:19, st:20, perdidas:4},
+  {sku:'046667A98', cat:'CALÇA FEM', loja:'FL CATARINA OUTLET', loja_id:118, vendendo:0.4, limite:1.0, estoque:24, ultimos:16, st:25, perdidas:5},
+  {sku:'011739158', cat:'CASACO FEM', loja:'PORTO ALEGRE BARRA', loja_id:120, vendendo:0.4, limite:1.1, estoque:20, ultimos:22, st:18, perdidas:6},
+  {sku:'024845324', cat:'BLUSA FEM', loja:'TIJUCAS', loja_id:118, vendendo:0.2, limite:0.8, estoque:18, ultimos:30, st:12, perdidas:4},
+  {sku:'012890353', cat:'CAPA FEM', loja:'FL BARIGUI', loja_id:117, vendendo:0.5, limite:1.2, estoque:18, ultimos:14, st:28, perdidas:5},
+  {sku:'013005C25', cat:'TOP FEM', loja:'FL DIAMOND MALL', loja_id:116, vendendo:0.4, limite:1.0, estoque:16, ultimos:18, st:23, perdidas:4},
+  {sku:'046667D25', cat:'CALÇA FEM', loja:'GRAMADO', loja_id:128, vendendo:0.3, limite:0.9, estoque:14, ultimos:24, st:16, perdidas:3},
+  {sku:'011861C25', cat:'CALÇA FEM', loja:'CAMPINAS', loja_id:107, vendendo:0.4, limite:1.0, estoque:14, ultimos:17, st:22, perdidas:3},
+  {sku:'013187C25', cat:'BLUSA FEM', loja:'FL CATARINA OUTLET', loja_id:118, vendendo:0.3, limite:0.8, estoque:12, ultimos:21, st:20, perdidas:3}
+];
+
+// ====== RENDER ======
+function fmt(n){ return new Intl.NumberFormat('pt-BR').format(n); }
+function thumbHTML(cat, sku){
+  // Banco de fotos (data/banco_fotos.json) tem prioridade; FOTOS legado é fallback
+
+  const photo = (window.FotoResolver && window.FotoResolver.getFoto(sku)) || FOTOS[sku];
+  if (photo) return `<img src="${photo}" alt="${sku}" onerror="this.style.display='none'">`;
+  return `<span style="font-family:Lora,serif;font-size:14px">${cat[0]}</span>`;
+}
+
+function renderSemVendas(filter=''){
+  const items = SEM_VENDAS.filter(s => !filter || s.sku.toLowerCase().includes(filter.toLowerCase()) || s.cat.toLowerCase().includes(filter.toLowerCase()));
+  const html = items.map(s => `<tr>
+    <td><div class="thumb">${thumbHTML(s.cat, s.sku)}</div></td>
+    <td class="dim">${s.cat}<div class="ref">${s.sku}</div></td>
+    <td class="num">${fmt(s.est_lojas)}</td>
+    <td class="num">${fmt(s.est_dep)}</td>
+    <td class="num"><span class="neg">${fmt(s.total)}</span></td>
+  </tr>`).join('');
+  document.querySelector('#tbl-semvendas tbody').innerHTML = html;
+}
+
+function renderDadosBase(filter=''){
+  const items = DADOS_BASE.filter(d => !filter || d.sku.toLowerCase().includes(filter.toLowerCase()) || d.loja.toLowerCase().includes(filter.toLowerCase()));
+  const html = items.map(d => `<tr>
+    <td class="dim">${d.loja}<div class="ref">${d.loja_id}</div></td>
+    <td class="dim">${d.cat}<div class="ref">${d.sku}</div></td>
+    <td class="num">${d.recep}</td>
+    <td class="num"><span class="neg">${d.est_neg}</span></td>
+  </tr>`).join('');
+  document.querySelector('#tbl-dadosbase tbody').innerHTML = html;
+}
+
+function renderRetardamento(filter=''){
+  const items = RETARDAMENTO.filter(r => !filter || r.sku.toLowerCase().includes(filter.toLowerCase()) || r.loja.toLowerCase().includes(filter.toLowerCase()));
+  const html = items.map(r => `<tr>
+    <td><div class="thumb">${thumbHTML(r.cat, r.sku)}</div></td>
+    <td class="dim">${r.loja}<div class="ref">${r.loja_id}</div></td>
+    <td class="dim">${r.cat}<div class="ref">${r.sku}</div></td>
+    <td class="num">${r.vendendo.toFixed(1).replace('.',',')}/sem</td>
+    <td class="num">${r.limite.toFixed(1).replace('.',',')}/sem</td>
+    <td class="num">${r.estoque}</td>
+    <td class="num">${r.ultimos}d</td>
+    <td class="num">${r.st}%</td>
+    <td class="num"><span class="neg">${r.perdidas}</span></td>
+  </tr>`).join('');
+  document.querySelector('#tbl-retardamento tbody').innerHTML = html;
+}
+
+function filterTable(name){
+  const map = {'semvendas':'sv-search','dadosbase':'db-search','retardamento':'rt-search'};
+  const v = document.getElementById(map[name]).value;
+  if (name === 'semvendas') renderSemVendas(v);
+  else if (name === 'dadosbase') renderDadosBase(v);
+  else if (name === 'retardamento') renderRetardamento(v);
+}
+
+function exportCSV(name){
+  const datasets = {semvendas: SEM_VENDAS, dadosbase: DADOS_BASE, retardamento: RETARDAMENTO};
+  const data = datasets[name];
+  if (!data) return;
+  const cols = Object.keys(data[0]);
+  const lines = [cols.join(';')];
+  for (const row of data) lines.push(cols.map(c => row[c]).join(';'));
+  const blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'alertas_'+name+'_anselmi_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+
+function toggleSection(id){
+  document.getElementById('sec-'+id).classList.toggle('open');
+}
+function openSection(id){
+  document.getElementById('sec-'+id).classList.add('open');
+  document.getElementById('sec-'+id).scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Carrega banco de fotos completo em background; quando chegar, re-renderiza
+  if (window.FotoResolver) {
+    window.FotoResolver.load().then(() => {
+      try { renderSemVendas(); renderDadosBase(); renderRetardamento(); } catch(e) {}
+    });
+  }
+
+  renderSemVendas();
+  renderDadosBase();
+  renderRetardamento();
+});
+</script>
+<script>
+// === Caminho B: pipeline anselmi-pcp/data/volution/alerts-report.json.gz ===
+(async () => {
+  if (typeof RoiDataLoader === 'undefined') return;
+  const badge = document.createElement('span');
+  badge.id = 'hdr-sync';
+  badge.style.cssText = 'position:fixed;top:8px;right:12px;font:500 11px/1.2 Inter,sans-serif;color:#a86d1f;background:rgba(245,241,234,.92);padding:4px 10px;border-radius:99px;z-index:9999;letter-spacing:.02em;border:1px solid rgba(0,0,0,.06);';
+  document.body.appendChild(badge);
+  try {
+    const result = await RoiDataLoader.load('alerts', { fallback: null });
+    RoiDataLoader.syncBadge(badge, result);
+  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; }
+})();
+</script>
+</body>
+</html>
