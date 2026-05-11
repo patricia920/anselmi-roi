@@ -6388,6 +6388,19 @@ function renderPlantaHTML(cod){
   // CSS escopo .planta-svg-* (modal flutuante reutiliza .planta-html-edit-modal antigo)
   const css = `
     <style>
+      .planta-toggle-bar{display:flex;gap:0;padding:0 0 12px 0;align-items:center}
+      .planta-toggle-bar .label-ant{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-3);letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-right:14px}
+      .planta-toggle-btn{padding:7px 14px;cursor:pointer;border:1px solid var(--line);background:#fff;font-family:inherit;font-size:11px;font-weight:600;color:var(--ink-3);letter-spacing:.02em;transition:all .12s}
+      .planta-toggle-btn:first-of-type{border-radius:4px 0 0 4px}
+      .planta-toggle-btn:last-of-type{border-radius:0 4px 4px 0;border-left:none}
+      .planta-toggle-btn.active{background:var(--bordo);color:#fff;border-color:var(--bordo)}
+      .planta-toggle-btn:not(.active):hover{background:var(--card)}
+      .planta-view-pane{display:none}
+      .planta-view-pane.active{display:block}
+      .planta-real-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#f5f1ea;border:0.5px solid var(--paper-2);border-radius:6px;overflow:hidden}
+      .planta-real-wrap img{width:100%;height:100%;object-fit:contain;display:block;background:#fff}
+      .planta-real-fallback{display:flex;align-items:center;justify-content:center;height:100%;color:var(--ink-3);font-size:13px;font-style:italic;background:repeating-linear-gradient(45deg,#f5f1ea 0 8px,#ede8df 8px 16px)}
+      .planta-real-caption{position:absolute;bottom:8px;left:8px;background:rgba(26,23,20,.82);color:#fff;font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:3px}
       .planta-svg-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#fff;border:0.5px solid var(--paper-2);border-radius:6px;overflow:hidden;font-family:'Inter',sans-serif}
       .planta-svg-wrap svg{width:100%;height:100%;display:block}
       .planta-svg-arara{cursor:pointer;transition:fill .12s,stroke .12s}
@@ -6485,6 +6498,13 @@ function renderPlantaHTML(cod){
   }
 
   return `${css}
+    <div class="planta-toggle-bar">
+      <span class="label-ant">Visualização</span>
+      <button class="planta-toggle-btn active" data-pane="vm" onclick="_plantaTogglePane('vm')">Layout VM (interativo)</button>
+      <button class="planta-toggle-btn" data-pane="real" onclick="_plantaTogglePane('real')">Planta real da loja</button>
+    </div>
+
+    <div class="planta-view-pane active" data-pane="real-toggle-wrapper" id="planta-pane-vm">
     <div class="planta-svg-wrap" id="planta-html-wrap">
       <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet">
         <text x="50" y="42" font-family="sans-serif" font-weight="700" font-size="20" fill="#1a1714">ANSELMI</text>
@@ -6502,8 +6522,24 @@ function renderPlantaHTML(cod){
         ${pilares}
         ${cabIcons}
       </svg>
+    </div>
+    </div>
+
+    <div class="planta-view-pane" data-pane="real-toggle-wrapper" id="planta-pane-real">
+      <div class="planta-real-wrap">
+        <img src="../data/plantas/${cod}.jpg" alt="Planta real ${cfg.titulo}"
+             onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'planta-real-fallback\\'>Planta real ainda não cadastrada no anselmi-pcp para esta loja</div>';"/>
+        <div class="planta-real-caption">data/plantas/${cod}.jpg</div>
+      </div>
     </div>`;
 }
+
+function _plantaTogglePane(which){
+  document.querySelectorAll('.planta-toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.pane === which));
+  document.getElementById('planta-pane-vm')?.classList.toggle('active', which === 'vm');
+  document.getElementById('planta-pane-real')?.classList.toggle('active', which === 'real');
+}
+window._plantaTogglePane = _plantaTogglePane;
 
 // CSS antigo (preservado pra fallback) — não é mais usado mas manter pra não quebrar nada
 const _oldPlantaCSSPreserved = `
