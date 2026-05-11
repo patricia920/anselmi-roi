@@ -822,15 +822,112 @@ async function tryLoadFromPipeline(){
   try {
     const result = await RoiDataLoader.load('replenishment', { fallback: null });
     RoiDataLoader.syncBadge('hdr-sync', result);
-    if (result.ok && !result.fromFallback && result.rows && result.rows.length > 0) {
-      // Adapta schema Volution → schema interno (LISTA / CARDS)
-      // expressions: orders, actualStock, minimumStock, totalSales, selltrough, salesProjection, overstock
-      const lojaName = (r) => (r.pointOfSale && r.pointOfSale.name) || r.loja || '—';
-      const lojaId = (r) => (r.pointOfSale && r.pointOfSale.erpCode) || r.loja_id || '—';
-      // Aqui faria o map completo. Por enquanto apenas log.
-      console.log('[reabast] Pipeline carregado:', result.rowsCount, 'linhas em', result.exportedAt);
+    if (!result.ok || result.fromFallback || !result.rows || result.rows.length === 0) {
+      console.warn('[reabast] pipeline vazio, usando dataset estático');
+      return;
     }
-  } catch(e) { console.warn('[reabast] pipeline indisponível, usando dataset estático'); }
+
+    // === MAP schema pipeline → schema interno (LISTA / CARDS) ===
+    // CARDS: 1:1 com cada row do pipeline (visão por SKU agregado)
+    const newCards = result.rows.map((r, i) => {
+      const exp = r.expressions || {};
+      const ranking = r.pointsOfSaleRanking || [];
+      return {
+        rank: r.ranking || (i + 1),
+        sku: r.rootProductCode,
+        cat: r.description || 'GERAL',
+        preco: +(r.price || 0),
+        custo: +(r.cost || 0),
+        kpi: {
+          pedido: +(exp.orders || 0),
+          po:     +(exp.originalOrder || 0),
+          ent:    +(exp.transferIn || 0),
+          sai:    +(exp.transferOut || 0),
+          dev:    +(exp.returns || 0),
+          sobra:  +(exp.overstock || 0),
+          ea:     +(exp.actualStock || 0),
+          ei:     +(exp.minimumStock || 0),
+          em:     Math.round((+exp.actualStock || 0) * 0.8),
+          vt:     +(exp.totalSales || 0),
+          st:     Math.round((+exp.selltrough || 0) * 100),
+          pc:     +(exp.purchaseOrder || 0)
+        },
+        vendas2m:  +(r.salesTwoMonths || 0),
+        ruptura2m: +(r.breakageTwoMonths || 0),
+        top: ranking.map(p => ({
+          nome: p.name,
+          v2m:  +(p.salesTwoMonths || 0),
+          r2m:  +(p.breakageTwoMonths || 0),
+          ea:   +(p.currentStock || 0)
+        }))
+      };
+    });
+    newCards.sort((a, b) => a.rank - b.rank);
+
+    // LISTA: explode cada SKU em N entries por loja (top10 por SKU em pointsOfSaleRanking)
+    // Pra os campos que o pipeline não dá por loja (po, p), distribui proporcional às vendas.
+    const newLista = [];
+    for (const r of result.rows) {
+      const exp = r.expressions || {};
+      const ranking = r.pointsOfSaleRanking || [];
+      const totalSales = ranking.reduce((s, p) => s + (+p.salesTwoMonths || 0), 0) || 1;
+      for (const pos of ranking) {
+        const peso = (+pos.salesTwoMonths || 0) / totalSales;
+        const po_loja = Math.round((+exp.originalOrder || 0) * peso);
+        const p_loja  = Math.round((+exp.orders || 0) * peso);
+        // pula entry sem nada relevante
+        if (po_loja === 0 && p_loja === 0 && (+pos.currentStock || 0) === 0 && (+pos.salesTwoMonths || 0) === 0) continue;
+        newLista.push({
+          loja: pos.name,
+          lojaId: 0,
+          cat: r.description || 'GERAL',
+          sku: r.rootProductCode,
+          bloq: 'N',
+          po:  po_loja,
+          cpo: +(po_loja * (r.cost || 0)).toFixed(2),
+          p:   p_loja,
+          cp:  +(p_loja * (r.cost || 0)).toFixed(2),
+          r: 0,
+          dias: 0,
+          ea:  +pos.currentStock || 0,
+          rp: 0,
+          cob: 0,
+          ed:  +exp.actualStock || 0,
+          ei:  Math.round((+exp.minimumStock || 0) * peso),
+          ci: 0,
+          smp: Math.round((+exp.minimumStock || 0) * peso),
+          vmp: +pos.salesTwoMonths || 0,
+          nec: 0,
+          sobra: 0,
+          ent: 0,
+          sai: 0,
+          dev: 0
+        });
+      }
+    }
+
+    // Substitui CARDS e LISTA mantendo as referências (const)
+    CARDS.length = 0;  newCards.forEach(c => CARDS.push(c));
+    LISTA.length = 0;  newLista.forEach(l => LISTA.push(l));
+
+    // Atualiza TOTAL_GERAL com soma real
+    if (typeof TOTAL_GERAL !== 'undefined') {
+      TOTAL_GERAL.pedido       = newCards.reduce((s,c) => s + (c.kpi.pedido || 0), 0);
+      TOTAL_GERAL.po           = newCards.reduce((s,c) => s + (c.kpi.po || 0), 0);
+      TOTAL_GERAL.custo_pedido = newCards.reduce((s,c) => s + (c.kpi.pedido || 0) * (c.custo || 0), 0);
+      TOTAL_GERAL.custo_po     = newCards.reduce((s,c) => s + (c.kpi.po || 0) * (c.custo || 0), 0);
+      TOTAL_GERAL.ruptura      = newCards.reduce((s,c) => s + (c.ruptura2m || 0), 0);
+      TOTAL_GERAL.linhas       = LISTA.length;
+    }
+
+    console.log('[reabast] Pipeline carregado:', CARDS.length, 'cards e', LISTA.length, 'linhas (loja×sku) em', result.exportedAt);
+
+    // Re-render
+    if (typeof renderKPIs === 'function')      renderKPIs();
+    if (typeof populateFilters === 'function') populateFilters();
+    if (typeof applyFilters === 'function')    applyFilters();
+
+  } catch(e) { console.warn('[reabast] pipeline indisponível, usando dataset estático:', e.message); }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
