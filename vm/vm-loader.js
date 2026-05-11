@@ -117,8 +117,17 @@
     // dispara as cargas em paralelo
     const fotoResolverP = loadFotoResolver();
     const corPlmP = loadJSON('../data/cores_plm.json');
+    const lojaMapP = loadJSON('../data/loja_map.json');
 
-    const [FotoResolver, corPlm] = await Promise.all([fotoResolverP, corPlmP]);
+    const [FotoResolver, corPlm, lojaMapData] = await Promise.all([fotoResolverP, corPlmP, lojaMapP]);
+
+    // window.LOJA_MAP: { storeid_sisplan: slug } — usado pra resolver
+    // data/drills/<slug>.json e data/plantas/<slug>.jpg
+    if (lojaMapData && lojaMapData.map) {
+      window.LOJA_MAP = lojaMapData.map;
+      const mapped = Object.values(lojaMapData.map).filter(Boolean).length;
+      console.info('[vm-loader] LOJA_MAP ·', mapped, 'lojas com slug/planta');
+    }
 
     // FotoResolver.load() puxa data/banco_fotos.json (photo.anselmi.ind.br)
     let banco = null;

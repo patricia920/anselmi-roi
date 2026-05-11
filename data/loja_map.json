@@ -1,0 +1,55 @@
+{
+  "_meta": {
+    "descricao": "Mapeamento storeid Sisplan -> slug usado em data/drills/, data/plantas/ e como chave canônica de loja na UI da VM.",
+    "fonte": "VAR_LOJAS do ved_varejo.js (Sisplan, 30 lojas). Slug derivado do nome Sisplan limpo (sem prefixo ANSELMI, sem UF, kebab-case sem acentos).",
+    "gerado": "2026-05-11"
+  },
+  "map": {
+    "0101": null,
+    "0102": "patio-batel",
+    "0103": "porto-alegre",
+    "0104": "faria-lima",
+    "0105": "brasilia",
+    "0106": null,
+    "0107": "campinas",
+    "0108": "gramado",
+    "0109": "morumbi",
+    "0110": "jk",
+    "0111": "barra-shopping",
+    "0112": "village-mall",
+    "0113": "alphaville",
+    "0114": "jardim-belvedere",
+    "0115": "patio-higienopolis",
+    "0116": "diamond-mall",
+    "0117": "barigui",
+    "0118": null,
+    "0119": "leblon",
+    "0120": null,
+    "0121": "beira-mar",
+    "0122": null,
+    "0123": null,
+    "0124": null,
+    "0125": null,
+    "0126": null,
+    "0127": "goiania",
+    "0128": null,
+    "0301": null,
+    "0302": null
+  },
+  "_notes": {
+    "lojas_sem_planta_pcp": [
+      "0101 E-COMMERCE (online, sem planta)",
+      "0106 CENTRO ADM (escritorio, sem loja fisica)",
+      "0118 CATARINA OUTLET - SP",
+      "0120 BALNEARIO - SC",
+      "0122 CASA GRAMADO - RS",
+      "0123 STUDIO",
+      "0124 FARROUPILHA - RS",
+      "0125 NOVO HAMBURGO - RS",
+      "0126 TIJUCAS OUTLET - SC",
+      "0128 CAMPO GRANDE - MS",
+      "0301-0302 MARASQUINO (marca diferente)"
+    ],
+    "todo": "Cadastrar planta + drill no anselmi-pcp para as 11 lojas acima."
+  }
+}

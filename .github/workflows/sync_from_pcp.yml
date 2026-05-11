@@ -89,6 +89,48 @@ jobs:
           # Limpa o clone temporário
           rm -rf _pcp
 
+      - name: Renomear drills/plantas — códigos curtos → slugs Sisplan
+        run: |
+          set -euo pipefail
+          # Lê o mapa de aliases legados (curto -> slug) do próprio repo, derivado
+          # de data/loja_map.json. Anselmi-pcp continua nomeando arquivos com
+          # BATEL.json, JK.json, etc. — aqui traduzimos pros slugs canônicos
+          # usados pela página VM (patio-batel, jk, etc.).
+          declare -A ALIAS=(
+            [ALPH]=alphaville
+            [BAR]=barra-shopping
+            [BATEL]=patio-batel
+            [BC]=barigui
+            [BELV]=jardim-belvedere
+            [BPOA]=porto-alegre
+            [BSB]=brasilia
+            [CMP]=campinas
+            [DIA]=diamond-mall
+            [FARIA]=faria-lima
+            [FLN]=beira-mar
+            [GMD]=gramado
+            [HIGI]=patio-higienopolis
+            [IGTM]=goiania
+            [JK]=jk
+            [LEBL]=leblon
+            [MOR]=morumbi
+            [VIL]=village-mall
+          )
+          renamed_drills=0
+          renamed_plantas=0
+          for OLD in "${!ALIAS[@]}"; do
+            NEW="${ALIAS[$OLD]}"
+            if [ -f "data/drills/$OLD.json" ]; then
+              mv "data/drills/$OLD.json" "data/drills/$NEW.json"
+              renamed_drills=$((renamed_drills + 1))
+            fi
+            if [ -f "data/plantas/$OLD.jpg" ]; then
+              mv "data/plantas/$OLD.jpg" "data/plantas/$NEW.jpg"
+              renamed_plantas=$((renamed_plantas + 1))
+            fi
+          done
+          echo "✓ renomeados: $renamed_drills drills, $renamed_plantas plantas"
+
       - name: Detectar alterações
         id: diff
         run: |
