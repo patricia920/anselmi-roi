@@ -1649,10 +1649,10 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
       </div>
     </div>
     <div class="hdr-kpi">
-      <div class="hdr-stat" onclick="goTo('overview')"><div class="v">3.842</div><div class="l">Expostos</div></div>
-      <div class="hdr-stat" onclick="goTo('buracos')"><div class="v crit">187</div><div class="l">Buracos</div></div>
-      <div class="hdr-stat" onclick="goTo('cd')"><div class="v warn">94</div><div class="l">CD lotado</div></div>
-      <div class="hdr-stat" onclick="goTo('paradas')"><div class="v crit">312</div><div class="l">Paradas</div></div>
+      <div class="hdr-stat" onclick="goTo('overview')"><div class="v" id="hdr-kpi-expostos">—</div><div class="l">Expostos</div></div>
+      <div class="hdr-stat" onclick="goTo('buracos')"><div class="v crit" id="hdr-kpi-buracos">—</div><div class="l">Buracos</div></div>
+      <div class="hdr-stat" onclick="goTo('cd')"><div class="v warn" id="hdr-kpi-cd">—</div><div class="l">CD lotado</div></div>
+      <div class="hdr-stat" onclick="goTo('paradas')"><div class="v crit" id="hdr-kpi-paradas">—</div><div class="l">Paradas</div></div>
     </div>
     <div class="hdr-date">30/04/2026</div>
   </div>
@@ -2893,6 +2893,124 @@ function _buildLojasFromVar(){
   return true;
 }
 window._buildLojasFromVar = _buildLojasFromVar;
+
+/* ───────────────────────────────────────────────────────────────────────────
+   HEADER KPIs — derivados de VAR_ESTOQUE + VAR_ESTOQUE_LOJA + VAR_VENDAS_DIA
+   (Sisplan). Não usa mais valores hardcoded.
+
+   IMPORTANTE: o Sisplan exporta estoque TOTAL DA REDE (95% das refs têm CD=0
+   após subtrair as lojas). Por isso evitamos heurísticas baseadas em qty-CD —
+   usamos relações entre VENDAS, ESTOQUE-TOTAL e DISTRIBUIÇÃO entre lojas.
+
+   Fórmulas (ajustáveis):
+   • EXPOSTOS  = soma de qty nas 18 lojas físicas Anselmi (LOJA_MAP[storeid] != null,
+                 excluindo e-commerce, escritório e Marasquino).
+   • BURACOS   = refs com DEMANDA (vendas-30d ≥ 5) mas SUB-DISTRIBUÍDAS (≤3 lojas
+                 com estoque). Oportunidade de expor em mais lojas.
+   • CD LOTADO = refs ENGASGADAS — alto estoque (≥30 unidades total) com vendas baixas
+                 (≤2 em 30d). Estoque parado na rede, candidato a transferência/devolução.
+   • PARADAS   = refs com estoque em loja física mas ZERO vendas em 30d (não gira).
+   ─────────────────────────────────────────────────────────────────────────── */
+function computeHeaderKpis() {
+  const VE = window.VAR_ESTOQUE || {};
+  const VEL = window.VAR_ESTOQUE_LOJA || {};
+  const VVD = window.VAR_VENDAS_DIA || {};
+  const lojaMap = window.LOJA_MAP || {};
+
+  // Set de storeids Anselmi com slug ativo (loja física com planta cadastrada).
+  const lojasFisicas = new Set(
+    Object.entries(lojaMap).filter(([_, slug]) => !!slug).map(([sid]) => sid)
+  );
+
+  // Janela de 30 dias
+  const hoje = new Date();
+  const limite30d = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() - 30);
+
+  // Thresholds — ajustáveis com base no perfil de SKU/coleção
+  const BURACO_VENDAS_MIN  = 5;   // tem demanda real
+  const BURACO_LOJAS_MAX   = 3;   // mas só em poucas lojas
+  const CDLOT_ESTOQUE_MIN  = 30;  // estoque alto na rede
+  const CDLOT_VENDAS_MAX   = 2;   // vendas baixas em 30d
+
+  let expostos = 0, buracos = 0, cdLotado = 0, paradas = 0;
+
+  Object.keys(VE).forEach(ref => {
+    const total = +VE[ref] || 0;
+    const byStore = VEL[ref] || {};
+
+    // Estoque agregado nas lojas físicas
+    let qtyLojasFisicas = 0;
+    let countLojasFisicasComEstoque = 0;
+    Object.entries(byStore).forEach(([sid, qty]) => {
+      const q = +qty || 0;
+      if (lojasFisicas.has(sid)) {
+        qtyLojasFisicas += q;
+        if (q > 0) countLojasFisicasComEstoque++;
+      }
+    });
+
+    // Vendas dos últimos 30d (agregadas em todas as lojas)
+    const vendasByLoja = VVD[ref] || {};
+    let vendas30d = 0;
+    Object.values(vendasByLoja).forEach(byDate => {
+      if (!byDate || typeof byDate !== 'object') return;
+      Object.entries(byDate).forEach(([dateStr, tuple]) => {
+        const d = new Date(dateStr);
+        if (d >= limite30d) {
+          const units = Array.isArray(tuple) ? (+tuple[0] || 0) : 0;
+          if (units > 0) vendas30d += units;
+        }
+      });
+    });
+
+    expostos += qtyLojasFisicas;
+
+    // BURACO: vende mas está sub-distribuído
+    if (vendas30d >= BURACO_VENDAS_MIN && countLojasFisicasComEstoque <= BURACO_LOJAS_MAX) {
+      buracos++;
+    }
+
+    // CD LOTADO: alto estoque na rede + baixa venda (engasgado)
+    if (total >= CDLOT_ESTOQUE_MIN && vendas30d <= CDLOT_VENDAS_MAX) {
+      cdLotado++;
+    }
+
+    // PARADAS: tem estoque exposto mas zero vendas
+    if (qtyLojasFisicas > 0 && vendas30d === 0) {
+      paradas++;
+    }
+  });
+
+  return { expostos, buracos, cdLotado, paradas };
+}
+window.computeHeaderKpis = computeHeaderKpis;
+
+function updateHeaderKpis() {
+  if (typeof window.VAR_ESTOQUE !== 'object' || !window.VAR_ESTOQUE) return false;
+  const k = computeHeaderKpis();
+  const fmt = (n) => Number(n).toLocaleString('pt-BR');
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = fmt(val); };
+
+  set('hdr-kpi-expostos', k.expostos);
+  set('hdr-kpi-buracos',  k.buracos);
+  set('hdr-kpi-cd',       k.cdLotado);
+  set('hdr-kpi-paradas',  k.paradas);
+
+  // Ajusta classes de cor (crit/warn) com base em thresholds
+  function setSeverity(id, value, warnAt, critAt) {
+    const el = document.getElementById(id); if (!el) return;
+    el.classList.remove('crit', 'warn');
+    if (value >= critAt) el.classList.add('crit');
+    else if (value >= warnAt) el.classList.add('warn');
+  }
+  setSeverity('hdr-kpi-buracos', k.buracos, 50, 100);
+  setSeverity('hdr-kpi-cd',      k.cdLotado, 50, 100);
+  setSeverity('hdr-kpi-paradas', k.paradas, 100, 250);
+
+  console.log('[vm-kpis] header atualizado:', k);
+  return true;
+}
+window.updateHeaderKpis = updateHeaderKpis;
 
 /* Cada peça tem distribuição por loja (mock) */
 function gerarDistribuicao(estoqueTotal, vendas30, status, lojasComEstoque){
@@ -9105,6 +9223,20 @@ spWireDropdowns();
     document.addEventListener('DOMContentLoaded', go);
   } else { setTimeout(go, 50); }
   window.addEventListener('hashchange', go);
+})();
+
+/* v36 · KPIs do header — atualiza assim que o vm-loader sinaliza pronto + retry
+   pra caso o ved_varejo.js demore um pouco mais. */
+(function(){
+  let tries = 0;
+  function tryUpdate(){
+    if (typeof window.updateHeaderKpis === 'function' && window.updateHeaderKpis()) return;
+    if (++tries < 10) setTimeout(tryUpdate, 500);
+  }
+  document.addEventListener('vm-loader:ready', tryUpdate);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', tryUpdate);
+  } else { setTimeout(tryUpdate, 300); }
 })();
 </script>
 </body>
