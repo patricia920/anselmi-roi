@@ -132,6 +132,18 @@
       }
     }).catch(err => console.warn('[vm-loader] LOJA_MAP load falhou:', err.message));
 
+    // GERENTES: carrega data/gerentes.json e mescla com const GERENTES default
+    loadJSON('../data/gerentes.json').then(data => {
+      if (!data || !data.gerentes) return;
+      window.GERENTES_DATA = data.gerentes;
+      if (typeof window.GERENTES === 'object' && window.GERENTES) {
+        Object.assign(window.GERENTES, data.gerentes);
+        const total = Object.keys(data.gerentes).length;
+        const named = Object.values(data.gerentes).filter(g => g && g.nome && g.nome !== 'A definir').length;
+        console.info('[vm-loader] GERENTES ·', named, 'com nome /', total, 'lojas');
+      }
+    }).catch(err => console.warn('[vm-loader] GERENTES load falhou:', err.message));
+
     const [FotoResolver, corPlm] = await Promise.all([fotoResolverP, corPlmP]);
 
     // FotoResolver.load() puxa data/banco_fotos.json (photo.anselmi.ind.br)

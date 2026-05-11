@@ -7622,7 +7622,8 @@ function logoAnselmi(opts){
 }
 
 /* ════════ EXPORTAR DOCUMENTO ════════ */
-/* Gerentes mockados de cada loja */
+/* Gerentes das lojas — fallback default; vm-loader.js mescla com data/gerentes.json no boot.
+   Pra adicionar/atualizar gerente: editar data/gerentes.json (não este const). */
 const GERENTES = {
   'patio-higienopolis': {nome:'Mariana Souza',  email:'mariana.souza@anselmi.ind.br'},
   'patio-batel':{nome:'Carolina Bertaglia', email:'carolina.b@anselmi.ind.br'},
@@ -7630,6 +7631,7 @@ const GERENTES = {
   'faria-lima':{nome:'Patricia Ramos', email:'pati.ramos@anselmi.ind.br'},
   'leblon': {nome:'Luana Cordeiro', email:'luana.c@anselmi.ind.br'}
 };
+window.GERENTES = GERENTES;
 
 /* ───────────────────────────────────────────────────────────────────────────
    EXPORT CSV — Excel-friendly, sem dependência externa.

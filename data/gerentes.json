@@ -1,0 +1,28 @@
+{
+  "_meta": {
+    "descricao": "Gerentes das lojas Anselmi — chave = slug (mesma chave de data/loja_map.json).",
+    "como_atualizar": "Editar este arquivo diretamente OU via PR. vm-loader carrega no boot e mescla com GERENTES default da página.",
+    "fonte_atual": "Manual — futuramente vir do Sisplan (módulo RH) se a integração for criada.",
+    "gerado": "2026-05-11"
+  },
+  "gerentes": {
+    "patio-batel":         {"nome": "Carolina Bertaglia", "email": "carolina.b@anselmi.ind.br"},
+    "porto-alegre":        {"nome": "A definir",          "email": "—"},
+    "faria-lima":          {"nome": "Patricia Ramos",     "email": "pati.ramos@anselmi.ind.br"},
+    "brasilia":            {"nome": "A definir",          "email": "—"},
+    "campinas":            {"nome": "A definir",          "email": "—"},
+    "gramado":             {"nome": "A definir",          "email": "—"},
+    "morumbi":             {"nome": "A definir",          "email": "—"},
+    "jk":                  {"nome": "Bruna Almeida",      "email": "bruna.almeida@anselmi.ind.br"},
+    "barra-shopping":      {"nome": "A definir",          "email": "—"},
+    "village-mall":        {"nome": "A definir",          "email": "—"},
+    "alphaville":          {"nome": "A definir",          "email": "—"},
+    "jardim-belvedere":    {"nome": "A definir",          "email": "—"},
+    "patio-higienopolis":  {"nome": "Mariana Souza",      "email": "mariana.souza@anselmi.ind.br"},
+    "diamond-mall":        {"nome": "A definir",          "email": "—"},
+    "barigui":             {"nome": "A definir",          "email": "—"},
+    "leblon":              {"nome": "Luana Cordeiro",     "email": "luana.c@anselmi.ind.br"},
+    "beira-mar":           {"nome": "A definir",          "email": "—"},
+    "goiania":             {"nome": "A definir",          "email": "—"}
+  }
+}
