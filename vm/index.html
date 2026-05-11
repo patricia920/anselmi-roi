@@ -1760,7 +1760,7 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
       <button class="mm-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
         Análise
-        <span class="mm-cnt">593</span>
+        <span class="mm-cnt" id="mm-cnt-analise">—</span>
         <span class="mm-chev">▾</span>
       </button>
       <div class="mm-pop wide">
@@ -1771,7 +1771,7 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
             <div class="mm-it-name">Buracos no VM</div>
             <div class="mm-it-desc">REFs com estoque sem exposição</div>
           </div>
-          <span class="mm-it-badge crit">187</span>
+          <span class="mm-it-badge crit" id="mm-badge-buracos">—</span>
         </a>
         <a class="mm-item" data-tab="cd" onclick="switchTab('cd')">
           <svg class="mm-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>
@@ -1779,7 +1779,7 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
             <div class="mm-it-name">CD lotado</div>
             <div class="mm-it-desc">REFs candidatas a frontalizar</div>
           </div>
-          <span class="mm-it-badge warn">94</span>
+          <span class="mm-it-badge warn" id="mm-badge-cd">—</span>
         </a>
         <a class="mm-item" data-tab="paradas" onclick="switchTab('paradas')">
           <svg class="mm-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
@@ -1787,7 +1787,7 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
             <div class="mm-it-name">Paradas no VM</div>
             <div class="mm-it-desc">Expostas + 60d sem venda</div>
           </div>
-          <span class="mm-it-badge crit">312</span>
+          <span class="mm-it-badge crit" id="mm-badge-paradas">—</span>
         </a>
         <div class="mm-sep"></div>
         <div class="mm-pop-section-h">Performance</div>
@@ -3052,10 +3052,17 @@ function updateHeaderKpis() {
   const fmt = (n) => Number(n).toLocaleString('pt-BR');
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = fmt(val); };
 
+  // 1. KPIs do header principal
   set('hdr-kpi-expostos', k.expostos);
   set('hdr-kpi-buracos',  k.buracos);
   set('hdr-kpi-cd',       k.cdLotado);
   set('hdr-kpi-paradas',  k.paradas);
+
+  // 2. Badges do mega-menu "Análise" — devem refletir os mesmos números
+  set('mm-badge-buracos', k.buracos);
+  set('mm-badge-cd',      k.cdLotado);
+  set('mm-badge-paradas', k.paradas);
+  set('mm-cnt-analise',   k.buracos + k.cdLotado + k.paradas);
 
   // Ajusta classes de cor (crit/warn) com base em thresholds
   function setSeverity(id, value, warnAt, critAt) {
@@ -3068,7 +3075,7 @@ function updateHeaderKpis() {
   setSeverity('hdr-kpi-cd',      k.cdLotado, 50, 100);
   setSeverity('hdr-kpi-paradas', k.paradas, 100, 250);
 
-  console.log('[vm-kpis] header atualizado:', k);
+  console.log('[vm-kpis] header + menu análise atualizados:', k);
   return true;
 }
 window.updateHeaderKpis = updateHeaderKpis;
@@ -3470,7 +3477,10 @@ function renderMosaic(containerId, filterFn, maxResults){
   }).join('');
 }
 
-/* Paleta oficial da coleção I-26 (mock) */
+/* Paleta oficial da coleção — fallback default; vm-loader.js carrega
+   data/paleta_colecao.json no boot e sobrescreve. Hex é enriquecido com
+   COR_PLM (185 cores) quando nome bate. Pra mudar paleta a cada coleção,
+   edita data/paleta_colecao.json (não este const). */
 const PALETA_COLECAO = [
   {nome:'Off Camelo',hex:'#c9a877',pct:18},
   {nome:'Cru',hex:'#e9e2d0',pct:14},
@@ -3484,6 +3494,7 @@ const PALETA_COLECAO = [
   {nome:'Meia Noite',hex:'#1c2435',pct:4},
   {nome:'Militar',hex:'#5e6b3e',pct:2}
 ];
+window.PALETA_COLECAO = PALETA_COLECAO;
 
 let CORES_PERIODO = 30;
 function renderCores(){
@@ -4061,6 +4072,16 @@ function _photoUrlsForRefCor(ref, cor){
 
 function _resolvePhoto(p, refFallback){
   const ref = (p && p.ref) || refFallback;
+  // 0) FotoResolver (data/banco_fotos.json — 974 refs reais do photo.anselmi.ind.br).
+  //    Faz lookup com zero-padding (refs Sisplan 3-5 dígitos → banco 6 dígitos).
+  //    Foto de qualquer cor é melhor que silhueta vazia ou foto errada de outra peça.
+  if (ref && typeof window.FotoResolver === 'object' && window.FotoResolver) {
+    const fotoBanco = window.FotoResolver.getFotoAnyColor(String(ref));
+    if (fotoBanco) {
+      const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
+      return `<img src="${fotoBanco}" alt="${ref}" loading="lazy" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';"/><div style="display:none">${sil}</div>`;
+    }
+  }
   // 1) Tenta foto específica da cor principal (ref+cor)
   if(p && p.corPrincipal){
     const candidatos = _photoUrlsForRefCor(ref, p.corPrincipal);
@@ -4457,7 +4478,7 @@ function openModal(ref){
       </div>
       <div class="lb-actions">
         <button class="lb-action">Marcar como atendido</button>
-        <button class="lb-action sec">Ver no PLM</button>
+        <a class="lb-action sec" href="https://plm.colecao.moda/products?search=${encodeURIComponent(p.ref)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">Ver no PLM <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3h7v7"/><path d="M21 3l-10 10"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg></a>
         <button class="lb-action sec">Exportar PDF</button>
       </div>
     </div>`;
