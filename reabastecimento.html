@@ -906,21 +906,34 @@ async function tryLoadFromPipeline(){
       }
     }
 
-    // Substitui CARDS e LISTA mantendo as referências (const)
-    CARDS.length = 0;  newCards.forEach(c => CARDS.push(c));
-    LISTA.length = 0;  newLista.forEach(l => LISTA.push(l));
+    // Limita pra performance — universo completo trava browser
+    // Top 200 cards (já é 16x mais que os 12 demo)
+    // Top 1500 linhas loja×sku ordenadas por necessidade de pedido (cpo)
+    const CARDS_LIMIT = 200;
+    const LISTA_LIMIT = 1500;
+    const newCardsCut = newCards.slice(0, CARDS_LIMIT);
+    const newListaCut = newLista
+      .sort((a, b) => (b.cpo || 0) - (a.cpo || 0))
+      .slice(0, LISTA_LIMIT);
 
-    // Atualiza TOTAL_GERAL com soma real
+    // Substitui CARDS e LISTA mantendo as referências (const)
+    CARDS.length = 0;  newCardsCut.forEach(c => CARDS.push(c));
+    LISTA.length = 0;  newListaCut.forEach(l => LISTA.push(l));
+
+    // Atualiza TOTAL_GERAL com soma do UNIVERSO COMPLETO (não cortado)
+    // pra os KPIs mostrarem o pedido real total, não só o que cabe na lista
     if (typeof TOTAL_GERAL !== 'undefined') {
       TOTAL_GERAL.pedido       = newCards.reduce((s,c) => s + (c.kpi.pedido || 0), 0);
       TOTAL_GERAL.po           = newCards.reduce((s,c) => s + (c.kpi.po || 0), 0);
       TOTAL_GERAL.custo_pedido = newCards.reduce((s,c) => s + (c.kpi.pedido || 0) * (c.custo || 0), 0);
       TOTAL_GERAL.custo_po     = newCards.reduce((s,c) => s + (c.kpi.po || 0) * (c.custo || 0), 0);
       TOTAL_GERAL.ruptura      = newCards.reduce((s,c) => s + (c.ruptura2m || 0), 0);
-      TOTAL_GERAL.linhas       = LISTA.length;
+      TOTAL_GERAL.linhas       = newLista.length;  // total real, não cortado
     }
 
-    console.log('[reabast] Pipeline carregado:', CARDS.length, 'cards e', LISTA.length, 'linhas (loja×sku) em', result.exportedAt);
+    console.log('[reabast] Pipeline:', newCards.length, 'cards totais →', CARDS.length, 'mostrados;',
+                                       newLista.length, 'linhas totais →', LISTA.length, 'mostradas;',
+                                       'exportado em', result.exportedAt);
 
     // Re-render
     if (typeof renderKPIs === 'function')      renderKPIs();
