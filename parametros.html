@@ -548,19 +548,58 @@ let SAVED_STATE = null;
 let DIRTY_COUNT = 0;
 
 function loadState(){
+  // 1ª preferência: localStorage (rápido, síncrono)
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       SAVED_STATE = JSON.parse(saved);
       STATE = JSON.parse(JSON.stringify(SAVED_STATE));
+      // Em background: sincroniza com servidor (pode trazer versão mais nova)
+      loadFromServer();
       return;
     }
   } catch(e){}
   SAVED_STATE = JSON.parse(JSON.stringify(DEFAULT_STATE));
   STATE = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  // Tenta puxar do servidor caso seja 1º acesso nesse browser
+  loadFromServer();
 }
+
+// Sincroniza estado do servidor (Cloudflare KV via /api/params).
+// Se servidor tem versão mais recente, sobrescreve local e re-renderiza.
+async function loadFromServer(){
+  try {
+    const r = await fetch('/api/params', { cache: 'no-store' });
+    if (!r.ok) return;
+    const data = await r.json();
+    if (!data.ok || !data.state) return;
+    const serverState = { ...data.state };
+    delete serverState._meta;
+    const localStr = JSON.stringify(SAVED_STATE);
+    const serverStr = JSON.stringify(serverState);
+    if (localStr !== serverStr) {
+      SAVED_STATE = serverState;
+      STATE = JSON.parse(JSON.stringify(serverState));
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(SAVED_STATE)); } catch(e){}
+      if (typeof renderAll === 'function') renderAll();
+      if (typeof markDirty === 'function') markDirty();
+      console.log('[params] sincronizado do servidor:', data.savedAt);
+    }
+  } catch(e) { console.warn('[params] falha ao sincronizar:', e.message); }
+}
+
 function persistSaved(){
+  // Salva local imediatamente (UX rápida)
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(SAVED_STATE)); } catch(e){}
+  // Envia pro servidor em background (Cloudflare KV)
+  fetch('/api/params', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(SAVED_STATE),
+  }).then(r => r.json()).then(data => {
+    if (data.ok) console.log('[params] salvo no servidor:', data.savedAt);
+    else console.warn('[params] erro ao salvar no servidor:', data.error);
+  }).catch(e => console.warn('[params] falha ao salvar no servidor:', e.message));
 }
 function markDirty(){
   DIRTY_COUNT = computeDirty();
