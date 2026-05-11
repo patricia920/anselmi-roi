@@ -1,0 +1,9 @@
+name = "anselmi-roi"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = "."
+
+# KV namespaces bindings — disponíveis em env.VM_STATE_KV nas Pages Functions.
+# Criado via `wrangler kv namespace create VM_STATE_KV`.
+[[kv_namespaces]]
+binding = "VM_STATE_KV"
+id = "8cf02d828a1b430797cd68dda7f48c5b"
