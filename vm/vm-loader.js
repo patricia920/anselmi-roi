@@ -119,15 +119,20 @@
     const corPlmP = loadJSON('../data/cores_plm.json');
     const lojaMapP = loadJSON('../data/loja_map.json');
 
-    const [FotoResolver, corPlm, lojaMapData] = await Promise.all([fotoResolverP, corPlmP, lojaMapP]);
+    // LOJA_MAP é independente das fotos — atribui assim que chegar,
+    // pra evitar que falha de banco_fotos atrase a montagem do LOJAS Sisplan.
+    lojaMapP.then(lojaMapData => {
+      if (lojaMapData && lojaMapData.map) {
+        window.LOJA_MAP = lojaMapData.map;
+        const mapped = Object.values(lojaMapData.map).filter(Boolean).length;
+        console.info('[vm-loader] LOJA_MAP ·', mapped, 'lojas com slug/planta');
+        // Reconstroi LOJAS com slugs reais + recalcula KPIs do header
+        if (typeof window._buildLojasFromVar === 'function') window._buildLojasFromVar();
+        if (typeof window.updateHeaderKpis === 'function') window.updateHeaderKpis();
+      }
+    }).catch(err => console.warn('[vm-loader] LOJA_MAP load falhou:', err.message));
 
-    // window.LOJA_MAP: { storeid_sisplan: slug } — usado pra resolver
-    // data/drills/<slug>.json e data/plantas/<slug>.jpg
-    if (lojaMapData && lojaMapData.map) {
-      window.LOJA_MAP = lojaMapData.map;
-      const mapped = Object.values(lojaMapData.map).filter(Boolean).length;
-      console.info('[vm-loader] LOJA_MAP ·', mapped, 'lojas com slug/planta');
-    }
+    const [FotoResolver, corPlm] = await Promise.all([fotoResolverP, corPlmP]);
 
     // FotoResolver.load() puxa data/banco_fotos.json (photo.anselmi.ind.br)
     let banco = null;

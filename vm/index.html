@@ -7921,7 +7921,25 @@ window.renderComparador = renderComparador;
 function _cmpSetFilter(f){ _cmpFilter = f; renderComparador(); }
 window._cmpSetFilter = _cmpSetFilter;
 
-function openComparador(){
+async function _ensureLojaMap(){
+  if (window.LOJA_MAP && Object.keys(window.LOJA_MAP).length) return true;
+  try {
+    const r = await fetch('../data/loja_map.json', { cache: 'no-cache' });
+    const d = await r.json();
+    if (d && d.map) {
+      window.LOJA_MAP = d.map;
+      if (typeof window._buildLojasFromVar === 'function') window._buildLojasFromVar();
+      if (typeof window.updateHeaderKpis === 'function') window.updateHeaderKpis();
+      return true;
+    }
+  } catch (e) { console.warn('[cmp] _ensureLojaMap falhou:', e.message); }
+  return false;
+}
+
+async function openComparador(){
+  // Garante LOJA_MAP carregado antes (caso vm-loader tenha falhado em cache miss)
+  if (!window.LOJA_MAP || !Object.keys(window.LOJA_MAP).length) await _ensureLojaMap();
+
   // Popula os dropdowns com LOJAS
   const selA = document.getElementById('cmp-sel-a'); const selB = document.getElementById('cmp-sel-b');
   if (!selA || !selB) return;
