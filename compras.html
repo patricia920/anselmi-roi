@@ -574,7 +574,42 @@ window.addEventListener('DOMContentLoaded', () => {
   try {
     const result = await RoiDataLoader.load('purchases', { fallback: null });
     RoiDataLoader.syncBadge(badge, result);
-  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; }
+    if (!result.ok || result.fromFallback || !result.rows || result.rows.length === 0) return;
+
+    // Map schema pipeline → schema interno COMPRAS, top 200 por pedido_aj
+    const newComp = result.rows.map(r => ({
+      cat:           r.rootProductName || 'GERAL',
+      sku:           r.rootProductCode,
+      preco:         0,
+      custo:         0,
+      armazem:       'ESTOQUE CD',
+      min_mult:      '1/1',
+      lead_time:     +(r.leadTimeWeeks || 3),
+      periodicidade: +(r.periodWeeks || 4),
+      cob_dep:       +(r.depCoverageWeeks || 1),
+      reab_esp:      +(r.demandHorizon || 0),
+      est_prev_dep:  +(r.depositStock || 0) - +(r.adjustedOrder || 0),
+      pedido:        +(r.grossOrder || 0),
+      pedido_aj:     +(r.adjustedOrder || 0),
+      custo_aj:      0,
+      rupt_dep:      +(r.rupturaDepositDays || 0),
+      rupt_lojas:    +(r.rupturaImminentDays || 0),
+      vendas_lt:     Math.round(+(r.salesVelocityWeekly || 0) * +(r.leadTimeWeeks || 3)),
+      exposicao:     0,
+      rec_dep:       +(r.pendingReception || 0),
+      rec_lojas:     0,
+      ea_dep:        +(r.depositStock || 0),
+      ea_lojas:      +(r.storeStock || 0),
+      env_lt: 0, rec_dep_lt: 0, rec_loja_lt: 0,
+      v2m: Math.round(+(r.salesVelocityWeekly || 0) * 8.6),
+      v6m: Math.round(+(r.salesVelocityWeekly || 0) * 26),
+    }));
+    newComp.sort((a, b) => (b.pedido_aj || 0) - (a.pedido_aj || 0));
+    COMPRAS.length = 0;
+    newComp.slice(0, 200).forEach(c => COMPRAS.push(c));
+    console.log('[compras] Pipeline:', result.rows.length, 'rows →', COMPRAS.length, 'mostradas');
+    if (typeof applyFilters === 'function') applyFilters();
+  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; console.warn('[compras]', e.message); }
 })();
 </script>
 </body>

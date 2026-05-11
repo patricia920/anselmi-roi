@@ -607,7 +607,38 @@ window.addEventListener('DOMContentLoaded', () => {
   try {
     const result = await RoiDataLoader.load('alerts', { fallback: null });
     RoiDataLoader.syncBadge(badge, result);
-  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; }
+    if (!result.ok || result.fromFallback || !result.rows || result.rows.length === 0) return;
+
+    // Map: filtra alertas por type, mapeia pra schema interno {sku, cat, est_lojas, est_dep, total}
+    // Pipeline não dá est_lojas/est_dep/total direto — extrai de evidence quando possível
+    const mapAlert = (r) => {
+      const ev = r.evidence || {};
+      return {
+        sku: r.rootProductCode,
+        cat: r.rootProductName || 'GERAL',
+        est_lojas: +(ev.storeStock || ev.actualStock || 0),
+        est_dep:   +(ev.depositStock || 0),
+        total:     +(ev.totalStock || ev.actualStock || 0),
+        msg:       r.message || ''
+      };
+    };
+
+    const semVendas    = result.rows.filter(r => r.type === 'no_sales').map(mapAlert).slice(0, 200);
+    const dadosBase    = result.rows.filter(r => r.type === 'data_base').map(mapAlert).slice(0, 200);
+    const retardamento = result.rows.filter(r => r.type === 'late_reception' || r.type === 'critical_coverage').map(mapAlert).slice(0, 200);
+
+    SEM_VENDAS.length = 0;    semVendas.forEach(x => SEM_VENDAS.push(x));
+    DADOS_BASE.length = 0;    dadosBase.forEach(x => DADOS_BASE.push(x));
+    RETARDAMENTO.length = 0;  retardamento.forEach(x => RETARDAMENTO.push(x));
+
+    console.log('[alertas] Pipeline:', result.rows.length, 'alertas →',
+                'sem_vendas:', SEM_VENDAS.length, 'dados_base:', DADOS_BASE.length, 'retardamento:', RETARDAMENTO.length);
+
+    // Re-render
+    if (typeof renderSemVendas === 'function')   renderSemVendas();
+    if (typeof renderDadosBase === 'function')   renderDadosBase();
+    if (typeof renderRetardamento === 'function') renderRetardamento();
+  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; console.warn('[alertas]', e.message); }
 })();
 </script>
 </body>

@@ -644,7 +644,31 @@ window.addEventListener('DOMContentLoaded', () => {
   try {
     const result = await RoiDataLoader.load('overstock', { fallback: null });
     RoiDataLoader.syncBadge(badge, result);
-  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; }
+    if (!result.ok || result.fromFallback || !result.rows || result.rows.length === 0) return;
+
+    // Map schema pipeline → schema interno PRODUTOS, top 200 por custo de sobra 12 sem
+    const newProds = result.rows.map(r => ({
+      cat:   r.rootProductName || 'GERAL',
+      sku:   r.rootProductCode,
+      preco: +(r.unitCost || 0) * 2.5,
+      custo: +(r.unitCost || 0),
+      var:   +(r.salesVelocityWeekly || 0),
+      ea:    +(r.actualStock || 0),
+      ed:    0,
+      s12:   Math.round(+r.sobra12 || 0),
+      c12:   +(+r.custo12 || 0).toFixed(2),
+      s28:   Math.round(+r.sobra28 || 0),
+      c28:   +(+r.custo28 || 0).toFixed(2),
+      s53:   Math.round(+r.sobra53 || 0),
+      c53:   +(+r.custo53 || 0).toFixed(2),
+      rl: 0, rd: 0, nl: 0
+    }));
+    newProds.sort((a, b) => (b.c12 || 0) - (a.c12 || 0));
+    PRODUTOS.length = 0;
+    newProds.slice(0, 200).forEach(p => PRODUTOS.push(p));
+    console.log('[excesso] Pipeline:', result.rows.length, 'rows →', PRODUTOS.length, 'mostradas');
+    if (typeof applyFilters === 'function') applyFilters();
+  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; console.warn('[excesso]', e.message); }
 })();
 </script>
 </body>
