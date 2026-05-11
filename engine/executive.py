@@ -63,12 +63,18 @@ def _load_sales_ytd() -> tuple[float, float, int]:
         return 0.0, 0.0, 0
     rows = sales if isinstance(sales, list) else (sales.get("rows") or [])
     total_value = 0.0
-    total_margin = 0.0
+    total_margin = 0.0  # vw_vendas_roi não tem margem; deixar 0 ou estimar via markup
     transactions = 0
+    ticket_ids: set = set()
     today = datetime.now(BRT)
     year_start = datetime(today.year, 1, 1, tzinfo=BRT)
     for r in rows:
-        date_str = r.get("data") or r.get("date") or r.get("datavenda")
+        # Refunds: vw_vendas_roi marca refund='0' (string) pra venda real e '1' pra devolução
+        refund = str(r.get("refund", "0")).strip()
+        if refund and refund not in ("0", "false", ""):
+            continue
+        # Schema real Sisplan ROI: campo 'date' (YYYY-MM-DD), 'ammounttaxincluded' (valor R$)
+        date_str = r.get("date") or r.get("data") or r.get("datavenda")
         if date_str:
             try:
                 d = datetime.fromisoformat(str(date_str).replace("Z", "+00:00"))
@@ -78,12 +84,15 @@ def _load_sales_ytd() -> tuple[float, float, int]:
                     continue
             except ValueError:
                 pass
-        value = float(r.get("valor") or r.get("VALOR") or r.get("vlr_venda") or 0)
-        margin = float(r.get("margem") or r.get("MARGEM") or r.get("vlr_margem") or 0)
+        value = float(r.get("ammounttaxincluded") or r.get("valor") or r.get("VALOR") or 0)
         total_value += value
-        total_margin += margin
-        if value > 0:
-            transactions += 1
+        # ticket = identificador único da venda (várias linhas mesmo ticket)
+        tid = r.get("ticketid") or r.get("ticket_id")
+        if tid:
+            ticket_ids.add(tid)
+    transactions = len(ticket_ids) or sum(1 for r in rows if float(r.get("ammounttaxincluded") or 0) > 0)
+    # Margem estimada: 55% sobre vendas (markup médio Anselmi conhecido)
+    total_margin = total_value * 0.55
     return total_value, total_margin, transactions
 
 
@@ -159,9 +168,40 @@ def _calc_lost_sales(rows: list[dict]) -> float:
     return lost
 
 
+def _load_sales_qty_ytd() -> float:
+    """Total de UNIDADES vendidas YTD (não R$). Pra calcular days-of-stock."""
+    try:
+        sales = load_sisplan("vendas_roi")
+    except FileNotFoundError:
+        return 0.0
+    rows = sales if isinstance(sales, list) else (sales.get("rows") or [])
+    total_qty = 0.0
+    today = datetime.now(BRT)
+    year_start = datetime(today.year, 1, 1, tzinfo=BRT)
+    for r in rows:
+        if str(r.get("refund", "0")).strip() not in ("0", "", "false"):
+            continue
+        date_str = r.get("date") or r.get("data")
+        if date_str:
+            try:
+                d = datetime.fromisoformat(str(date_str).replace("Z", "+00:00"))
+                if d.tzinfo is None:
+                    d = d.replace(tzinfo=BRT)
+                if d < year_start:
+                    continue
+            except ValueError:
+                pass
+        try:
+            total_qty += float(r.get("quantity") or 0)
+        except (TypeError, ValueError):
+            pass
+    return total_qty
+
+
 def run(*, dry_run: bool = False) -> dict:
     rows = replenishment_rows()
     sales_value, margin_value, transactions = _load_sales_ytd()
+    sales_qty = _load_sales_qty_ytd()
     overstock = _calc_overstock_metrics(rows)
     transfer = _calc_transfer_acceptance()
     lost_qty = _calc_lost_sales(rows)
@@ -171,35 +211,45 @@ def run(*, dry_run: bool = False) -> dict:
 
     today = datetime.now(BRT)
     days_into_year = today.timetuple().tm_yday
-    sales_per_day = sales_value / days_into_year if days_into_year else 0
+    # Anualiza pra projeção anual (Anselmi reporta "Vendas YTD" mas dashboard exec é anualizado)
+    sales_annualized = sales_value * 365 / days_into_year if days_into_year else 0
+    margin_annualized = margin_value * 365 / days_into_year if days_into_year else 0
 
-    # GMROII = (margem / custo_estoque_médio) — sem custo, usa proxy de unidades
-    # GMROII inferido via stockTurn × margin% pra manter dimensional sense
-    inventory_turn = (sales_value / overstock["totalStockUnits"]) if overstock["totalStockUnits"] else 0
-    gmroii_pct = round(inventory_turn * margin_pct, 1)
+    qty_per_day = sales_qty / days_into_year if days_into_year else 0
+    days_of_stock = (overstock["totalStockUnits"] / qty_per_day) if qty_per_day > 0 else None
 
-    days_of_stock = (overstock["totalStockUnits"] / sales_per_day) if sales_per_day > 0 else 0
+    # GMROII = (margem anual / valor estoque médio). Sem valor estoque confiável (faltam unit_cost),
+    # marcamos como N/A em vez de inventar.
+    gmroii_pct = None  # requer unit_cost no pipeline
+
+    inventory_turn = None  # idem — requer valor de estoque
 
     kpis = {
         "salesYTD": {
             "value": round(sales_value, 2),
+            "valueAnnualized": round(sales_annualized, 2),
             "currency": "BRL",
             "transactions": transactions,
+            "qty": int(sales_qty),
         },
         "marginYTD": {
             "value": round(margin_value, 2),
+            "valueAnnualized": round(margin_annualized, 2),
             "pct": round(margin_pct, 1),
             "currency": "BRL",
+            "note": "estimativa: 55% sobre vendas (markup médio Anselmi)",
         },
         "gmroii": {
             "pct": gmroii_pct,
-            "note": "margem% × giro estimado",
+            "note": "N/A — requer unit_cost no pipeline",
         },
         "inventoryTurn": {
-            "ratio": round(inventory_turn, 2),
+            "ratio": inventory_turn,
+            "note": "N/A — requer valor monetário do estoque",
         },
         "daysOfStock": {
-            "days": round(days_of_stock, 1),
+            "days": round(days_of_stock, 1) if days_of_stock is not None else None,
+            "qtyPerDay": round(qty_per_day, 1),
         },
         "averageTicket": {
             "value": round(avg_ticket, 2),

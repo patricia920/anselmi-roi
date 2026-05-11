@@ -44,25 +44,38 @@ from _common import (
 
 
 def _index_by_sku_pos(rows: list[dict]) -> dict[str, list[dict]]:
-    """Indexa replenishment rows por SKU. Cada row já tem pointsOfSaleRanking[]
-    com qty/contribuição por loja, então transformamos em (sku → [pos_rows])."""
+    """Indexa replenishment rows por SKU. pointsOfSaleRanking real tem
+    currentStock + salesTwoMonths por loja (top 10 por SKU).
+
+    Não vem minimumStock por loja — rateamos via:
+        minimum_loja = minimumStock_total × (salesTwoMonths_loja / Σ salesTwoMonths)
+        ideal_loja   = minimum_loja × 1.3
+    """
     out: dict[str, list[dict]] = defaultdict(list)
     for r in rows:
         code = get_code(r)
         if not code:
             continue
-        # Cada pos no ranking representa uma loja com sua slice
         pos_ranking = r.get("pointsOfSaleRanking") or []
+        if not pos_ranking:
+            continue
+        total_sales = sum(float(p.get("salesTwoMonths") or 0) for p in pos_ranking) or 1
+        min_total = get_expr(r, "minimumStock")
+        unit_price = float(r.get("price") or 0)
+        unit_cost = float(r.get("cost") or 0)
         for pos in pos_ranking:
+            sales_loja = float(pos.get("salesTwoMonths") or 0)
+            peso = sales_loja / total_sales
+            min_loja = min_total * peso
             out[code].append({
-                "store_code": pos.get("pointOfSaleCode") or pos.get("posCode") or "",
-                "store_name": pos.get("pointOfSaleName") or pos.get("posName") or "",
-                "actual_stock": float(pos.get("actualStock") or 0),
-                "minimum_stock": float(pos.get("minimumStock") or 0),
-                "ideal_stock": float(pos.get("idealStock") or pos.get("targetStock") or 0),
-                "sales_velocity_weekly": float(pos.get("salesVelocity") or pos.get("salesProjection") or 0) / 4.33,
-                "unit_price": float(pos.get("unitPrice") or 0),
-                "unit_cost": float(pos.get("unitCost") or 0),
+                "store_code": pos.get("name") or "",
+                "store_name": pos.get("name") or "",
+                "actual_stock": float(pos.get("currentStock") or 0),
+                "minimum_stock": min_loja,
+                "ideal_stock": min_loja * 1.3,
+                "sales_velocity_weekly": sales_loja / 8.66,
+                "unit_price": unit_price,
+                "unit_cost": unit_cost,
                 "_root_name": get_desc(r),
             })
     return out

@@ -179,13 +179,13 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   <!-- ===== HERO ===== -->
   <div class="hero">
     <div class="hero-main">
-      <div class="hero-lbl">Vendas YTD 2026</div>
-      <div class="hero-val">R$ 43,06M</div>
+      <div class="hero-lbl">Vendas anualizada (projeção 2026)</div>
+      <div class="hero-val" id="kpi-vendas-anualizadas">R$ 43,06M</div>
       <div class="hero-comp">
         <div class="item">
-          <div class="lbl">Ano anterior</div>
-          <div class="v">R$ 33,67M</div>
-          <div class="delta">+R$ 9,38M</div>
+          <div class="lbl">Vendas YTD (real)</div>
+          <div class="v" id="kpi-vendas-ytd">R$ 33,67M</div>
+          <div class="delta" id="kpi-vendas-ytd-meta">+R$ 9,38M</div>
         </div>
         <div class="item">
           <div class="lbl">Variação YoY</div>
@@ -194,7 +194,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
         </div>
         <div class="item">
           <div class="lbl">Margem bruta</div>
-          <div class="v">R$ 15,64M</div>
+          <div class="v" id="kpi-margem">R$ 15,64M</div>
           <div class="delta">+59,4% YoY</div>
         </div>
       </div>
@@ -203,18 +203,18 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     <div class="hero-side">
       <div class="hero-side-card">
         <div class="lbl">Tickets emitidos</div>
-        <div class="v">38.017</div>
+        <div class="v" id="kpi-tickets">38.017</div>
         <div class="delta">+5.848 vs anterior · +18,2%</div>
       </div>
       <div class="hero-side-card">
         <div class="lbl">Ticket médio</div>
-        <div class="v">R$ 1.240</div>
+        <div class="v" id="kpi-ticket-medio">R$ 1.240</div>
         <div class="delta">+R$ 99 vs anterior · +8,7%</div>
       </div>
       <div class="hero-side-card alert">
         <div class="lbl">Vendas perdidas (ruptura)</div>
-        <div class="v">R$ 208K</div>
-        <div class="delta neg">2.720 unidades não vendidas</div>
+        <div class="v" id="kpi-lost-sales">R$ 208K</div>
+        <div class="delta neg" id="kpi-lost-sales-qty">2.720 unidades não vendidas</div>
       </div>
     </div>
   </div>
@@ -383,7 +383,30 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   try {
     const result = await RoiDataLoader.load('executive', { fallback: null });
     RoiDataLoader.syncBadge(badge, result);
-  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; }
+    if (!result.ok || !result.data || !result.data.kpis) return;
+
+    const k = result.data.kpis;
+    const fmtBRL = (n) => {
+      if (n == null) return '—';
+      if (Math.abs(n) >= 1e6) return 'R$ ' + (n/1e6).toFixed(2).replace('.',',') + 'M';
+      if (Math.abs(n) >= 1e3) return 'R$ ' + (n/1e3).toFixed(0) + 'K';
+      return 'R$ ' + n.toFixed(2).replace('.',',');
+    };
+    const fmtN = (n) => n == null ? '—' : n.toLocaleString('pt-BR');
+    const setText = (id, txt) => { const e = document.getElementById(id); if (e) e.textContent = txt; };
+
+    setText('kpi-vendas-anualizadas', fmtBRL(k.salesYTD.valueAnnualized));
+    setText('kpi-vendas-ytd', fmtBRL(k.salesYTD.value));
+    setText('kpi-vendas-ytd-meta', fmtN(k.salesYTD.qty) + ' unid · ' + fmtN(k.salesYTD.transactions) + ' tickets');
+    setText('kpi-margem', fmtBRL(k.marginYTD.value));
+    setText('kpi-tickets', fmtN(k.salesYTD.transactions));
+    setText('kpi-ticket-medio', fmtBRL(k.averageTicket.value));
+    if (k.lostSales && k.lostSales.qtyEstimate) {
+      setText('kpi-lost-sales-qty', fmtN(k.lostSales.qtyEstimate) + ' unidades não vendidas (sem preço médio confiável)');
+    }
+
+    console.log('[centro-empresa] KPIs reais carregados:', k);
+  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; console.warn('[centro-empresa]', e); }
 })();
 </script>
 </body>

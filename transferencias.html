@@ -622,7 +622,43 @@ window.addEventListener('DOMContentLoaded', () => {
   try {
     const result = await RoiDataLoader.load('transfers', { fallback: null });
     RoiDataLoader.syncBadge(badge, result);
-  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; }
+    if (!result.ok || result.fromFallback || !result.rows || result.rows.length === 0) return;
+
+    // Map schema pipeline → schema interno TRANSF
+    const newT = result.rows.map(r => ({
+      origem:     r.sourceStoreName || r.sourceStoreCode || '—',
+      origem_id:  r.sourceStoreCode || 0,
+      destino:    r.targetStoreName || r.targetStoreCode || '—',
+      destino_id: r.targetStoreCode || 0,
+      cat:        r.rootProductName || 'GERAL',
+      sku:        r.rootProductCode || '',
+      tipo:       r.transferType === 'consolidation' ? 'C' : 'N',
+      ea_o:       Math.round(+r.sourceStockBefore || 0),
+      ei_o:       Math.round(+r.sourceStockAfter || 0),
+      ea_d:       Math.round(+r.targetStockBefore || 0),
+      ei_d:       Math.round(+r.targetStockAfter || 0),
+      qty:        +r.quantity || 0,
+      custo:      +(r.quantity * (r.unitCost || 0)).toFixed(2),
+      dias:       0,
+      vendas:     +(r.quantity * (r.unitPrice || 0)).toFixed(2),
+      margem:     +(r.estimatedRecoveryBRL || 0),
+      margem_pct: r.unitPrice > 0 ? +((+r.estimatedRecoveryBRL / (r.quantity * r.unitPrice)) * 100).toFixed(2) : 0,
+    }));
+
+    // Top 200 por margem recovery
+    newT.sort((a, b) => (b.margem || 0) - (a.margem || 0));
+    TRANSF.length = 0;
+    newT.slice(0, 200).forEach(t => TRANSF.push(t));
+
+    // Atualiza TOTAL
+    if (typeof TOTAL !== 'undefined') {
+      TOTAL.qty = newT.reduce((s, t) => s + (t.qty || 0), 0);
+      TOTAL.custo = newT.reduce((s, t) => s + (t.custo || 0), 0);
+    }
+
+    console.log('[transferencias] Pipeline:', result.rows.length, 'sugestões →', TRANSF.length, 'mostradas');
+    if (typeof applyFilters === 'function') applyFilters();
+  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; console.warn('[transferencias]', e); }
 })();
 </script>
 </body>
