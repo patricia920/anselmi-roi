@@ -170,34 +170,37 @@
       const tryMerge = () => {
         if (typeof window.REF_INDEX !== 'object' || !window.REF_INDEX) return setTimeout(tryMerge, 300);
         let added = 0, overridden = 0;
-        Object.entries(data.refs).forEach(([ref, meta]) => {
-          if (!window.REF_INDEX[ref]) {
-            // ref real Sisplan ausente do mock — adiciona entry mínimo
-            window.REF_INDEX[ref] = {
-              ref,
-              tipo: meta.tipo || 'Peça',
-              descricao: meta.descricao || '',
-              est: 'I-26',
-              cores: meta.corPrincipal ? [meta.corPrincipal] : [],
-              corPrincipal: meta.corPrincipal || '',
-              estoque: 0, vendas30: 0, emVM: 0, lojasComEstoque: 0, cdQty: 0,
-              status: 'unknown', sugestao: '', _sisplan: true,
-            };
-            added++;
-          } else {
-            // Sisplan é fonte autoritativa pra tipo/cor/descrição. Mock antigo
-            // tinha cadastros errados (ex: 28871='Capa'/'Off Camelo' quando Sisplan
-            // diz CALÇA cor 001). Sobrescreve esses 3 campos sempre.
-            const e = window.REF_INDEX[ref];
-            if (meta.tipo && e.tipo !== meta.tipo) { e.tipo = meta.tipo; overridden++; }
-            if (meta.corPrincipal && e.corPrincipal !== meta.corPrincipal) {
-              e.corPrincipal = meta.corPrincipal;
-              if (!Array.isArray(e.cores) || !e.cores.includes(meta.corPrincipal)) {
-                e.cores = [meta.corPrincipal, ...(e.cores || []).filter(c => c !== meta.corPrincipal)];
+        // Sisplan é fonte autoritativa. PROPAGA pras DUAS chaves possíveis (5d e 6d):
+        // mock cadastra refs com '28871' (5 dig), Sisplan vem como '028871' (6 dig zero-pad).
+        // Sem propagar, lookup de 5d retorna mock errado (Capa/Off Camelo) em vez do real (Básica/001).
+        Object.entries(data.refs).forEach(([ref6d, meta]) => {
+          const ref5d = ref6d.replace(/^0+/, '') || '0';
+          const keys = ref5d === ref6d ? [ref6d] : [ref6d, ref5d];
+          keys.forEach(k => {
+            if (!window.REF_INDEX[k]) {
+              window.REF_INDEX[k] = {
+                ref: k,
+                tipo: meta.tipo || 'Peça',
+                descricao: meta.descricao || '',
+                est: 'I-26',
+                cores: meta.corPrincipal ? [meta.corPrincipal] : [],
+                corPrincipal: meta.corPrincipal || '',
+                estoque: 0, vendas30: 0, emVM: 0, lojasComEstoque: 0, cdQty: 0,
+                status: 'unknown', sugestao: '', _sisplan: true,
+              };
+              added++;
+            } else {
+              const e = window.REF_INDEX[k];
+              if (meta.tipo && e.tipo !== meta.tipo) { e.tipo = meta.tipo; overridden++; }
+              if (meta.corPrincipal && e.corPrincipal !== meta.corPrincipal) {
+                e.corPrincipal = meta.corPrincipal;
+                if (!Array.isArray(e.cores) || !e.cores.includes(meta.corPrincipal)) {
+                  e.cores = [meta.corPrincipal, ...(e.cores || []).filter(c => c !== meta.corPrincipal)];
+                }
               }
+              if (meta.descricao && !e.descricao) e.descricao = meta.descricao;
             }
-            if (meta.descricao && !e.descricao) e.descricao = meta.descricao;
-          }
+          });
         });
         console.info('[vm-loader] REF_INDEX · +' + added + ' refs Sisplan, ' + overridden + ' tipos corrigidos (Sisplan sobrescreve mock)');
         // Re-renderiza views que dependem do REF_INDEX completo
