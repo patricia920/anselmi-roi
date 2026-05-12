@@ -51,6 +51,11 @@ jobs:
             data/cores_plm.json
             data/plantas
             data/drills
+            data/oracle/vw_giro_estoque.json
+            data/oracle/vw_giro_costura.json
+            data/oracle/vw_giro_venda.json.gz
+            data/oracle/moa_vw_vitrine.json
+            data/sisplan/vw_prod_info_roi.json
           sparse-checkout-cone-mode: false
           fetch-depth: 1
 
@@ -75,6 +80,22 @@ jobs:
           else
             echo "⚠ data/cores_plm.json não encontrado no anselmi-pcp"
           fi
+
+          # Dumps Oracle/Sisplan pra build_banco_fotos_v2.py
+          mkdir -p data/oracle data/sisplan
+          for f in \
+            oracle/vw_giro_estoque.json \
+            oracle/vw_giro_costura.json \
+            oracle/vw_giro_venda.json.gz \
+            oracle/moa_vw_vitrine.json \
+            sisplan/vw_prod_info_roi.json; do
+            if [ -f "_pcp/data/$f" ]; then
+              cp "_pcp/data/$f" "data/$f"
+              echo "✓ data/$f copiado ($(wc -c < data/$f) bytes)"
+            else
+              echo "⚠ data/$f não encontrado no anselmi-pcp"
+            fi
+          done
 
           # Plantas (imagens) — espelhamento completo
           if [ -d _pcp/data/plantas ]; then
@@ -131,6 +152,18 @@ jobs:
           done
           echo "✓ renomeados: $renamed_drills drills, $renamed_plantas plantas"
 
+      - name: Rebuild banco_fotos.json (cruza MOA_VW_VITRINE + Sisplan + Oracle)
+        run: |
+          if [ ! -f data/oracle/moa_vw_vitrine.json ]; then
+            echo "⚠ moa_vw_vitrine.json ausente — skip rebuild do banco_fotos"
+            exit 0
+          fi
+          if [ ! -f scripts/build_banco_fotos_v2.py ]; then
+            echo "⚠ script build_banco_fotos_v2.py ausente — skip"
+            exit 0
+          fi
+          python3 scripts/build_banco_fotos_v2.py || echo "build_banco_fotos falhou — mantendo banco anterior"
+
       - name: Detectar alterações
         id: diff
         run: |
@@ -145,7 +178,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ved_varejo.js data/cores_plm.json data/plantas data/drills 2>/dev/null || true
+          git add ved_varejo.js data/cores_plm.json data/plantas data/drills data/oracle data/sisplan data/banco_fotos.json data/banco_fotos_pendencias.csv 2>/dev/null || true
           git commit -m "chore(sync): atualiza arquivos de anselmi-pcp"
           git push
 
