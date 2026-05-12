@@ -4119,11 +4119,18 @@ function _photoUrlsForRefCor(ref, cor){
 
 function _resolvePhoto(p, refFallback){
   const ref = (p && p.ref) || refFallback;
-  // 0) FotoResolver (data/banco_fotos.json — 974 refs reais do photo.anselmi.ind.br).
-  //    Faz lookup com zero-padding (refs Sisplan 3-5 dígitos → banco 6 dígitos).
-  //    Foto de qualquer cor é melhor que silhueta vazia ou foto errada de outra peça.
+  // 0) FotoResolver com PRIORIDADE pra cor específica.
+  //    Se p.corPrincipal é código Sisplan (ex: '001', 'C25', '*10', 'A98'),
+  //    tenta primeiro a foto exata daquela cor — só cai pra "qualquer cor" se falhar.
+  //    Crítico em telas onde o mesmo ref aparece em várias cores (CD lotado, estoque por cor):
+  //    sem isso, todas as variantes mostravam a mesma foto genérica.
   if (ref && typeof window.FotoResolver === 'object' && window.FotoResolver) {
-    const fotoBanco = window.FotoResolver.getFotoAnyColor(String(ref));
+    let fotoBanco = null;
+    if (p && p.corPrincipal) {
+      const arr = window.FotoResolver.getFotosByRefColor(String(ref), p.corPrincipal);
+      if (arr && arr.length) fotoBanco = arr[0];
+    }
+    if (!fotoBanco) fotoBanco = window.FotoResolver.getFotoAnyColor(String(ref));
     if (fotoBanco) {
       const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
       return `<img src="${fotoBanco}" alt="${ref}" loading="lazy" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';"/><div style="display:none">${sil}</div>`;
@@ -4697,7 +4704,9 @@ async function renderCD(){
   if (typeof applyTipo === 'function'){ lista = lista.filter(p => applyTipo({tipo: p.tipo})); }
 
   const html = lista.slice(0, 24).map(p => {
-    const peca = { ref: p.ref, tipo: p.tipo, corPrincipal: p.corPrincipal };
+    // Usa cor do ESTOQUE (Oracle cor='*10', 'C98', etc) e não corPrincipal da REF_INDEX.
+    // Foto-resolver normaliza '*10' → '010' e tenta a cor exata; se não tem, qualquer cor.
+    const peca = { ref: p.ref, tipo: p.tipo, corPrincipal: p.cor };
     const sug = SUG_EXPOSICAO[p.tipo] || 'Frontal';
     return `<div class="mosaic-card" onclick="openModal('${p.ref}')">
       <div class="mosaic-photo">
@@ -4706,7 +4715,7 @@ async function renderCD(){
       </div>
       <div class="mosaic-body">
         <div class="mosaic-cod">${p.ref}</div>
-        <div class="mosaic-tipo">${p.tipo} · ${p.corPrincipal} · ${p.est}</div>
+        <div class="mosaic-tipo">${p.tipo} · ${p.nome_cor || p.corPrincipal} · ${p.est}</div>
         <div class="mosaic-info">
           <span class="stat">CD <b>${p.cdQty}</b></span>
           <span class="stat">${p.tamanhos}× tam.</span>
