@@ -7433,9 +7433,15 @@ async function _computeRankingAuto(cod){
     return '#c9a877';
   }
 
-  // Cruza com REF_INDEX (agora populado com 2k refs Sisplan via vm-loader)
+  // Cruza com REF_INDEX (agora populado com 2k refs Sisplan via vm-loader).
+  // Drills usam refs 5-dígitos ('28871'), REF_INDEX usa 6 zero-padded ('028871').
+  // Sem padding, lookup falha pra 90%+ das refs e ranking sai vazio.
+  function _lookupRef(ref) {
+    if (typeof REF_INDEX === 'undefined') return null;
+    return REF_INDEX[ref] || REF_INDEX[String(ref).padStart(6, '0')] || null;
+  }
   const pecasArr = Object.entries(refQty).map(([ref, qty]) => {
-    const p = (typeof REF_INDEX !== 'undefined') ? REF_INDEX[ref] : null;
+    const p = _lookupRef(ref);
     const cor = (p?.corPrincipal) || (p?.cores?.[0]) || '—';
     const tipo = p?.tipo || '—';
     return { ref, tipo, cor: String(cor).toLowerCase(), qty, hex: corHex(cor) };
