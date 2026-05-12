@@ -4670,42 +4670,72 @@ function renderCD(){
   document.getElementById('cd-grid').innerHTML = html;
 }
 
-/* v2 · PARADAS especializado: STR, última venda, idade coleção, ações triplas, custo oportunidade */
-function renderParadas(){
-  const pecas = PECAS.filter(p => p.status==='parado' && applyTipo(p));
-  pecas.sort((a,b) => (b.diasParado||0)-(a.diasParado||0));
-  const html = pecas.slice(0,12).map(p=>{
-    /* peça-A média gera ~R$2.5k/mês por slot. Custo de oportunidade = isso menos venda real (zero pra parado) */
-    const custoOp = Math.round(p.precoBase * 2.5 / 1000); // estimativa em mil R$/mês
-    const idadeBadge = p.idadeColecao>=120 ? 'crit' : (p.idadeColecao>=90 ? 'warn' : 'ok');
+/* v3 · PARADAS · usa dados REAIS Sisplan (_computeParadas) em vez do mock PECAS.
+   Mostra as 99 peças encalhadas reais (≥6m loja + ≥4m sem vender) com foto do banco_fotos,
+   chegou/última venda Sisplan, idade na loja, dormência, total vendido. */
+async function renderParadas(){
+  const grid = document.getElementById('paradas-grid');
+  if (!grid) return;
+  // Loading
+  grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--ink-3);padding:40px;font-size:13px">Carregando peças encalhadas…</div>`;
+
+  let stats;
+  try {
+    stats = await _computeParadas('*');
+  } catch(e){
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--bordo);padding:40px">Erro ao carregar dados: ${e.message}</div>`;
+    return;
+  }
+
+  // Atualiza contador no header da seção
+  const head = document.querySelector('section[data-tab="paradas"] .block-head h3');
+  if (head) head.textContent = `${stats.lista.length} peças encalhadas`;
+
+  if (!stats.lista.length){
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--ink-3);padding:40px">Nenhuma peça encalhada detectada (critério: chegou há ≥6m + sem vender há ≥4m).</div>`;
+    return;
+  }
+
+  // Aplica filtro de tipo se houver (compatibilidade com applyTipo do mock)
+  let lista = stats.lista;
+  if (typeof applyTipo === 'function'){
+    lista = lista.filter(p => applyTipo({tipo: p.tipo}));
+  }
+
+  // Ordena por dormência (mais paradas primeiro) — já vem ordenado de _computeParadas, mas reforça
+  lista.sort((a,b) => (b.parada_meses - a.parada_meses) || (b.idade_meses - a.idade_meses));
+
+  const html = lista.slice(0, 24).map(p => {
+    // Foto via FotoResolver (passa objeto-pseudo pra pieceImage)
+    const peca = { ref: p.ref, tipo: p.tipo, corPrincipal: p.cor };
+    const idadeBadge = p.idade_meses >= 12 ? 'crit' : (p.idade_meses >= 6 ? 'warn' : 'ok');
     return `<div class="mosaic-card" onclick="openModal('${p.ref}')">
       <div class="mosaic-photo">
-        ${pieceImage(p)}
-        <span class="cc-tag" style="background:var(--bordo);color:#fff">${p.diasParado}d</span>
+        ${pieceImage(peca)}
+        <span class="cc-tag" style="background:var(--bordo);color:#fff">${p.parada_meses}m</span>
       </div>
       <div class="mosaic-body">
         <div class="mosaic-cod">${p.ref}</div>
-        <div class="mosaic-tipo">${p.tipo} · ${p.corPrincipal} · ${p.est||'I-26'}</div>
+        <div class="mosaic-tipo">${p.tipo} · ${p.cor} · ${_nomeLoja(p.slug)}</div>
         <div class="mosaic-info">
-          <span class="stat crit">STR <b>${p.str}%</b></span>
-          <span class="stat ${idadeBadge}">${p.idadeColecao}d coleção</span>
-          <span class="stat">Estoque <b>${p.estoque}</b></span>
+          <span class="stat crit">Parada <b>${p.parada_meses}m</b></span>
+          <span class="stat ${idadeBadge}">${p.idade_meses}m na loja</span>
+          <span class="stat">Vendeu <b>${p.total}</b></span>
         </div>
         <div style="margin-top:8px;font-size:10px;color:var(--ink-3);display:flex;justify-content:space-between;border-top:1px solid var(--paper-2);padding-top:6px">
-          <span>Última venda</span><b style="color:var(--ink);font-family:'JetBrains Mono',monospace">há ${p.diasUltimaVenda||p.diasParado}d</b>
+          <span>Chegou ${p.primeira}</span><b style="color:var(--ink);font-family:'JetBrains Mono',monospace">Últ. ${p.ultima}</b>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:8px">
-          <button onclick="event.stopPropagation();alert('Acionar fluxo de troca · v2')" style="padding:6px 4px;font-size:9px;font-weight:700;background:var(--bordo);color:#fff;border:none;border-radius:var(--r-sm);cursor:pointer;letter-spacing:.06em;text-transform:uppercase;font-family:inherit">Substituir</button>
-          <button onclick="event.stopPropagation();alert('Acionar fluxo de remarcação · v3')" style="padding:6px 4px;font-size:9px;font-weight:700;background:var(--ambar);color:#fff;border:none;border-radius:var(--r-sm);cursor:pointer;letter-spacing:.06em;text-transform:uppercase;font-family:inherit">Remarcar</button>
-          <button onclick="event.stopPropagation();alert('Sugerir realocação · v2')" style="padding:6px 4px;font-size:9px;font-weight:700;background:#5d7088;color:#fff;border:none;border-radius:var(--r-sm);cursor:pointer;letter-spacing:.06em;text-transform:uppercase;font-family:inherit">Mover loja</button>
-        </div>
-        <div style="margin-top:8px;padding:6px 8px;background:var(--bordo-bg);border-radius:var(--r-sm);font-size:10px;color:var(--bordo);text-align:center">
-          <b>Custo oportunidade:</b> R$ ${custoOp}k/mês perdidos no slot
+        <div style="margin-top:8px">
+          <a href="https://plm.colecao.moda/produto/${p.ref}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="display:block;text-align:center;padding:6px 4px;font-size:10px;font-weight:600;background:var(--ink);color:#fff;text-decoration:none;border-radius:var(--r-sm);letter-spacing:.06em;text-transform:uppercase">Ver no PLM →</a>
         </div>
       </div>
     </div>`;
   }).join('');
-  document.getElementById('paradas-grid').innerHTML = html;
+
+  const showingMore = lista.length > 24
+    ? `<div style="grid-column:1/-1;text-align:center;color:var(--ink-3);font-size:11px;padding:14px;font-style:italic">Mostrando 24 de ${lista.length} · use o ranking → CSV pra lista completa</div>`
+    : '';
+  grid.innerHTML = html + showingMore;
 }
 
 function rerender(){
@@ -7588,7 +7618,7 @@ function _nomeLoja(slug){
   return l ? (l.nome || l.slug) : slug;
 }
 
-function renderParadas(stats){
+function renderParadasVendas(stats){
   const el = document.getElementById('paradas-page');
   if (!el) return;
   if (!stats){ el.innerHTML = ''; return; }
@@ -7673,7 +7703,7 @@ function renderParadas(stats){
   `;
   window._lastParadas = stats;
 }
-window.renderParadas = renderParadas;
+window.renderParadasVendas = renderParadasVendas;
 
 function exportParadasCSV(){
   const s = window._lastParadas;
@@ -7707,7 +7737,7 @@ async function applyRankingForLoja(cod){
   // Render seção "Vendas × Exposição" logo abaixo do ranking
   try {
     const paradas = await _computeParadas(cod);
-    renderParadas(paradas);
+    renderParadasVendas(paradas);
   } catch(e){ console.warn('[paradas] falhou:', e); }
 }
 window.applyRankingForLoja = applyRankingForLoja;
