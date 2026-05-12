@@ -4119,21 +4119,26 @@ function _photoUrlsForRefCor(ref, cor){
 
 function _resolvePhoto(p, refFallback){
   const ref = (p && p.ref) || refFallback;
-  // 0) FotoResolver com PRIORIDADE pra cor específica.
-  //    Se p.corPrincipal é código Sisplan (ex: '001', 'C25', '*10', 'A98'),
-  //    tenta primeiro a foto exata daquela cor — só cai pra "qualquer cor" se falhar.
-  //    Crítico em telas onde o mesmo ref aparece em várias cores (CD lotado, estoque por cor):
-  //    sem isso, todas as variantes mostravam a mesma foto genérica.
+  // 0) FotoResolver com cascata: cor específica → qualquer cor → silhueta.
+  //    Crítico: o banco_fotos tem URLs que retornam 404 no Zenphoto (build script gerou
+  //    nomes baseado no MOA_VW_VITRINE mas alguns arquivos foram renomeados/removidos).
+  //    Implementa onerror em cadeia: tenta foto da cor → fallback any color → silhueta.
   if (ref && typeof window.FotoResolver === 'object' && window.FotoResolver) {
-    let fotoBanco = null;
+    let urlCor = null;
     if (p && p.corPrincipal) {
       const arr = window.FotoResolver.getFotosByRefColor(String(ref), p.corPrincipal);
-      if (arr && arr.length) fotoBanco = arr[0];
+      if (arr && arr.length) urlCor = arr[0];
     }
-    if (!fotoBanco) fotoBanco = window.FotoResolver.getFotoAnyColor(String(ref));
-    if (fotoBanco) {
+    const urlAny = window.FotoResolver.getFotoAnyColor(String(ref));
+    const urlInicial = urlCor || urlAny;
+    if (urlInicial) {
       const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
-      return `<img src="${fotoBanco}" alt="${ref}" loading="lazy" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';"/><div style="display:none">${sil}</div>`;
+      const cadeia = urlCor && urlAny && urlCor !== urlAny
+        ? `this.dataset.t='1';this.src='${urlAny.replace(/'/g,"\\'")}';return;`
+        : `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
+      const finalChain = `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
+      const onerr = `if(this.dataset.t==='1'){${finalChain}return;}${cadeia}`;
+      return `<img src="${urlInicial}" alt="${ref}" loading="lazy" onerror="${onerr}"/><div style="display:none">${sil}</div>`;
     }
   }
   // 1) Tenta foto específica da cor principal (ref+cor)
