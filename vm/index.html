@@ -1003,11 +1003,13 @@ table.list td:first-child{padding-left:18px}
 .cen-stat .v.info{color:#5d7088}.cen-stat .v.ok{color:var(--musgo)}
 
 /* Grade ampla do cenário */
-.cen-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;padding:18px 22px}
+.cen-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;padding:18px 22px}
+@media (min-width:1600px){.cen-grid{grid-template-columns:repeat(5,1fr)}}
+@media (min-width:1900px){.cen-grid{grid-template-columns:repeat(6,1fr)}}
 .cen-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:all .18s}
 .cen-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--ambar)}
 .cen-card-photo{width:100%;aspect-ratio:3/4;background:#fff;border-bottom:1px solid var(--paper-2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.cen-card-photo svg{width:100%;height:100%;object-fit:contain}
+.cen-card-photo svg,.cen-card-photo img{width:100%;height:100%;object-fit:contain}
 .cen-card-photo .cc-tag{position:absolute;top:8px;right:8px;font-size:9px;font-weight:800;padding:3px 7px;border-radius:var(--r-sm);letter-spacing:.08em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;backdrop-filter:blur(4px);color:#fff}
 .cen-card-photo .cc-tag.crit{background:var(--bordo)}
 .cen-card-photo .cc-tag.warn{background:var(--ambar)}

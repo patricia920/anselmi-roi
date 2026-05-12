@@ -169,7 +169,7 @@
       // Aguarda a página declarar REF_INDEX (definido em vm/index.html linha ~3350)
       const tryMerge = () => {
         if (typeof window.REF_INDEX !== 'object' || !window.REF_INDEX) return setTimeout(tryMerge, 300);
-        let added = 0, enriched = 0;
+        let added = 0, overridden = 0;
         Object.entries(data.refs).forEach(([ref, meta]) => {
           if (!window.REF_INDEX[ref]) {
             // ref real Sisplan ausente do mock — adiciona entry mínimo
@@ -184,13 +184,22 @@
               status: 'unknown', sugestao: '', _sisplan: true,
             };
             added++;
-          } else if (!window.REF_INDEX[ref].descricao && meta.descricao) {
-            // já existe (mock) — só enriquece com descrição real
-            window.REF_INDEX[ref].descricao = meta.descricao;
-            enriched++;
+          } else {
+            // Sisplan é fonte autoritativa pra tipo/cor/descrição. Mock antigo
+            // tinha cadastros errados (ex: 28871='Capa'/'Off Camelo' quando Sisplan
+            // diz CALÇA cor 001). Sobrescreve esses 3 campos sempre.
+            const e = window.REF_INDEX[ref];
+            if (meta.tipo && e.tipo !== meta.tipo) { e.tipo = meta.tipo; overridden++; }
+            if (meta.corPrincipal && e.corPrincipal !== meta.corPrincipal) {
+              e.corPrincipal = meta.corPrincipal;
+              if (!Array.isArray(e.cores) || !e.cores.includes(meta.corPrincipal)) {
+                e.cores = [meta.corPrincipal, ...(e.cores || []).filter(c => c !== meta.corPrincipal)];
+              }
+            }
+            if (meta.descricao && !e.descricao) e.descricao = meta.descricao;
           }
         });
-        console.info('[vm-loader] REF_INDEX · +' + added + ' refs Sisplan, +' + enriched + ' descrições enriquecidas');
+        console.info('[vm-loader] REF_INDEX · +' + added + ' refs Sisplan, ' + overridden + ' tipos corrigidos (Sisplan sobrescreve mock)');
         // Re-renderiza views que dependem do REF_INDEX completo
         ['renderEstoqueCD', 'renderEstoqueLojas', 'renderVendasLoja'].forEach(fn => {
           if (typeof window[fn] === 'function') {
