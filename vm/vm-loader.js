@@ -197,6 +197,14 @@
             try { window[fn](); } catch (_) {}
           }
         });
+        // Recalcula ranking automático com vendas reais (Sisplan) — substitui mock inicial
+        if (typeof window.applyRankingForLoja === 'function') {
+          const codInicial = (typeof window.currentStore === 'object' && window.currentStore?.cod) || '*';
+          try {
+            window.applyRankingForLoja(codInicial).catch?.(()=>{});
+            console.info('[vm-loader] Ranking recalculado (Sisplan) para', codInicial);
+          } catch (_) {}
+        }
       };
       tryMerge();
     }).catch(err => console.warn('[vm-loader] REF_INDEX_SISPLAN load falhou:', err.message));

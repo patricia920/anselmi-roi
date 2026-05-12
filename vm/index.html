@@ -7385,65 +7385,82 @@ async function _loadDrillData(cod){
   }
 }
 
-/* Computa ranking AUTOMÁTICO a partir do drill da loja:
-   - Conta ocorrências de cada ref nos cabides
-   - Cruza com PECAS (REF_INDEX) pra pegar tipo + corPrincipal
-   - Retorna { cores: [{nome, pct, hex}], pecas: [{ref, tipo, cor, qty}] } */
+/* Computa ranking AUTOMÁTICO a partir do DRILL da loja (peças expostas).
+   Fonte: data/drills/<slug>.json (cabides + manequins) — o que ESTÁ EM VM.
+   cod === '*' agrega todas as 18 lojas; senão só a loja escolhida.
+   Cor vem de REF_INDEX (agora populado com 2k refs Sisplan via vm-loader).
+   Hex vem de window.COR_PLM (185 cores PLM).
+
+   Não usa VAR_VENDAS_DIA propositalmente — VM = exposição, vendas é métrica
+   separada. Pra ranking de venda, use outra view (ex: stock-quality).
+
+   Retorna { cores: [{nome,pct,hex}], pecas: [{ref,tipo,cor,qty,hex}], fonte } */
 async function _computeRankingAuto(cod){
-  // Coleta refs: ou de uma loja específica ou de todas
   let refs = [];
-  if(cod === '*'){
-    // Todas as lojas
-    const allCods = ['patio-batel','faria-lima','jk','patio-higienopolis','leblon','goiania','porto-alegre','barra-shopping','alphaville','barigui','gramado','jardim-belvedere','campinas','morumbi','village-mall','brasilia','diamond-mall','beira-mar'];
+  if (cod === '*') {
+    // Todas as lojas físicas (com slug não-null no LOJA_MAP)
+    const allCods = (window.LOJAS || [])
+      .filter(l => l && l.cod && !l.cod.startsWith('0'))
+      .map(l => l.cod);
     const datas = await Promise.all(allCods.map(_loadDrillData));
     datas.forEach(d => {
-      if(!d) return;
-      Object.values(d.araras||{}).forEach(cabides => {
-        cabides.forEach(c => (c.refs||[]).forEach(r => refs.push(r)));
+      if (!d) return;
+      Object.values(d.araras || {}).forEach(cabides => {
+        cabides.forEach(c => (c.refs || []).forEach(r => refs.push(r)));
       });
-      (d.manequins||[]).forEach(m => (m.refs||[]).forEach(r => refs.push(r)));
+      (d.manequins || []).forEach(m => (m.refs || []).forEach(r => refs.push(r)));
     });
   } else {
     const d = await _loadDrillData(cod);
-    if(!d) return { cores: [], pecas: [] };
-    Object.values(d.araras||{}).forEach(cabides => {
-      cabides.forEach(c => (c.refs||[]).forEach(r => refs.push(r)));
+    if (!d) return { cores: [], pecas: [], totalRefs: 0, fonte: 'drill (vazio)' };
+    Object.values(d.araras || {}).forEach(cabides => {
+      cabides.forEach(c => (c.refs || []).forEach(r => refs.push(r)));
     });
-    (d.manequins||[]).forEach(m => (m.refs||[]).forEach(r => refs.push(r)));
+    (d.manequins || []).forEach(m => (m.refs || []).forEach(r => refs.push(r)));
   }
-  // Conta ref → qty
-  const refCount = {};
-  refs.forEach(r => { refCount[r] = (refCount[r]||0) + 1; });
-  // Cruza com REF_INDEX/PECAS pra cor + tipo
-  const pecasArr = Object.entries(refCount).map(([ref, qty]) => {
+
+  // Conta presença ref → qty (uma ref pode aparecer em vários cabides/manequins)
+  const refQty = {};
+  refs.forEach(r => { refQty[r] = (refQty[r] || 0) + 1; });
+
+  // Helper hex via COR_PLM (185 cores Sisplan)
+  function corHex(cor){
+    if (!cor) return '#c9a877';
+    if (window.COR_PLM) {
+      const c = window.COR_PLM[cor] || window.COR_PLM[String(cor).toUpperCase()];
+      if (c && c.hex) return '#' + String(c.hex).replace(/^#/, '');
+    }
+    return '#c9a877';
+  }
+
+  // Cruza com REF_INDEX (agora populado com 2k refs Sisplan via vm-loader)
+  const pecasArr = Object.entries(refQty).map(([ref, qty]) => {
     const p = (typeof REF_INDEX !== 'undefined') ? REF_INDEX[ref] : null;
     const cor = (p?.corPrincipal) || (p?.cores?.[0]) || '—';
     const tipo = p?.tipo || '—';
-    // Hex do PLM (window.COR_PLM) usando código da cor; fallback CRU
-    let hex = '#c9a877';
-    if(window.COR_PLM){
-      // tenta achar o código da cor — se cores tem algum match
-      const corObj = (p?.coresGrade||[]).find(c => c.nome === cor || c.codigo === cor);
-      if(corObj?.hex) hex = corObj.hex;
-      else if(window.COR_PLM[cor]) hex = '#' + window.COR_PLM[cor].hex;
-    }
-    return { ref, tipo, cor: cor.toLowerCase(), qty, hex, plmId: p?.fotoUrl ? p.fotoUrl.split('/').pop() : '' };
+    return { ref, tipo, cor: String(cor).toLowerCase(), qty, hex: corHex(cor) };
   });
-  pecasArr.sort((a,b) => b.qty - a.qty);
-  // Top 15
+  pecasArr.sort((a, b) => b.qty - a.qty);
   const topPecas = pecasArr.slice(0, 15);
-  // Cores: agrega por cor → soma qty → pct
+
+  // Agrega cores: soma qty por cor → calcula pct
   const corMap = {};
   pecasArr.forEach(p => {
-    if(!corMap[p.cor]) corMap[p.cor] = { nome: p.cor, qty: 0, hex: p.hex };
+    if (!corMap[p.cor]) corMap[p.cor] = { nome: p.cor, qty: 0, hex: p.hex };
     corMap[p.cor].qty += p.qty;
   });
   const totalQty = Object.values(corMap).reduce((s, c) => s + c.qty, 0);
   const cores = Object.values(corMap)
     .map(c => ({ ...c, pct: totalQty ? +(c.qty / totalQty * 100).toFixed(1) : 0 }))
-    .sort((a,b) => b.pct - a.pct)
+    .sort((a, b) => b.pct - a.pct)
     .slice(0, 10);
-  return { cores, pecas: topPecas, totalRefs: refs.length };
+
+  return {
+    cores, pecas: topPecas,
+    totalRefs: refs.length,
+    totalRefsUnicas: Object.keys(refQty).length,
+    fonte: 'drill (presença em cabides + manequins)'
+  };
 }
 
 window._computeRankingAuto = _computeRankingAuto;
