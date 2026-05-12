@@ -507,9 +507,10 @@ const RETARDAMENTO = [
 // ====== RENDER ======
 function fmt(n){ return new Intl.NumberFormat('pt-BR').format(n); }
 function thumbHTML(cat, sku){
-  // Banco de fotos (data/banco_fotos.json) tem prioridade; FOTOS legado é fallback
-
-  const photo = (window.FotoResolver && window.FotoResolver.getFoto(sku)) || FOTOS[sku];
+  // Banco de fotos v2 (MOA_VW_VITRINE — 1.875 refs) tem prioridade absoluta.
+  // getFoto resolve via decompose+fallback any-color; FOTOS legado só usado se nem o banco achar.
+  const fr = window.FotoResolver;
+  const photo = (fr && fr.getFoto(sku)) || FOTOS[sku];
   if (photo) return `<img src="${photo}" alt="${sku}" onerror="this.style.display='none'">`;
   return `<span style="font-family:Lora,serif;font-size:14px">${cat[0]}</span>`;
 }
