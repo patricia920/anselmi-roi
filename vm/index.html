@@ -3500,47 +3500,64 @@ const PALETA_COLECAO = [
 window.PALETA_COLECAO = PALETA_COLECAO;
 
 let CORES_PERIODO = 30;
-function renderCores(){
-  /* aplica fator de variação semanal vs mensal */
-  const fator = CORES_PERIODO===7 ? 0.9 + Math.random()*0.3 : 1;
-  document.getElementById('cores-list').innerHTML = CORES_PERFORMANCE_BATEL.map(c=>{
-    const venda = (c.venda * fator).toFixed(1);
-    const gap = parseFloat(venda) - c.vm;
+/* v3 · CORES · usa _computeCoresPerformance (drill + VAR_VENDAS_LOJA_2026 + COR_PLM real) */
+async function renderCores(){
+  const list = document.getElementById('cores-list');
+  if (!list) return;
+  list.innerHTML = `<div style="text-align:center;color:var(--ink-3);padding:20px;font-size:12px">Carregando performance por cor…</div>`;
+
+  const cod = (typeof window.currentStore === 'object' && window.currentStore?.cod) || '*';
+  let cores;
+  try { cores = await _computeCoresPerformance(cod); }
+  catch(e){ list.innerHTML = `<div style="color:var(--bordo);padding:20px">Erro: ${e.message}</div>`; return; }
+
+  list.innerHTML = cores.map(c => {
+    const gap = c.venda - c.vm;
     const acao = gap >= 3 ? 'up' : (gap <= -3 ? 'down' : 'flat');
     const lbl = acao==='up' ? '↑ Ampliar corner' : (acao==='down' ? '↓ Reduzir corner' : '= Manter');
     const sub = acao==='flat' ? '' : `<small>${gap>0?'+':''}${gap.toFixed(1)}pp venda vs VM</small>`;
-    return `<div class="cor-row" onclick="alert('Drill da cor — abre lista de peças daquela cor naquela loja')">
+    return `<div class="cor-row" onclick="if(typeof switchTab==='function')switchTab('ranking')">
       <div class="cor-name"><span class="cor-swatch" style="background:${c.hex}"></span> ${c.nome}</div>
       <div class="cor-bars">
-        <div class="cor-bar"><span class="lbl">VM</span><div class="track"><div class="fill vm" style="width:${c.vm*2.5}%"></div></div><span class="pct">${c.vm.toFixed(1)}%</span></div>
-        <div class="cor-bar"><span class="lbl">Venda</span><div class="track"><div class="fill venda" style="width:${parseFloat(venda)*2.5}%"></div></div><span class="pct">${venda}%</span></div>
-        <div class="cor-bar"><span class="lbl">Estoque</span><div class="track"><div class="fill estoque" style="width:${c.estoque*2.5}%"></div></div><span class="pct">${c.estoque.toFixed(1)}%</span></div>
+        <div class="cor-bar"><span class="lbl">VM</span><div class="track"><div class="fill vm" style="width:${Math.min(100, c.vm*2.5)}%"></div></div><span class="pct">${c.vm.toFixed(1)}%</span></div>
+        <div class="cor-bar"><span class="lbl">Venda</span><div class="track"><div class="fill venda" style="width:${Math.min(100, c.venda*2.5)}%"></div></div><span class="pct">${c.venda.toFixed(1)}%</span></div>
       </div>
       <div class="cor-action ${acao}">${lbl}${sub}</div>
     </div>`;
-  }).join('');
+  }).join('') || `<div style="color:var(--ink-3);padding:20px;text-align:center">Sem dados de cor pra essa loja.</div>`;
 
-  /* Color blocking visual: bloco proporcional pelas % VM da loja */
-  const totalVM = CORES_PERFORMANCE_BATEL.reduce((s,c)=>s+c.vm,0);
-  document.getElementById('cor-blocking').innerHTML = CORES_PERFORMANCE_BATEL.map(c=>{
-    const w = (c.vm/totalVM)*100;
-    const dark = ['Preto','Chocolate','Figo','Meia Noite','Bombom'].includes(c.nome);
-    return `<div title="${c.nome} · ${c.vm.toFixed(1)}%" style="width:${w}%;background:${c.hex};display:flex;align-items:center;justify-content:center;font-size:9px;color:${dark?'#fff':'#1a1714'};font-weight:600;letter-spacing:.04em;cursor:pointer">${w>5?c.nome.split(' ')[0]:''}</div>`;
-  }).join('');
+  // Color blocking
+  const blocking = document.getElementById('cor-blocking');
+  if (blocking){
+    const totalVM = cores.reduce((s,c)=>s+c.vm, 0) || 1;
+    blocking.innerHTML = cores.map(c => {
+      const w = (c.vm/totalVM)*100;
+      // Heurística de cor escura: hex luminance < 128
+      const hx = c.hex.replace('#','');
+      const r = parseInt(hx.slice(0,2),16), g = parseInt(hx.slice(2,4),16), b = parseInt(hx.slice(4,6),16);
+      const dark = (r*0.299 + g*0.587 + b*0.114) < 128;
+      return `<div title="${c.nome} · ${c.vm.toFixed(1)}%" style="width:${w}%;background:${c.hex};display:flex;align-items:center;justify-content:center;font-size:9px;color:${dark?'#fff':'#1a1714'};font-weight:600;letter-spacing:.04em;cursor:pointer">${w>5?c.nome.split(' ')[0]:''}</div>`;
+    }).join('');
+  }
 
-  /* Paleta da coleção: cores oficiais com indicador de presença na loja */
-  const corNaLoja = new Set(CORES_PERFORMANCE_BATEL.map(c=>c.nome));
-  document.getElementById('cor-paleta').innerHTML = PALETA_COLECAO.map(p=>{
-    const presente = corNaLoja.has(p.nome);
-    const dark = ['Preto','Chocolate','Figo','Meia Noite','Bombom'].includes(p.nome);
-    return `<div title="${presente?'Presente na loja':'Ausente na loja'}" style="display:flex;flex-direction:column;align-items:center;gap:4px;opacity:${presente?1:.35}">
-      <div style="width:48px;height:48px;border-radius:6px;background:${p.hex};border:2px solid ${presente?'var(--ink)':'var(--line)'};position:relative">
-        ${presente ? `<span style="position:absolute;top:2px;right:2px;width:14px;height:14px;background:var(--musgo);border-radius:50%;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:800">✓</span>` : `<span style="position:absolute;top:2px;right:2px;width:14px;height:14px;background:var(--ink-4);border-radius:50%;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:800">×</span>`}
-      </div>
-      <span style="font-size:10px;color:var(--ink-2);font-weight:600">${p.nome}</span>
-      <span style="font-size:9px;color:var(--ink-3);font-family:'JetBrains Mono',monospace">${p.pct}%</span>
-    </div>`;
-  }).join('');
+  // Paleta oficial — compara com cores presentes
+  const paletaEl = document.getElementById('cor-paleta');
+  if (paletaEl && typeof PALETA_COLECAO !== 'undefined'){
+    const corNaLoja = new Set(cores.map(c => c.nome.toLowerCase()));
+    paletaEl.innerHTML = PALETA_COLECAO.map(p => {
+      const presente = corNaLoja.has(p.nome.toLowerCase());
+      const hx = (p.hex || '#999').replace('#','');
+      const r = parseInt(hx.slice(0,2),16), g = parseInt(hx.slice(2,4),16), b = parseInt(hx.slice(4,6),16);
+      const dark = (r*0.299 + g*0.587 + b*0.114) < 128;
+      return `<div title="${presente?'Presente na loja':'Ausente na loja'}" style="display:flex;flex-direction:column;align-items:center;gap:4px;opacity:${presente?1:.35}">
+        <div style="width:48px;height:48px;border-radius:6px;background:${p.hex};border:2px solid ${presente?'var(--ink)':'var(--line)'};position:relative">
+          ${presente ? `<span style="position:absolute;top:2px;right:2px;width:14px;height:14px;background:var(--musgo);border-radius:50%;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:800">✓</span>` : `<span style="position:absolute;top:2px;right:2px;width:14px;height:14px;background:var(--ink-4);border-radius:50%;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:800">×</span>`}
+        </div>
+        <span style="font-size:10px;color:var(--ink-2);font-weight:600">${p.nome}</span>
+        <span style="font-size:9px;color:var(--ink-3);font-family:'JetBrains Mono',monospace">${(p.pct||0).toFixed(1)}%</span>
+      </div>`;
+    }).join('');
+  }
 }
 
 document.addEventListener('click', e=>{
@@ -3662,96 +3679,121 @@ function renderHeatmap(){
   document.getElementById('hm-area').innerHTML = html;
 }
 
-/* CENARIO ACTIVE — pills + grade ampla */
-function renderCenarioActive(){
+/* CENARIO ACTIVE · v3 · usa _computeCenarios (Sisplan + drill real) */
+let _CEN_DATA_CACHE = null;
+async function renderCenarioActive(){
   const info = CENARIOS_INFO[CEN_ATIVO];
   const tipoFilter = document.getElementById('cen-tipo')?.value || '';
   const sortBy = document.getElementById('cen-sort')?.value || 'estoque';
 
-  /* atualiza header do block */
   document.getElementById('cen-h3').textContent = info.nome;
-  document.getElementById('cen-meta').textContent = `${info.count} REFs · ${info.sub}`;
+  document.querySelectorAll('.cen-pill').forEach(b => b.classList.toggle('active', b.dataset.cen===CEN_ATIVO));
 
-  /* atualiza pills ativos */
-  document.querySelectorAll('.cen-pill').forEach(b=>b.classList.toggle('active', b.dataset.cen===CEN_ATIVO));
+  const target = document.getElementById('cen-content');
+  if (!target) return;
+  target.innerHTML = `<div style="text-align:center;color:var(--ink-3);padding:40px">Carregando ${info.nome.toLowerCase()}…</div>`;
 
-  /* filtra peças do cenário */
-  const pecas = PECAS.filter(p => statusToCenario(p.status)===CEN_ATIVO && (!tipoFilter || p.tipo===tipoFilter));
-  pecas.sort((a,b)=>(b[sortBy]||0)-(a[sortBy]||0));
+  // Lazy load — calcula 1x e cacheia (rerun com filtro só re-renderiza)
+  const cod = (typeof window.currentStore === 'object' && window.currentStore?.cod) || '*';
+  if (!_CEN_DATA_CACHE || _CEN_DATA_CACHE._cod !== cod){
+    try {
+      _CEN_DATA_CACHE = await _computeCenarios(cod);
+      _CEN_DATA_CACHE._cod = cod;
+    } catch(e){
+      target.innerHTML = `<div style="color:var(--bordo);padding:40px;text-align:center">Erro: ${e.message}</div>`;
+      return;
+    }
+  }
 
-  /* KPIs do cenário */
-  const totalEstoque = pecas.reduce((s,p)=>s+(p.estoque||0),0);
-  const totalVendas = pecas.reduce((s,p)=>s+(p.vendas30||0),0);
-  const totalCD = pecas.reduce((s,p)=>s+(p.cdQty||0),0);
+  let pecas = _CEN_DATA_CACHE[CEN_ATIVO] || [];
+  if (tipoFilter) pecas = pecas.filter(p => p.tipo === tipoFilter);
 
+  // Sort genérico (campos podem variar entre cenários)
+  pecas = pecas.slice().sort((a,b) => {
+    const va = a[sortBy] ?? a.vendasRecentes ?? a.parada_meses ?? 0;
+    const vb = b[sortBy] ?? b.vendasRecentes ?? b.parada_meses ?? 0;
+    return vb - va;
+  });
+
+  // Atualiza meta count
+  document.getElementById('cen-meta').textContent = `${pecas.length} REFs · ${info.sub}`;
+
+  // KPIs específicos por cenário
   let kpisHtml = '';
-  if(CEN_ATIVO==='buraco'){
+  if (CEN_ATIVO === 'buraco'){
+    const totEstoque = pecas.reduce((s,p)=>s+(p.estoque||0),0);
+    const totVendas = pecas.reduce((s,p)=>s+(p.vendasRecentes||0),0);
+    const lojasAfetadas = new Set(pecas.map(p=>p.slug)).size;
     kpisHtml = `
-      <div class="cen-stat"><div class="l">Total perdido</div><div class="v crit">${totalEstoque}</div></div>
-      <div class="cen-stat"><div class="l">Potencial venda</div><div class="v warn">${totalVendas}</div></div>
-      <div class="cen-stat"><div class="l">CD esperando</div><div class="v">${totalCD}</div></div>
-      <div class="cen-stat"><div class="l">Lojas afetadas</div><div class="v">18</div></div>`;
-  } else if(CEN_ATIVO==='parado'){
-    const diasAvg = Math.round(pecas.reduce((s,p)=>s+(p.diasParado||0),0)/Math.max(1,pecas.length));
+      <div class="cen-stat"><div class="l">Estoque parado em loja</div><div class="v crit">${totEstoque}</div></div>
+      <div class="cen-stat"><div class="l">Potencial venda 2026</div><div class="v warn">${totVendas}</div></div>
+      <div class="cen-stat"><div class="l">REFs únicas</div><div class="v">${new Set(pecas.map(p=>p.ref)).size}</div></div>
+      <div class="cen-stat"><div class="l">Lojas afetadas</div><div class="v">${lojasAfetadas}</div></div>`;
+  } else if (CEN_ATIVO === 'parado'){
+    const totVendas = pecas.reduce((s,p)=>s+(p.total||0),0);
+    const mesesAvg = pecas.length ? Math.round(pecas.reduce((s,p)=>s+(p.parada_meses||0),0)/pecas.length) : 0;
     kpisHtml = `
-      <div class="cen-stat"><div class="l">Estoque travado</div><div class="v warn">${totalEstoque}</div></div>
-      <div class="cen-stat"><div class="l">Dias média</div><div class="v">${diasAvg||0}</div></div>
-      <div class="cen-stat"><div class="l">+ críticas (90d+)</div><div class="v crit">${pecas.filter(p=>(p.diasParado||0)>=90).length}</div></div>
-      <div class="cen-stat"><div class="l">Trocas sugeridas</div><div class="v">${pecas.length}</div></div>`;
-  } else if(CEN_ATIVO==='repor'){
+      <div class="cen-stat"><div class="l">REFs encalhadas</div><div class="v warn">${pecas.length}</div></div>
+      <div class="cen-stat"><div class="l">Meses média parada</div><div class="v">${mesesAvg}</div></div>
+      <div class="cen-stat"><div class="l">+ críticas (≥9m)</div><div class="v crit">${pecas.filter(p=>(p.parada_meses||0)>=9).length}</div></div>
+      <div class="cen-stat"><div class="l">Total vendido histórico</div><div class="v">${totVendas}</div></div>`;
+  } else if (CEN_ATIVO === 'repor'){
+    const totEstoque = pecas.reduce((s,p)=>s+(p.estoque||0),0);
+    const totVendas = pecas.reduce((s,p)=>s+(p.vendas30||0),0);
     kpisHtml = `
-      <div class="cen-stat"><div class="l">Vendas em risco</div><div class="v info">${totalVendas}</div></div>
-      <div class="cen-stat"><div class="l">Estoque atual</div><div class="v warn">${totalEstoque}</div></div>
-      <div class="cen-stat"><div class="l">CD disponível</div><div class="v">${totalCD}</div></div>
-      <div class="cen-stat"><div class="l">REFs críticas</div><div class="v crit">${pecas.filter(p=>(p.estoque||0)<=3).length}</div></div>`;
+      <div class="cen-stat"><div class="l">Vendas em risco</div><div class="v info">${totVendas}</div></div>
+      <div class="cen-stat"><div class="l">Estoque atual</div><div class="v warn">${totEstoque}</div></div>
+      <div class="cen-stat"><div class="l">REFs únicas</div><div class="v">${new Set(pecas.map(p=>p.ref)).size}</div></div>
+      <div class="cen-stat"><div class="l">Críticas (≤2 un.)</div><div class="v crit">${pecas.filter(p=>(p.estoque||0)<=2).length}</div></div>`;
   } else {
+    const totEstoque = pecas.reduce((s,p)=>s+(p.estoque||0),0);
+    const totVendas = pecas.reduce((s,p)=>s+(p.vendas30||0),0);
     kpisHtml = `
-      <div class="cen-stat"><div class="l">Estoque saudável</div><div class="v ok">${totalEstoque}</div></div>
-      <div class="cen-stat"><div class="l">Vendas 30d</div><div class="v ok">${totalVendas}</div></div>
-      <div class="cen-stat"><div class="l">No CD</div><div class="v">${totalCD}</div></div>
-      <div class="cen-stat"><div class="l">Em VM</div><div class="v ok">${pecas.length} REFs</div></div>`;
+      <div class="cen-stat"><div class="l">Estoque saudável</div><div class="v ok">${totEstoque}</div></div>
+      <div class="cen-stat"><div class="l">Vendas 2026</div><div class="v ok">${totVendas}</div></div>
+      <div class="cen-stat"><div class="l">REFs únicas</div><div class="v">${new Set(pecas.map(p=>p.ref)).size}</div></div>
+      <div class="cen-stat"><div class="l">Em VM</div><div class="v ok">${pecas.length} pares</div></div>`;
   }
 
-  /* Grade de cards */
-  let gridHtml = '';
-  if(pecas.length === 0){
-    gridHtml = `<div class="cen-empty"><div class="ce-icon">∅</div>Nenhuma peça neste cenário com filtro selecionado.</div>`;
-  } else {
-    gridHtml = `<div class="cen-grid">${pecas.map(p=>{
-      const cls = info.cls;
-      let mainStat = '';
-      if(CEN_ATIVO==='buraco') mainStat = `Estoque <b>${p.estoque}</b>`;
-      else if(CEN_ATIVO==='parado') mainStat = `<b>${p.diasParado||0}d</b>`;
-      else if(CEN_ATIVO==='repor') mainStat = `Estoque <b>${p.estoque}</b>`;
-      else mainStat = `Vendas <b>${p.vendas30}</b>`;
-      return `<div class="cen-card" onclick="openModal('${p.ref}')">
-        <div class="cen-card-photo">
-          ${pieceImage(p)}
-          <span class="cc-tag ${cls}">${mainStat}</span>
-        </div>
-        <div class="cen-card-body">
-          <div class="cen-card-cod">${p.ref}</div>
-          <div class="cen-card-tipo">${p.tipo} · ${p.corPrincipal}</div>
-          <div class="cen-card-stats">
-            <span class="cen-card-stat">CD <b>${p.cdQty||0}</b></span>
-            <span class="cen-card-stat">VM <b>${p.emVM||0}</b></span>
-            <span class="cen-card-stat">${p.lojasComEstoque||0} lojas</span>
+  // Grid de cards (máx 24)
+  const grid = pecas.length === 0
+    ? `<div class="cen-empty"><div class="ce-icon">∅</div>Nenhuma peça neste cenário.</div>`
+    : `<div class="cen-grid">${pecas.slice(0, 24).map(p => {
+        const cls = info.cls;
+        const peca = { ref: p.ref, tipo: p.tipo, corPrincipal: p.corPrincipal || p.cor };
+        let mainStat;
+        if (CEN_ATIVO === 'buraco') mainStat = `Estoque <b>${p.estoque}</b>`;
+        else if (CEN_ATIVO === 'parado') mainStat = `<b>${p.parada_meses||0}m</b>`;
+        else if (CEN_ATIVO === 'repor') mainStat = `Estoque <b>${p.estoque}</b>`;
+        else mainStat = `Vendas <b>${p.vendas30}</b>`;
+        return `<div class="cen-card" onclick="openModal('${p.ref}')">
+          <div class="cen-card-photo">
+            ${pieceImage(peca)}
+            <span class="cc-tag ${cls}">${mainStat}</span>
           </div>
-          <div class="cen-card-action"><span>Abrir detalhes</span><span>→</span></div>
-        </div>
-      </div>`;
-    }).join('')}</div>`;
-  }
+          <div class="cen-card-body">
+            <div class="cen-card-cod">${p.ref}</div>
+            <div class="cen-card-tipo">${p.tipo} · ${p.corPrincipal || p.cor}</div>
+            <div class="cen-card-stats">
+              ${p.slug ? `<span class="cen-card-stat">${_nomeLoja(p.slug)}</span>` : ''}
+              ${p.estoque ? `<span class="cen-card-stat">Est <b>${p.estoque}</b></span>` : ''}
+              ${p.vendasRecentes ? `<span class="cen-card-stat">V <b>${p.vendasRecentes}</b></span>` : ''}
+              ${p.vendas30 ? `<span class="cen-card-stat">V <b>${p.vendas30}</b></span>` : ''}
+              ${p.total ? `<span class="cen-card-stat">Hist <b>${p.total}</b></span>` : ''}
+            </div>
+            <div class="cen-card-action"><span>Abrir detalhes</span><span>→</span></div>
+          </div>
+        </div>`;
+      }).join('')}</div>`;
 
-  /* CTA row */
   const ctaHtml = `<div class="cen-cta-row">
-    <div class="cen-cta-info">${pecas.length} amostras visíveis · total real no parque: ${info.count} REFs</div>
-    ${info.tab ? `<button class="cen-cta-link" onclick="goTo('${info.tab}')">Ver todas as ${info.count} peças →</button>` : `<span class="cen-cta-info">Aba dedicada na v2</span>`}
+    <div class="cen-cta-info">${pecas.length} ${pecas.length===1?'REF':'REFs'} no cenário ${tipoFilter ? `· filtro: ${tipoFilter}` : ''}</div>
+    ${info.tab ? `<button class="cen-cta-link" onclick="goTo('${info.tab}')">Ver tela dedicada →</button>` : ''}
   </div>`;
 
-  document.getElementById('cen-content').innerHTML = `
+  target.innerHTML = `
     <div class="cen-summary">${kpisHtml}</div>
-    ${gridHtml}
+    ${grid}
     ${ctaHtml}
   `;
 }
@@ -4567,56 +4609,66 @@ document.addEventListener('click', e=>{
     rerender();
   }
 });
-function renderBuracos(){
-  const sortBy = document.getElementById('buracos-sort')?.value || 'estoque';
-  let pecas = PECAS.filter(p => p.status==='buraco' && applyTipo(p));
-  if(buracoFilter==='A') pecas = pecas.filter(p => p.abc==='A');
-  if(buracoFilter==='campanha') pecas = pecas.filter(p => p.campanha);
-  if(sortBy==='abc'){
-    const ord = {A:0,B:1,C:2};
-    pecas.sort((a,b) => (ord[a.abc]-ord[b.abc]) || ((b.vendas30||0)-(a.vendas30||0)));
-  } else if(sortBy==='strProj'){
-    pecas.sort((a,b) => Math.round((b.str||0)*1.15) - Math.round((a.str||0)*1.15));
-  } else {
-    pecas.sort((a,b) => (b[sortBy]||0)-(a[sortBy]||0));
+/* v3 · BURACOS · usa VAR_ESTOQUE_LOJA + VAR_VENDAS_LOJA_2026 + drill real.
+   Cobertura: ref que TEM estoque na loja + VENDE + NÃO está exposta no drill. */
+async function renderBuracos(){
+  const grid = document.getElementById('buracos-grid');
+  if (!grid) return;
+  grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--ink-3);padding:40px;font-size:13px">Carregando buracos…</div>`;
+
+  const cod = (typeof window.currentStore === 'object' && window.currentStore?.cod) || '*';
+  let lista;
+  try { lista = await _computeBuracos(cod); }
+  catch(e){
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--bordo);padding:40px">Erro: ${e.message}</div>`;
+    return;
   }
-  const html = pecas.slice(0,18).map(p=>{
-    const xsell = LOOK_SUGGESTIONS[p.ref] || [];
-    const partner = xsell[0] ? REF_INDEX[xsell[0]] : null;
-    const strProj = Math.round((p.str||0) * 1.15);
-    const partnerHtml = partner ? `
-      <div style="margin-top:8px;padding:6px;background:var(--paper-2);border-radius:var(--r-sm);display:flex;gap:6px;align-items:center;border:1px dashed var(--line)">
-        <div style="width:24px;height:32px;background:#fff;border-radius:2px;overflow:hidden;flex-shrink:0">${pieceImage(partner)}</div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:9px;color:var(--ink-3);letter-spacing:.1em;text-transform:uppercase;font-weight:600">Look com</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--ink)">${partner.ref}</div>
-        </div>
-      </div>` : '';
-    /* tag de campanha agora no body, abaixo do tipo */
-    const campTag = p.campanha ? `<div class="bur-camp-tag">★ ${p.campanha}</div>` : '';
+
+  // Aplica filtros existentes (tipo + ABC + campanha) — agora baseados em REF_INDEX
+  if (typeof applyTipo === 'function'){ lista = lista.filter(p => applyTipo({tipo: p.tipo})); }
+  if (buracoFilter === 'campanha'){
+    lista = lista.filter(p => (typeof CAMPANHAS !== 'undefined') && CAMPANHAS[p.ref]);
+  }
+
+  // Sort
+  const sortBy = document.getElementById('buracos-sort')?.value || 'estoque';
+  if (sortBy === 'vendas30'){
+    lista.sort((a,b) => b.vendasRecentes - a.vendasRecentes);
+  } else if (sortBy === 'cdQty'){
+    lista.sort((a,b) => b.vendasTotal - a.vendasTotal);
+  } else {
+    lista.sort((a,b) => b.estoque - a.estoque);
+  }
+
+  const html = lista.slice(0, 18).map(p => {
+    const peca = { ref: p.ref, tipo: p.tipo, corPrincipal: p.cor };
+    const camp = (typeof CAMPANHAS !== 'undefined' && CAMPANHAS[p.ref]) ? CAMPANHAS[p.ref] : null;
+    const campTag = camp ? `<div class="bur-camp-tag">★ ${camp}</div>` : '';
+    const lojaNome = _nomeLoja(p.slug);
     return `<div class="mosaic-card bur-card" onclick="openModal('${p.ref}')">
       <div class="mosaic-photo bur-photo">
-        <div class="bur-abc-ribbon" style="background:${abcCor(p.abc)}" title="Classificação ${p.abc}"><span>${p.abc}</span></div>
-        ${pieceImage(p)}
+        ${pieceImage(peca)}
       </div>
       <div class="mosaic-body">
         <div class="mosaic-cod">${p.ref}</div>
-        <div class="mosaic-tipo">${p.tipo} · ${p.corPrincipal} · ${p.est||'I-26'}</div>
+        <div class="mosaic-tipo">${p.tipo} · ${p.cor} · ${p.est}</div>
         ${campTag}
         <div class="mosaic-info">
-          <span class="stat">Estoque <b>${p.estoque}</b></span>
-          <span class="stat ${p.vendas30>=15?'ok':'warn'}">${p.vendas30}v/30d</span>
-          <span class="stat" style="background:${strCor(strProj)==='ok'?'var(--musgo-bg)':strCor(strProj)==='warn-ok'?'#dde8dd':strCor(strProj)==='warn'?'var(--ambar-bg)':'var(--bordo-bg)'}">STR proj ${strProj}%</span>
+          <span class="stat">Estoque loja <b>${p.estoque}</b></span>
+          <span class="stat ${p.vendasRecentes>=10?'ok':'warn'}">${p.vendasRecentes}v 2026</span>
+          <span class="stat">Hist <b>${p.vendasTotal}</b></span>
         </div>
-        ${partnerHtml}
-        <div class="mosaic-action"><span>${p.sugestao}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+        <div style="margin-top:8px;font-size:11px;color:var(--ink-2);padding:6px 8px;background:var(--bordo-bg);border-radius:var(--r-sm);border-left:3px solid var(--bordo)">
+          <b style="color:var(--bordo);text-transform:uppercase;font-size:9px;letter-spacing:.08em">Buraco em ${lojaNome}</b>
+          <div style="margin-top:2px">Vende e tem estoque, mas <b>não está no VM</b></div>
+        </div>
       </div>
     </div>`;
   }).join('');
-  document.getElementById('buracos-grid').innerHTML = html;
-  /* contador */
+  grid.innerHTML = html || `<div style="grid-column:1/-1;text-align:center;color:var(--ink-3);padding:40px">Nenhum buraco detectado.</div>`;
+
   const h = document.getElementById('buracos-h');
-  if(h) h.textContent = `${pecas.length} buracos ${buracoFilter==='A'?'(só A)':buracoFilter==='campanha'?'(campanha)':''}`;
+  if (h) h.textContent = `${lista.length} buracos${buracoFilter==='campanha'?' (campanha)':''}`;
 }
 
 /* v2 · CD especializado: sugestão por tipo, cross-sell, custo carregamento */
@@ -4626,43 +4678,44 @@ const SUG_EXPOSICAO = {
   'Cardigan':'Frontal','Blusa':'Sob ombros + Frontal',
   'Saia':'Sob ombros','Calça':'Sob ombros'
 };
-function renderCD(){
-  const pecas = PECAS.filter(p => p.status==='cd-alto' && applyTipo(p));
-  pecas.sort((a,b) => (b.cdQty||0)-(a.cdQty||0));
-  const html = pecas.slice(0,12).map(p=>{
-    const xsell = LOOK_SUGGESTIONS[p.ref] || [];
-    /* encontra parceiro JÁ exposto em VM */
-    const partner = xsell.map(r=>REF_INDEX[r]).find(x => x && (x.emVM||0)>0);
+/* v3 · CD · usa vw_giro_estoque (Oracle) filtrado por cta='CD' */
+async function renderCD(){
+  const cdGrid = document.getElementById('cd-grid');
+  if (!cdGrid) return;
+  cdGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--ink-3);padding:40px;font-size:13px">Carregando estoque CD…</div>`;
+
+  let lista;
+  try { lista = await _computeCDLotado(5); }
+  catch(e){
+    cdGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--bordo);padding:40px">Erro: ${e.message}</div>`;
+    return;
+  }
+
+  // Aplica filtro de tipo se houver
+  if (typeof applyTipo === 'function'){ lista = lista.filter(p => applyTipo({tipo: p.tipo})); }
+
+  const html = lista.slice(0, 24).map(p => {
+    const peca = { ref: p.ref, tipo: p.tipo, corPrincipal: p.corPrincipal };
     const sug = SUG_EXPOSICAO[p.tipo] || 'Frontal';
-    const custoMes = Math.round(((p.cdQty||0) * p.precoBase * 0.03) / 1000); // em mil R$
-    const partnerHtml = partner ? `
-      <div style="margin-top:8px;padding:6px;background:var(--musgo-bg);border-radius:var(--r-sm);display:flex;gap:6px;align-items:center;border:1px solid var(--musgo)">
-        <div style="width:24px;height:32px;background:#fff;border-radius:2px;overflow:hidden;flex-shrink:0">${pieceImage(partner)}</div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:9px;color:var(--musgo);letter-spacing:.1em;text-transform:uppercase;font-weight:700">Combina com (em VM)</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--ink)">${partner.ref}</div>
-        </div>
-      </div>` : '';
     return `<div class="mosaic-card" onclick="openModal('${p.ref}')">
       <div class="mosaic-photo">
-        ${pieceImage(p)}
+        ${pieceImage(peca)}
         <span class="cc-tag" style="background:var(--ambar);color:#fff">CD ${p.cdQty}</span>
       </div>
       <div class="mosaic-body">
         <div class="mosaic-cod">${p.ref}</div>
-        <div class="mosaic-tipo">${p.tipo} · ${p.corPrincipal}</div>
+        <div class="mosaic-tipo">${p.tipo} · ${p.corPrincipal} · ${p.est}</div>
         <div class="mosaic-info">
-          <span class="stat">Estoque <b>${p.estoque}</b></span>
-          <span class="stat ${p.vendas30>=15?'ok':'warn'}">${p.vendas30}v/30d</span>
-          <span class="stat ${p.emVM>=5?'ok':'warn'}">VM ${p.emVM||0}</span>
+          <span class="stat">CD <b>${p.cdQty}</b></span>
+          <span class="stat">${p.tamanhos}× tam.</span>
+          <span class="stat">Cor: ${p.nome_cor || p.cor}</span>
         </div>
         <div style="margin-top:8px;padding:6px 8px;background:var(--ambar-bg);border-left:2px solid var(--ambar);font-size:10.5px;color:var(--ink-2);line-height:1.4">
-          <b style="color:var(--ambar);text-transform:uppercase;letter-spacing:.08em;font-size:9px;font-family:inherit">Sugestão</b>
+          <b style="color:var(--ambar);text-transform:uppercase;letter-spacing:.08em;font-size:9px;font-family:inherit">Sugestão de exposição</b>
           <div style="font-weight:600;color:var(--ink);margin-top:2px">${sug}</div>
         </div>
-        ${partnerHtml}
-        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--paper-2);font-size:10px;color:var(--ink-3);display:flex;justify-content:space-between">
-          <span>Custo carregamento</span><b style="color:var(--bordo);font-family:'JetBrains Mono',monospace">R$ ${custoMes}k/mês</b>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--paper-2);font-size:10px;color:var(--ink-3);text-align:center">
+          <a href="https://plm.colecao.moda/produto/${p.ref}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:var(--ink);font-weight:600;letter-spacing:.04em;text-decoration:none;text-transform:uppercase">Ver no PLM →</a>
         </div>
       </div>
     </div>`;
@@ -4745,36 +4798,36 @@ function rerender(){
 }
 
 /* ════════ INIT ════════ */
-/* ════════ MIX & CATEGORIA ════════ */
-function renderMix(){
-  /* Calcula % por tipo. Mock realista. */
-  const tipos = ['Blusa','Maxipull','Casaco','Capa','Saia','Vestido','Cardigan','Calça','Pelerine'];
-  const data = {
-    'Blusa':    {vm:22.4, venda:26.8, estoque:24.1, acao:'up',   gap:4.4},
-    'Maxipull': {vm:18.7, venda:23.2, estoque:19.8, acao:'up',   gap:4.5},
-    'Casaco':   {vm:14.2, venda:8.9,  estoque:15.6, acao:'down', gap:-5.3},
-    'Capa':     {vm:11.5, venda:6.4,  estoque:12.8, acao:'down', gap:-5.1},
-    'Saia':     {vm:10.8, venda:11.2, estoque:9.4,  acao:'flat', gap:0.4},
-    'Vestido':  {vm:9.1,  venda:13.8, estoque:7.2,  acao:'up',   gap:4.7},
-    'Cardigan': {vm:7.4,  venda:5.6,  estoque:6.8,  acao:'flat', gap:-1.8},
-    'Calça':    {vm:4.2,  venda:2.9,  estoque:3.1,  acao:'flat', gap:-1.3},
-    'Pelerine': {vm:1.7,  venda:1.2,  estoque:1.2,  acao:'flat', gap:-0.5}
-  };
-  document.getElementById('mix-list').innerHTML = tipos.map(tipo=>{
-    const d = data[tipo];
+/* ════════ MIX & CATEGORIA ════════
+   v3 · usa _computeMixCategoria (drill + Sisplan real) */
+async function renderMix(){
+  const el = document.getElementById('mix-list');
+  if (!el) return;
+  el.innerHTML = `<div style="text-align:center;color:var(--ink-3);padding:20px;font-size:12px">Carregando mix por categoria…</div>`;
+
+  const cod = (typeof window.currentStore === 'object' && window.currentStore?.cod) || '*';
+  let tipos;
+  try { tipos = await _computeMixCategoria(cod); }
+  catch(e){ el.innerHTML = `<div style="color:var(--bordo);padding:20px">Erro: ${e.message}</div>`; return; }
+
+  if (!tipos.length){ el.innerHTML = `<div style="color:var(--ink-3);padding:20px;text-align:center">Sem dados de mix.</div>`; return; }
+
+  // Silhueta demo por tipo
+  const corDemo = {Blusa:'Cru',Maxipull:'Off Camelo',Casaco:'Preto',Capa:'Figo',Saia:'Off Camelo',Vestido:'Preto',Cardigan:'Camelo',Calça:'Cru',Pelerine:'Cru'};
+
+  el.innerHTML = tipos.map(d => {
     const lbl = d.acao==='up' ? '↑ Aumentar exposição' : (d.acao==='down' ? '↓ Reduzir exposição' : '= Manter');
     const sub = d.acao==='flat' ? '' : `<small>${d.gap>0?'+':''}${d.gap.toFixed(1)}pp venda vs VM</small>`;
-    /* silhueta de exemplo da categoria */
-    const corDemo = {Blusa:'Cru',Maxipull:'Off Camelo',Casaco:'Preto',Capa:'Figo',Saia:'Off Camelo',Vestido:'Preto',Cardigan:'Camelo',Calça:'Cru',Pelerine:'Cru'}[tipo];
+    const sil = (typeof silhouette === 'function') ? silhouette(d.tipo, corDemo[d.tipo] || 'Cru') : '';
     return `<div class="cor-row" onclick="goTo('buracos')">
       <div class="cor-name" style="display:flex;align-items:center;gap:10px">
-        <div style="width:32px;height:42px;background:#fff;border:1px solid var(--paper-2);border-radius:2px;overflow:hidden;flex-shrink:0">${silhouette(tipo, corDemo)}</div>
-        ${tipo}
+        <div style="width:32px;height:42px;background:#fff;border:1px solid var(--paper-2);border-radius:2px;overflow:hidden;flex-shrink:0">${sil}</div>
+        ${d.tipo}
       </div>
       <div class="cor-bars">
-        <div class="cor-bar"><span class="lbl">VM</span><div class="track"><div class="fill vm" style="width:${d.vm*3}%"></div></div><span class="pct">${d.vm.toFixed(1)}%</span></div>
-        <div class="cor-bar"><span class="lbl">Venda</span><div class="track"><div class="fill venda" style="width:${d.venda*3}%"></div></div><span class="pct">${d.venda.toFixed(1)}%</span></div>
-        <div class="cor-bar"><span class="lbl">Estoque</span><div class="track"><div class="fill estoque" style="width:${d.estoque*3}%"></div></div><span class="pct">${d.estoque.toFixed(1)}%</span></div>
+        <div class="cor-bar"><span class="lbl">VM</span><div class="track"><div class="fill vm" style="width:${Math.min(100,d.vm*3)}%"></div></div><span class="pct">${d.vm.toFixed(1)}%</span></div>
+        <div class="cor-bar"><span class="lbl">Venda</span><div class="track"><div class="fill venda" style="width:${Math.min(100,d.venda*3)}%"></div></div><span class="pct">${d.venda.toFixed(1)}%</span></div>
+        <div class="cor-bar"><span class="lbl">Estoque</span><div class="track"><div class="fill estoque" style="width:${Math.min(100,d.estoque*3)}%"></div></div><span class="pct">${d.estoque.toFixed(1)}%</span></div>
       </div>
       <div class="cor-action ${d.acao}">${lbl}${sub}</div>
     </div>`;
@@ -7612,6 +7665,298 @@ async function _computeParadas(cod){
   return stats;
 }
 window._computeParadas = _computeParadas;
+
+/* ============================================================
+   ONDA 1 · BURACOS · CD · CORES — substituem mock PECAS
+   ============================================================ */
+
+/* BURACOS: ref que VENDE + TEM ESTOQUE na loja + NÃO está no drill */
+async function _computeBuracos(cod){
+  const slugs = (cod === '*' || !cod)
+    ? Object.values(window.LOJA_MAP || {}).filter(Boolean)
+    : [ (window.LOJA_MAP || {})[cod] || cod ];
+
+  const drillData = await Promise.all(slugs.map(s => _loadDrillData(s)));
+  const slugToStore = {}; slugs.forEach(s => slugToStore[s] = _slugToStoreid(s));
+
+  // Refs expostas por slug (pra excluir)
+  const expostasPorSlug = {};
+  slugs.forEach((slug, i) => {
+    const d = drillData[i]; const set = new Set();
+    if (d){
+      Object.values(d.araras || {}).forEach(cab => cab.forEach(c => (c.refs||[]).forEach(r => set.add(String(r)))));
+      (d.manequins || []).forEach(m => (m.refs||[]).forEach(r => set.add(String(r))));
+    }
+    expostasPorSlug[slug] = set;
+  });
+
+  const VEL = window.VAR_ESTOQUE_LOJA || {};
+  const VVL = window.VAR_VENDAS_LOJA || {};
+  const VVL26 = window.VAR_VENDAS_LOJA_2026 || {};
+
+  const buracos = [];
+  slugs.forEach(slug => {
+    const storeid = slugToStore[slug];
+    if (!storeid) return;
+    const expostas = expostasPorSlug[slug] || new Set();
+
+    // Itera todas as refs com estoque na loja
+    Object.keys(VEL).forEach(ref => {
+      const estoque = VEL[ref]?.[storeid] || 0;
+      if (estoque <= 0) return;
+      if (expostas.has(ref) || expostas.has(ref.replace(/^0+/,''))) return;
+      // Tem vendas? prioriza 2026, fallback histórico
+      const vendasRecentes = VVL26[ref]?.[storeid] || 0;
+      const vendasTotal = VVL[ref]?.[storeid] || 0;
+      if (vendasRecentes < 1 && vendasTotal < 3) return; // ignora refs que nunca venderam
+
+      const p = (typeof REF_INDEX !== 'undefined')
+        ? (REF_INDEX[ref] || REF_INDEX[String(ref).padStart(6,'0')]) : null;
+      buracos.push({
+        ref,
+        slug,
+        storeid,
+        tipo: p?.tipo || '—',
+        cor:  p?.corPrincipal || '—',
+        est:  p?.est || 'I-26',
+        estoque,
+        vendasRecentes,
+        vendasTotal,
+      });
+    });
+  });
+
+  // Ordena: mais vendas recentes + maior estoque = oportunidade
+  buracos.sort((a,b) =>
+    (b.vendasRecentes - a.vendasRecentes) ||
+    (b.estoque - a.estoque) ||
+    (b.vendasTotal - a.vendasTotal)
+  );
+  return buracos;
+}
+window._computeBuracos = _computeBuracos;
+
+/* CD LOTADO: vw_giro_estoque rows com cta='CD' e qt_atual >= threshold */
+let _CD_DATA_CACHE = null;
+async function _computeCDLotado(threshold = 5){
+  if (!_CD_DATA_CACHE){
+    try {
+      const r = await fetch('../data/oracle/vw_giro_estoque.json', {credentials:'same-origin', cache:'no-cache'});
+      if (r.ok) _CD_DATA_CACHE = await r.json();
+    } catch(e){ console.warn('[CD] falhou:', e); return []; }
+  }
+  if (!_CD_DATA_CACHE) return [];
+
+  // Agrupa por ref+cor (soma tamanhos)
+  const agg = {};
+  (_CD_DATA_CACHE.rows || []).forEach(r => {
+    if (r.cta !== 'CD') return;
+    const qt = r.qt_atual || 0;
+    if (qt <= 0) return;
+    const key = `${r.cd_item}|${r.cor}`;
+    if (!agg[key]) agg[key] = { ref: r.cd_item, cor: r.cor, nome_cor: r.nome_cor, qtd: 0, tamanhos: new Set() };
+    agg[key].qtd += qt;
+    agg[key].tamanhos.add(r.tam);
+  });
+
+  const lista = Object.values(agg)
+    .filter(x => x.qtd >= threshold)
+    .map(x => {
+      const refClean = String(x.ref).replace(/^0+/,'') || '0';
+      const p = (typeof REF_INDEX !== 'undefined')
+        ? (REF_INDEX[refClean] || REF_INDEX[x.ref]) : null;
+      return {
+        ref: refClean,
+        cor: x.cor,
+        nome_cor: x.nome_cor,
+        cdQty: Math.round(x.qtd),
+        tamanhos: x.tamanhos.size,
+        tipo: p?.tipo || '—',
+        corPrincipal: p?.corPrincipal || x.cor,
+        est: p?.est || 'I-26',
+      };
+    });
+
+  lista.sort((a,b) => b.cdQty - a.cdQty);
+  return lista;
+}
+window._computeCDLotado = _computeCDLotado;
+
+/* CORES PERFORMANCE: pra cada loja, calcula %VM (drill) vs %Venda (VAR_VENDAS_LOJA) por cor */
+async function _computeCoresPerformance(cod){
+  const slug = (cod === '*' || !cod)
+    ? null
+    : (window.LOJA_MAP || {})[cod] || cod;
+
+  const slugs = slug ? [slug] : Object.values(window.LOJA_MAP || {}).filter(Boolean);
+  const drillData = await Promise.all(slugs.map(s => _loadDrillData(s)));
+  const VVL26 = window.VAR_VENDAS_LOJA_2026 || {};
+
+  function lookupRef(r){
+    if (typeof REF_INDEX === 'undefined') return null;
+    return REF_INDEX[r] || REF_INDEX[String(r).padStart(6,'0')] || null;
+  }
+  function corHexLocal(cor){
+    if (!cor) return '#c9a877';
+    if (window.COR_PLM){
+      const c = window.COR_PLM[cor] || window.COR_PLM[String(cor).toUpperCase()];
+      if (c?.hex) return '#' + String(c.hex).replace(/^#/,'');
+    }
+    return '#c9a877';
+  }
+
+  // Agrega presença VM por cor
+  const vmCount = {}; // cor → presença
+  const vendaCount = {}; // cor → vendas
+  slugs.forEach((s, i) => {
+    const d = drillData[i]; if (!d) return;
+    const storeid = _slugToStoreid(s);
+    const refsVM = [];
+    Object.values(d.araras || {}).forEach(cab => cab.forEach(c => (c.refs||[]).forEach(r => refsVM.push(String(r)))));
+    (d.manequins || []).forEach(m => (m.refs||[]).forEach(r => refsVM.push(String(r))));
+    refsVM.forEach(r => {
+      const p = lookupRef(r);
+      const cor = (p?.corPrincipal || '—').toLowerCase();
+      vmCount[cor] = (vmCount[cor] || 0) + 1;
+    });
+    if (storeid){
+      Object.keys(VVL26).forEach(ref => {
+        const v = VVL26[ref]?.[storeid] || 0;
+        if (v <= 0) return;
+        const p = lookupRef(ref);
+        const cor = (p?.corPrincipal || '—').toLowerCase();
+        vendaCount[cor] = (vendaCount[cor] || 0) + v;
+      });
+    }
+  });
+
+  const totVM = Object.values(vmCount).reduce((s,v)=>s+v, 0) || 1;
+  const totVendas = Object.values(vendaCount).reduce((s,v)=>s+v, 0) || 1;
+  const cores = {};
+  Object.keys(vmCount).forEach(c => { if (!cores[c]) cores[c]={}; cores[c].vm = 100*vmCount[c]/totVM; });
+  Object.keys(vendaCount).forEach(c => { if (!cores[c]) cores[c]={vm:0}; cores[c].venda = 100*vendaCount[c]/totVendas; });
+
+  const arr = Object.entries(cores).map(([nome, m]) => ({
+    nome,
+    vm: +(m.vm||0).toFixed(1),
+    venda: +(m.venda||0).toFixed(1),
+    estoque: +(m.vm||0).toFixed(1), // sem fonte clara por cor — usa VM como proxy
+    hex: corHexLocal(nome),
+  })).sort((a,b) => (b.vm+b.venda) - (a.vm+a.venda));
+
+  return arr.slice(0, 12);
+}
+window._computeCoresPerformance = _computeCoresPerformance;
+
+/* MIX & CATEGORIA: agrega por tipo (Blusa, Casaco, etc) — %VM (drill) × %Venda (Sisplan) × %Estoque (Sisplan) */
+async function _computeMixCategoria(cod){
+  const slug = (cod === '*' || !cod) ? null : (window.LOJA_MAP || {})[cod] || cod;
+  const slugs = slug ? [slug] : Object.values(window.LOJA_MAP || {}).filter(Boolean);
+  const drillData = await Promise.all(slugs.map(s => _loadDrillData(s)));
+  const VVL26 = window.VAR_VENDAS_LOJA_2026 || {};
+  const VEL = window.VAR_ESTOQUE_LOJA || {};
+
+  function lookupRef(r){
+    if (typeof REF_INDEX === 'undefined') return null;
+    return REF_INDEX[r] || REF_INDEX[String(r).padStart(6,'0')] || null;
+  }
+
+  const vmCount = {}, vendaCount = {}, estoqueCount = {};
+  slugs.forEach((s, i) => {
+    const d = drillData[i]; if (!d) return;
+    const storeid = _slugToStoreid(s);
+    // VM: refs expostas
+    const refsVM = [];
+    Object.values(d.araras || {}).forEach(cab => cab.forEach(c => (c.refs||[]).forEach(r => refsVM.push(String(r)))));
+    (d.manequins || []).forEach(m => (m.refs||[]).forEach(r => refsVM.push(String(r))));
+    refsVM.forEach(r => {
+      const p = lookupRef(r);
+      const tipo = p?.tipo || '—';
+      vmCount[tipo] = (vmCount[tipo] || 0) + 1;
+    });
+    // Vendas + estoque por loja
+    if (storeid){
+      Object.keys(VVL26).forEach(ref => {
+        const v = VVL26[ref]?.[storeid] || 0;
+        if (v <= 0) return;
+        const p = lookupRef(ref);
+        const tipo = p?.tipo || '—';
+        vendaCount[tipo] = (vendaCount[tipo] || 0) + v;
+      });
+      Object.keys(VEL).forEach(ref => {
+        const e = VEL[ref]?.[storeid] || 0;
+        if (e <= 0) return;
+        const p = lookupRef(ref);
+        const tipo = p?.tipo || '—';
+        estoqueCount[tipo] = (estoqueCount[tipo] || 0) + e;
+      });
+    }
+  });
+
+  const tot = obj => Object.values(obj).reduce((s,v)=>s+v, 0) || 1;
+  const totVM = tot(vmCount), totVendas = tot(vendaCount), totEstoque = tot(estoqueCount);
+  const tipos = new Set([...Object.keys(vmCount), ...Object.keys(vendaCount), ...Object.keys(estoqueCount)]);
+  return Array.from(tipos)
+    .filter(t => t !== '—')
+    .map(t => {
+      const vm = 100 * (vmCount[t]||0) / totVM;
+      const venda = 100 * (vendaCount[t]||0) / totVendas;
+      const estoque = 100 * (estoqueCount[t]||0) / totEstoque;
+      const gap = venda - vm;
+      const acao = gap >= 3 ? 'up' : (gap <= -3 ? 'down' : 'flat');
+      return { tipo: t, vm:+vm.toFixed(1), venda:+venda.toFixed(1), estoque:+estoque.toFixed(1), gap:+gap.toFixed(1), acao };
+    })
+    .sort((a,b) => b.vm - a.vm);
+}
+window._computeMixCategoria = _computeMixCategoria;
+
+/* CENARIOS unificados: buraco, parado, repor, sucesso (Sisplan + drill real) */
+async function _computeCenarios(cod){
+  const [buracos, paradas] = await Promise.all([
+    _computeBuracos(cod),
+    _computeParadas(cod),
+  ]);
+  // REPOR: vende em 2026 + estoque baixo na loja (<5)
+  const VVL26 = window.VAR_VENDAS_LOJA_2026 || {};
+  const VEL = window.VAR_ESTOQUE_LOJA || {};
+  const slug = (cod === '*' || !cod) ? null : (window.LOJA_MAP || {})[cod] || cod;
+  const slugs = slug ? [slug] : Object.values(window.LOJA_MAP || {}).filter(Boolean);
+
+  function lookupRef(r){
+    if (typeof REF_INDEX === 'undefined') return null;
+    return REF_INDEX[r] || REF_INDEX[String(r).padStart(6,'0')] || null;
+  }
+
+  const repor = [], sucesso = [];
+  slugs.forEach(s => {
+    const storeid = _slugToStoreid(s); if (!storeid) return;
+    Object.keys(VVL26).forEach(ref => {
+      const v = VVL26[ref]?.[storeid] || 0;
+      if (v < 3) return;
+      const e = VEL[ref]?.[storeid] || 0;
+      if (e <= 0) return; // sem estoque, não conta nada
+      const p = lookupRef(ref);
+      const obj = {
+        ref, slug: s, storeid,
+        tipo: p?.tipo || '—',
+        corPrincipal: p?.corPrincipal || '—',
+        cor: (p?.corPrincipal || '—').toLowerCase(),
+        est: p?.est || 'I-26',
+        estoque: e,
+        vendas30: v,
+        cdQty: 0,
+      };
+      if (e <= 5 && v >= 3) repor.push(obj);
+      else if (e > 5 && v >= 5) sucesso.push(obj);
+    });
+  });
+
+  repor.sort((a,b) => (b.vendas30 - a.vendas30) || (a.estoque - b.estoque));
+  sucesso.sort((a,b) => b.vendas30 - a.vendas30);
+
+  return { buraco: buracos, parado: paradas.lista, repor, sucesso };
+}
+window._computeCenarios = _computeCenarios;
 
 function _nomeLoja(slug){
   const l = (window.LOJAS || []).find(x => x.slug === slug || x.cod === slug);
