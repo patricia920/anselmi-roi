@@ -43,12 +43,13 @@
     return window.FotoResolver || null;
   }
 
-  // 2) JSON loader genérico com retry — CF CDN às vezes serve HTML fallback
-  //    no primeiro hit (cache miss). Retry com query bust resolve.
+  // 2) JSON loader genérico — manda cookie de sessão (same-origin) pra passar
+  //    pelo _middleware.js de auth. credentials: 'omit' fazia o middleware
+  //    redirecionar pra /login (HTML fallback) em TODAS as requests.
   async function loadJSON(path, attempt = 0) {
     try {
       const url = attempt > 0 ? path + (path.includes('?') ? '&' : '?') + 'cb=' + Date.now() : path;
-      const r = await fetch(url, { credentials: 'omit', cache: 'no-cache' });
+      const r = await fetch(url, { credentials: 'same-origin', cache: 'no-cache' });
       if (!r.ok) throw new Error('HTTP ' + r.status);
       const text = await r.text();
       // Detecta HTML fallback: começa com '<' → cache miss servindo /index.html
