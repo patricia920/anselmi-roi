@@ -3411,14 +3411,43 @@ const ALERTAS_SLOTS = ['17266','19168','46354'];
 /* ════════ RENDER ════════ */
 function el(html){const t=document.createElement('template');t.innerHTML=html.trim();return t.content.firstChild}
 
-function renderAlerts(){
-  const data = [
-    {tipo:'crit',label:'Buraco crítico',titler:'REF 28871 · Maxipull Off Camelo',det:'42 un. em estoque · 0 expostas em 7 lojas',ref:'28871'},
-    {tipo:'warn',label:'CD lotado',titler:'REF 46667 · Capa Figo',det:'68 un. no CD · só 9 expostas no total',ref:'46667'},
-    {tipo:'info',label:'Cor em desbalanço',titler:'Off Camelo · Pátio Batel',det:'17% do VM · 28% das vendas (gap +11pp)',ref:null}
-  ];
-  document.getElementById('alerts-row').innerHTML = data.map(a=>{
-    const peca = a.ref ? REF_INDEX[a.ref] : null;
+async function renderAlerts(){
+  const row = document.getElementById('alerts-row');
+  if (!row) return;
+  // Carrega alertas reais em paralelo: maior buraco · maior CD · pior gap de cor
+  let buracos, cd, cores;
+  try {
+    [buracos, cd, cores] = await Promise.all([
+      typeof _computeBuracos === 'function' ? _computeBuracos('*') : [],
+      typeof _computeCDLotado === 'function' ? _computeCDLotado(20) : [],
+      typeof _computeCoresPerformance === 'function' ? _computeCoresPerformance('*') : [],
+    ]);
+  } catch(e){ console.warn('[alerts] erro:', e); return; }
+
+  const data = [];
+  if (buracos && buracos.length){
+    const top = buracos[0];
+    const lj = _nomeLoja ? _nomeLoja(top.slug) : top.slug;
+    data.push({tipo:'crit', label:'Buraco crítico', titler:`REF ${top.ref} · ${top.tipo} ${top.cor}`,
+      det:`${top.estoque} un. em estoque em ${lj} · vendeu ${top.vendasRecentes} (2026) mas não está exposta`, ref: top.ref});
+  }
+  if (cd && cd.length){
+    const top = cd[0];
+    data.push({tipo:'warn', label:'CD lotado', titler:`REF ${top.ref} · ${top.tipo} ${top.nome_cor || top.cor}`,
+      det:`${top.cdQty} un. no CD em ${top.tamanhos} tamanhos · candidata a frontalizar`, ref: top.ref});
+  }
+  // Cor com maior gap (venda - VM) — over-vendendo: comprou mais que o esperado
+  if (cores && cores.length){
+    const ordenadasPorGap = cores.slice().sort((a,b) => Math.abs(b.venda - b.vm) - Math.abs(a.venda - a.vm));
+    const top = ordenadasPorGap[0];
+    const gap = (top.venda - top.vm).toFixed(1);
+    const sinal = gap > 0 ? '+' : '';
+    data.push({tipo:'info', label:'Cor em desbalanço', titler:`${String(top.nome || '').toUpperCase()}`,
+      det:`${top.vm.toFixed(1)}% do VM · ${top.venda.toFixed(1)}% das vendas (gap ${sinal}${gap}pp)`, ref:null});
+  }
+
+  row.innerHTML = data.map(a => {
+    const peca = a.ref && typeof REF_INDEX !== 'undefined' ? (REF_INDEX[a.ref] || REF_INDEX[String(a.ref).padStart(6,'0')]) : null;
     const photo = peca ? pieceImage(peca) : silhouette('Maxipull','Off Camelo');
     return `<div class="alert-card ${a.tipo}" ${a.ref?`onclick="openModal('${a.ref}')"`:''}>
       <div class="alert-photo">${photo}</div>
@@ -4852,35 +4881,72 @@ async function renderMix(){
 
 /* ════════ HOJE · centro de comando ════════ */
 function renderHoje(){
-  const totalCriticas = 14;
-  const visitasUrgentes = LOJAS.filter(l => l.sync==='warn').length;
-  document.getElementById('hoje-headline').textContent = `${totalCriticas} ações críticas pendentes`;
-  document.getElementById('hoje-sub').innerHTML = `<b>${visitasUrgentes} lojas</b> precisam de visita esta semana · 187 buracos · 312 paradas · 8 looks quebrados`;
+  // v3 · Hoje com números reais (buracos, paradas, CD, lojas defasadas) via Sisplan+drill.
+  // Calcula em paralelo, sem bloquear render inicial — usa placeholders enquanto carrega.
+  document.getElementById('hoje-headline').textContent = `Carregando ações…`;
+  document.getElementById('hoje-sub').innerHTML = ``;
 
-  const score = 76;
-  document.getElementById('health-score').textContent = score;
-  const offset = 264 * (1 - score/100);
-  document.getElementById('health-fill').setAttribute('stroke-dashoffset', offset);
-  document.getElementById('health-fill').setAttribute('stroke', score>=70?'var(--musgo)':(score>=50?'var(--ambar)':'var(--bordo)'));
+  const visitasUrgentes = (LOJAS || []).filter(l => l && l.sync === 'warn').length;
 
-  const acoes = [
-    {ic:'!', cls:'crit', head:'8 looks quebrados em hot zones', det:'Manequim 2 do JK · vitrine de Faria · 6 outros · ~R$ 14k/mês perdidos', go:'looks'},
-    {ic:'2', cls:'crit', head:'JK Iguatemi e Campinas com VM defasado (≥14d)', det:'Cadência vencida · necessária visita esta semana', go:'overview'},
-    {ic:'A', cls:'warn', head:'42 peças-A em buraco com estoque ≥10 un.', det:'REF 28871, 11471, 16791 e 39 outras prontas pra entrar', go:'buracos'},
-    {ic:'-', cls:'warn', head:'18 peças paradas em hot zones', det:'Slots premium ocupados em vão · trocar é prioridade', go:'paradas'},
-    {ic:'CD', cls:'info', head:'94 REFs com estoque alto no CD', det:'2.413 peças no CD · estimativa R$ 73k/mês de oportunidade', go:'cd'}
-  ];
-  document.getElementById('hoje-urg-count').textContent = totalCriticas;
-  document.getElementById('hoje-actions').innerHTML = acoes.map(a => `
-    <li onclick="goTo('${a.go}')">
-      <div class="ic ${a.cls}">${a.ic}</div>
-      <div class="body">
-        <div class="head">${a.head}</div>
-        <div class="det">${a.det}</div>
-      </div>
-      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="width:18px;height:18px"><polyline points="9 18 15 12 9 6"/></svg>
-    </li>
-  `).join('');
+  // Promises pra dados reais — degrada graciosamente se função não existe
+  Promise.all([
+    typeof _computeBuracos === 'function' ? _computeBuracos('*').catch(()=>[]) : Promise.resolve([]),
+    typeof _computeParadas === 'function' ? _computeParadas('*').catch(()=>({lista:[]})) : Promise.resolve({lista:[]}),
+    typeof _computeCDLotado === 'function' ? _computeCDLotado(20).catch(()=>[]) : Promise.resolve([]),
+  ]).then(([buracos, paradas, cd]) => {
+    const nBuracos = buracos.length;
+    const nParadas = (paradas && paradas.lista) ? paradas.lista.length : 0;
+    const nCD = cd.length;
+    const nCriticas = (paradas?.lista || []).filter(p => p.parada_meses >= 9).length
+                    + buracos.filter(b => b.estoque >= 10 && b.vendasRecentes >= 5).length;
+
+    document.getElementById('hoje-headline').textContent = `${nCriticas} ações críticas pendentes`;
+    document.getElementById('hoje-sub').innerHTML = `<b>${visitasUrgentes} lojas</b> com cadência vencida · ${nBuracos} buracos · ${nParadas} paradas · ${nCD} no CD lotado`;
+    const urgEl = document.getElementById('hoje-urg-count');
+    if (urgEl) urgEl.textContent = nCriticas;
+
+    // Score saúde: 100 - penalty (cap em 30%). Buracos pesam 1, paradas pesam 0.5, CD pesa 0.3.
+    const totExpostos = (LOJAS || []).reduce((s,l) => s + (l.exposto||0), 0) || 1;
+    const penalty = Math.min(40, (nBuracos*1 + nParadas*0.5 + nCD*0.3) / totExpostos * 100);
+    const score = Math.max(50, Math.round(100 - penalty));
+    const scoreEl = document.getElementById('health-score');
+    if (scoreEl) scoreEl.textContent = score;
+    const fill = document.getElementById('health-fill');
+    if (fill){
+      const offset = 264 * (1 - score/100);
+      fill.setAttribute('stroke-dashoffset', offset);
+      fill.setAttribute('stroke', score>=70?'var(--musgo)':(score>=50?'var(--ambar)':'var(--bordo)'));
+    }
+
+    // Top ações — derivadas dos dados reais, com totais reais
+    const topBuraco = buracos[0];
+    const refsTop = buracos.slice(0,3).map(b => b.ref).join(', ');
+    const lojasDefasadas = (LOJAS || []).filter(l => l && l.sync === 'warn').map(l => l.nome).slice(0,2);
+    const paradasMaisVelhas = (paradas?.lista || []).filter(p => p.parada_meses >= 9).length;
+    const acoes = [
+      lojasDefasadas.length ? {ic:'2', cls:'crit', head:`${lojasDefasadas.length} lojas com VM defasado (≥14d)`,
+        det:`${lojasDefasadas.join(' · ')} · cadência vencida · necessária visita esta semana`, go:'overview'} : null,
+      nBuracos ? {ic:'A', cls:'warn', head:`${nBuracos} peças em buraco`,
+        det:`${refsTop ? 'REF ' + refsTop + ' e outras' : 'Vendem em outras lojas mas não estão expostas aqui'} · forçar entrada no VM`, go:'buracos'} : null,
+      paradasMaisVelhas ? {ic:'-', cls:'crit', head:`${paradasMaisVelhas} peças ≥9m sem vender`,
+        det:`Encalhadas em hot zones · transferir / outlet`, go:'paradas'} : null,
+      nParadas ? {ic:'P', cls:'warn', head:`${nParadas} peças encalhadas no total`,
+        det:`Chegaram há ≥6m e não vendem há ≥4m · slot premium ocupado`, go:'paradas'} : null,
+      nCD ? {ic:'CD', cls:'info', head:`${nCD} REFs com estoque alto no CD`,
+        det:`Candidatas a frontalizar · oportunidade de empurrar pra mais lojas`, go:'cd'} : null,
+    ].filter(Boolean);
+
+    document.getElementById('hoje-actions').innerHTML = acoes.map(a => `
+      <li onclick="goTo('${a.go}')">
+        <div class="ic ${a.cls}">${a.ic}</div>
+        <div class="body">
+          <div class="head">${a.head}</div>
+          <div class="det">${a.det}</div>
+        </div>
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="width:18px;height:18px"><polyline points="9 18 15 12 9 6"/></svg>
+      </li>
+    `).join('');
+  });
 
   const hoje = new Date('2026-04-30');
   const calData = LOJAS.map(l => {
@@ -4901,27 +4967,40 @@ function renderHoje(){
     </div>
   `).join('');
 
-  const log = [
-    {when:'hoje 10:42', cls:'ok',   what:`Aprovada troca <code>17266</code> → <code>28871</code> em <b>Pátio Batel</b> · Arara 3 pos 11`, who:'Pati'},
-    {when:'hoje 09:15', cls:'ok',   what:`Aprovado look completo <code>11471</code>+<code>46667</code> em <b>JK Iguatemi</b> · Vitrine`, who:'Pati'},
-    {when:'ontem 16:28',cls:'crit', what:`Rejeitada troca <code>15649</code> → <code>13247</code> · cor não combina com paleta da arara`, who:'Sandra'},
-    {when:'ontem 14:00',cls:'ok',   what:`Reposição CD aprovada · <code>46667</code> Capa Figo · 24 un. para JK + Faria + Leblon`, who:'Pati'},
-    {when:'29/04 11:30',cls:'ok',   what:`Markdown aprovado <code>17266</code> Casaco Camelo · −30%`, who:'Pati'},
-    {when:'29/04 09:45',cls:'crit', what:`Look quebrado detectado · Manequim 2 BATEL · <code>17637</code> em ruptura`, who:'sistema'},
-    {when:'28/04 17:10',cls:'ok',   what:`Sync VM concluído · 15 lojas atualizadas (3 defasadas)`, who:'sistema'}
-  ];
-  document.getElementById('activity-log').innerHTML = `<div class="act-log">${log.map(e => `
-    <div class="act-row ${e.cls}">
-      <div class="when">${e.when}</div>
-      <div class="what">${e.what}</div>
-      <div class="who">${e.who}</div>
-    </div>
-  `).join('')}</div>`;
+  // Log de atividade: ainda não há fonte real (KV state ou audit log Sisplan).
+  // Esconde o bloco até existir histórico real — evita mock confundir o usuário.
+  const actEl = document.getElementById('activity-log');
+  if (actEl) actEl.innerHTML = `
+    <div class="act-log">
+      <div class="act-row" style="padding:24px;text-align:center;color:var(--ink-3);font-style:italic;font-size:12px">
+        Histórico de atividade ainda não conectado · em breve via KV state + audit log Sisplan
+      </div>
+    </div>`;
 }
 
-/* ════════ LOOKS INCOMPLETOS ════════ */
+/* ════════ LOOKS INCOMPLETOS ════════
+   v3 · Detecta ruptura REAL via VAR_ESTOQUE_LOJA da loja ativa.
+   Look quebrado = cabide com ≥2 peças onde pelo menos 1 está com estoque=0 (ruptura). */
 function renderLooks(){
-  const PECAS_QUEBRADAS = ['46667','17640','15649','15702','46082','17266','11683','13980'];
+  const storeid = (typeof _currentDrillLoja !== 'undefined' && window.LOJA_MAP)
+    ? Object.keys(window.LOJA_MAP).find(k => window.LOJA_MAP[k] === _currentDrillLoja)
+    : null;
+  const VEL = window.VAR_ESTOQUE_LOJA || {};
+  // Set de refs em ruptura: presente em ARARAS/MANEQUINS mas estoque 0 na loja atual
+  const PECAS_QUEBRADAS = new Set();
+  if (storeid){
+    const refsExpostas = new Set();
+    (ARARAS || []).forEach(a => a.cabides.forEach(cab => cab.looks.forEach(l => refsExpostas.add(String(l.ref)))));
+    (MANEQUINS || []).forEach(m => m.refs.forEach(r => refsExpostas.add(String(r.ref))));
+    refsExpostas.forEach(ref => {
+      const e = (VEL[ref]?.[storeid] ?? VEL[String(ref).padStart(6,'0')]?.[storeid]) || 0;
+      if (e <= 0) PECAS_QUEBRADAS.add(ref);
+    });
+  }
+  PECAS_QUEBRADAS.has = PECAS_QUEBRADAS.has.bind(PECAS_QUEBRADAS); // garante .has() funciona no .includes() abaixo
+  // Compat com filtros que usavam Array.includes — usa Set.has internamente
+  const _orig_includes = (r) => PECAS_QUEBRADAS.has(String(r));
+  PECAS_QUEBRADAS.includes = _orig_includes;
   const looksQuebrados = [];
   ARARAS.forEach((arara, ai) => {
     const zona = ZONAS_DRILL[ai] || {nome:'Sala', tag:'SAL', cor:'#5d7088'};
