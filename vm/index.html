@@ -3349,6 +3349,8 @@ const ARARAS = [
    Atribuição manual pra coerência visual (top/bottom) */
 const REF_INDEX = {};
 PECAS.forEach(p => REF_INDEX[p.ref] = p);
+// Expõe no window pro vm-loader.js conseguir mergear refs reais Sisplan
+window.REF_INDEX = REF_INDEX;
 
 /* REFs com tipo definido manualmente pra coerência top/bottom nos cabides */
 const REF_OVERRIDES = {

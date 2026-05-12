@@ -43,13 +43,29 @@
     return window.FotoResolver || null;
   }
 
-  // 2) JSON loader genérico
-  async function loadJSON(path) {
+  // 2) JSON loader genérico com retry — CF CDN às vezes serve HTML fallback
+  //    no primeiro hit (cache miss). Retry com query bust resolve.
+  async function loadJSON(path, attempt = 0) {
     try {
-      const r = await fetch(path, { credentials: 'omit', cache: 'no-cache' });
+      const url = attempt > 0 ? path + (path.includes('?') ? '&' : '?') + 'cb=' + Date.now() : path;
+      const r = await fetch(url, { credentials: 'omit', cache: 'no-cache' });
       if (!r.ok) throw new Error('HTTP ' + r.status);
-      return await r.json();
+      const text = await r.text();
+      // Detecta HTML fallback: começa com '<' → cache miss servindo /index.html
+      if (text.trimStart().startsWith('<')) {
+        if (attempt < 2) {
+          await new Promise(r => setTimeout(r, 800 + attempt * 600));
+          return loadJSON(path, attempt + 1);
+        }
+        throw new Error('HTML fallback após retries');
+      }
+      return JSON.parse(text);
     } catch (e) {
+      if (attempt === 0 && /JSON|HTML fallback/.test(e.message)) {
+        // Tenta de novo (cache miss)
+        await new Promise(r => setTimeout(r, 800));
+        return loadJSON(path, 1);
+      }
       console.warn('[vm-loader] falhou', path, '·', e.message);
       return null;
     }
