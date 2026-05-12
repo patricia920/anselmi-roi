@@ -144,6 +144,46 @@
       }
     }).catch(err => console.warn('[vm-loader] GERENTES load falhou:', err.message));
 
+    // REF_INDEX_SISPLAN: carrega data/ref_index_sisplan.json (1.6k refs com tipo/descrição
+    // do Sisplan) e MERGE com const REF_INDEX da página. Sem isso, renderEstoqueCD /
+    // renderEstoqueLojas pulam ~94% das refs reais porque PECAS mock só cobre ~100.
+    loadJSON('../data/ref_index_sisplan.json').then(data => {
+      if (!data || !data.refs) return;
+      // Aguarda a página declarar REF_INDEX (definido em vm/index.html linha ~3350)
+      const tryMerge = () => {
+        if (typeof window.REF_INDEX !== 'object' || !window.REF_INDEX) return setTimeout(tryMerge, 300);
+        let added = 0, enriched = 0;
+        Object.entries(data.refs).forEach(([ref, meta]) => {
+          if (!window.REF_INDEX[ref]) {
+            // ref real Sisplan ausente do mock — adiciona entry mínimo
+            window.REF_INDEX[ref] = {
+              ref,
+              tipo: meta.tipo || 'Peça',
+              descricao: meta.descricao || '',
+              est: 'I-26',
+              cores: meta.corPrincipal ? [meta.corPrincipal] : [],
+              corPrincipal: meta.corPrincipal || '',
+              estoque: 0, vendas30: 0, emVM: 0, lojasComEstoque: 0, cdQty: 0,
+              status: 'unknown', sugestao: '', _sisplan: true,
+            };
+            added++;
+          } else if (!window.REF_INDEX[ref].descricao && meta.descricao) {
+            // já existe (mock) — só enriquece com descrição real
+            window.REF_INDEX[ref].descricao = meta.descricao;
+            enriched++;
+          }
+        });
+        console.info('[vm-loader] REF_INDEX · +' + added + ' refs Sisplan, +' + enriched + ' descrições enriquecidas');
+        // Re-renderiza views que dependem do REF_INDEX completo
+        ['renderEstoqueCD', 'renderEstoqueLojas', 'renderVendasLoja'].forEach(fn => {
+          if (typeof window[fn] === 'function') {
+            try { window[fn](); } catch (_) {}
+          }
+        });
+      };
+      tryMerge();
+    }).catch(err => console.warn('[vm-loader] REF_INDEX_SISPLAN load falhou:', err.message));
+
     // PALETA da coleção: carrega data/paleta_colecao.json e enriquece hex com COR_PLM se nome bate
     loadJSON('../data/paleta_colecao.json').then(data => {
       if (!data || !Array.isArray(data.paleta)) return;

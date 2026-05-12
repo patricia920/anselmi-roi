@@ -189,6 +189,52 @@ with open(pend, 'w', newline='', encoding='utf-8') as f:
     w.writerows(pendencias)
 print(f'✓ {pend} ({len(pendencias):,} pendências)')
 
+# ---------- 8) Gera ref_index_sisplan.json — usado pelo vm-loader pra
+#                popular REF_INDEX com refs reais (não só mock PECAS).
+#                Permite que renderEstoqueCD / renderEstoqueLojas mostrem
+#                TODAS as 1.6k refs Sisplan, não só as ~100 do mock.
+ref_index = {}
+# Lê tipo/descrição direto de vw_prod_info_roi.json (mais limpo que MOA)
+sp_path = DATA / 'sisplan/vw_prod_info_roi.json'
+if sp_path.exists():
+    with open(sp_path) as f:
+        for r in json.load(f).get('rows', []):
+            ref = str(r.get('rootproductid', '')).strip()
+            if not ref or ref in ref_index: continue
+            desc = (r.get('description') or '').strip()
+            tipo_raw = (r.get('classification1') or '').strip()
+            # tipo: "BLUSAS" -> "Blusa", "CAPAS" -> "Capa", etc.
+            tipo = tipo_raw.rstrip('S').title() if tipo_raw else 'Peça'
+            cor_principal = str(r.get('color', '')).strip()
+            ref_index[ref] = {
+                'tipo': tipo,
+                'descricao': desc,
+                'corPrincipal': cor_principal,
+            }
+# Bonus: enriquece tipo via MOA_VW_VITRINE (mais consistente) se vw_prod não tinha.
+# IMPORTANTE: só enriquece refs que JÁ estão no Sisplan vivo — não adiciona refs antigas
+# (caso contrário o JSON cresceria pra 18k+ refs com lixo histórico).
+if mv.exists():
+    with open(mv) as f:
+        for r in json.load(f).get('rows', []):
+            ref = str(r.get('cd_item', '')).strip().lstrip('0') or '0'
+            if not ref or ref not in ref_index: continue
+            # já tem do Sisplan — só completa descricao se faltar
+            if not ref_index[ref].get('descricao'):
+                ref_index[ref]['descricao'] = (r.get('descricao') or '').strip()
+
+idx_out = DATA / 'ref_index_sisplan.json'
+with open(idx_out, 'w', encoding='utf-8') as f:
+    json.dump({
+        '_meta': {
+            'fonte': 'vw_prod_info_roi (Sisplan) + moa_vw_vitrine (Oracle)',
+            'gerado_em': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'total_refs': len(ref_index),
+        },
+        'refs': ref_index,
+    }, f, ensure_ascii=False, separators=(',', ':'))
+print(f'✓ {idx_out} ({idx_out.stat().st_size // 1024} KB · {len(ref_index)} refs)')
+
 print('\n=== ESTATÍSTICAS ===')
 total = sum(stats.values())
 for k, v in stats.most_common():
