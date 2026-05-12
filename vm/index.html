@@ -2453,6 +2453,7 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
     </div>
 
     <div class="ranking-page" id="ranking-page"></div>
+    <div class="ranking-page" id="paradas-page" style="margin-top:18px"></div>
   </section>
 
   <!-- AVALIAÇÃO DO VM -->
@@ -7471,6 +7472,226 @@ async function _computeRankingAuto(cod){
 
 window._computeRankingAuto = _computeRankingAuto;
 
+/* ============================================================
+   VENDAS × EXPOSIÇÃO — detector de peças paradas na arara
+   ------------------------------------------------------------
+   Cruza drill (presença atual na loja) com VAR_VENDAS_LOJA_DATA
+   (histórico mês-a-mês Sisplan por ref × loja) pra classificar:
+
+   - saudavel: vendeu nos últimos 2 meses
+   - recente : chegou na loja há ≤2 meses (grace period)
+   - atencao : 2-3 meses sem vender
+   - encalhada: chegou há ≥6m E sem vender há ≥4m  ← alvo
+   - zumbi   : exposta mas SEM histórico de venda nunca
+
+   "Data de chegada" é proxy = primeira venda registrada Sisplan.
+   Margem: peça chega na arara ~1-2 sem antes da 1ª venda.
+   ============================================================ */
+const _HOJE_PARADAS = (() => { const d = new Date(); return {y: d.getFullYear(), m: d.getMonth()+1}; })();
+
+function _historiaVendaRefLoja(ref, storeid){
+  const VLD = window.VAR_VENDAS_LOJA_DATA;
+  if (!VLD || !storeid) return null;
+  const dr = VLD[ref] || VLD[String(ref).padStart(6,'0')] || VLD[String(ref).replace(/^0+/,'')];
+  if (!dr || !dr[storeid]) return null;
+  const y = dr[storeid].y || {};
+  let pri=null, ult=null, total=0;
+  for (const ano in y){
+    for (const mes in y[ano]){
+      if (mes === 'all') continue;
+      const v = y[ano][mes];
+      if (!v || v <= 0) continue;
+      total += v;
+      const key = parseInt(ano)*100 + parseInt(mes);
+      if (pri === null || key < pri) pri = key;
+      if (ult === null || key > ult) ult = key;
+    }
+  }
+  if (pri === null) return null;
+  const priY=Math.floor(pri/100), priM=pri%100;
+  const ultY=Math.floor(ult/100), ultM=ult%100;
+  return {
+    primeira: `${priY}-${String(priM).padStart(2,'0')}`,
+    ultima:   `${ultY}-${String(ultM).padStart(2,'0')}`,
+    idade_meses: (_HOJE_PARADAS.y - priY)*12 + (_HOJE_PARADAS.m - priM),
+    parada_meses: (_HOJE_PARADAS.y - ultY)*12 + (_HOJE_PARADAS.m - ultM),
+    total
+  };
+}
+
+/* Inverte LOJA_MAP {storeid: slug} → {slug: storeid} */
+function _slugToStoreid(slug){
+  if (!window.LOJA_MAP) return null;
+  for (const sid in window.LOJA_MAP){
+    if (window.LOJA_MAP[sid] === slug) return sid;
+  }
+  return null;
+}
+
+async function _computeParadas(cod){
+  /* Lista de (slug, refs) baseado no cod selecionado */
+  let pares = []; // [{slug, ref}]
+  if (cod === '*' || !cod){
+    const slugs = Object.values(window.LOJA_MAP || {}).filter(Boolean);
+    const datas = await Promise.all(slugs.map(s => _loadDrillData(s)));
+    slugs.forEach((slug, i) => {
+      const d = datas[i]; if (!d) return;
+      const refs = new Set();
+      Object.values(d.araras || {}).forEach(cabides => {
+        cabides.forEach(c => (c.refs || []).forEach(r => refs.add(String(r))));
+      });
+      (d.manequins || []).forEach(m => (m.refs || []).forEach(r => refs.add(String(r))));
+      refs.forEach(r => pares.push({slug, ref: r}));
+    });
+  } else {
+    const slug = (window.LOJA_MAP || {})[cod] || cod;
+    const d = await _loadDrillData(slug);
+    if (!d) return {saudavel:0,recente:0,atencao:0,encalhada:0,zumbi:0,lista:[]};
+    const refs = new Set();
+    Object.values(d.araras || {}).forEach(cabides => {
+      cabides.forEach(c => (c.refs || []).forEach(r => refs.add(String(r))));
+    });
+    (d.manequins || []).forEach(m => (m.refs || []).forEach(r => refs.add(String(r))));
+    refs.forEach(r => pares.push({slug, ref: r}));
+  }
+
+  const stats = {saudavel:0, recente:0, atencao:0, encalhada:0, zumbi:0, lista:[]};
+  pares.forEach(({slug, ref}) => {
+    const storeid = _slugToStoreid(slug);
+    const h = _historiaVendaRefLoja(ref, storeid);
+    if (!h){ stats.zumbi++; return; }
+    if (h.idade_meses <= 2)                              { stats.recente++; return; }
+    if (h.parada_meses <= 2)                             { stats.saudavel++; return; }
+    if (h.idade_meses >= 6 && h.parada_meses >= 4)       {
+      stats.encalhada++;
+      const p = (typeof REF_INDEX !== 'undefined')
+        ? (REF_INDEX[ref] || REF_INDEX[String(ref).padStart(6,'0')]) : null;
+      stats.lista.push({
+        ref, slug, storeid,
+        tipo: p?.tipo || '—',
+        cor:  p?.corPrincipal || '—',
+        primeira: h.primeira, ultima: h.ultima,
+        idade_meses: h.idade_meses, parada_meses: h.parada_meses,
+        total: h.total,
+      });
+      return;
+    }
+    stats.atencao++;
+  });
+  stats.lista.sort((a,b) => (b.parada_meses - a.parada_meses) || (b.idade_meses - a.idade_meses));
+  return stats;
+}
+window._computeParadas = _computeParadas;
+
+function _nomeLoja(slug){
+  const l = (window.LOJAS || []).find(x => x.slug === slug || x.cod === slug);
+  return l ? (l.nome || l.slug) : slug;
+}
+
+function renderParadas(stats){
+  const el = document.getElementById('paradas-page');
+  if (!el) return;
+  if (!stats){ el.innerHTML = ''; return; }
+  const total = stats.saudavel + stats.recente + stats.atencao + stats.encalhada + stats.zumbi;
+  const pct = n => total ? (100*n/total).toFixed(1) : '0';
+
+  const cards = `
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px">
+      ${[
+        {k:'saudavel',  emo:'🟢', tit:'Saudáveis', sub:'vendeu ≤2m',           hex:'#2d8a4e'},
+        {k:'recente',   emo:'🆕', tit:'Recentes',  sub:'chegou ≤2m · grace',   hex:'#6677aa'},
+        {k:'atencao',   emo:'🟡', tit:'Atenção',   sub:'2-3m sem vender',      hex:'#c89230'},
+        {k:'encalhada', emo:'🔴', tit:'Encalhadas',sub:'≥6m loja · ≥4m parada',hex:'#b03a3a'},
+        {k:'zumbi',     emo:'⚪', tit:'Zumbis',    sub:'sem histórico',        hex:'#8a8475'},
+      ].map(c => `
+        <div style="background:#fff;border:1px solid var(--line);border-left:4px solid ${c.hex};border-radius:8px;padding:14px 16px">
+          <div style="font-size:11px;color:var(--ink-3);letter-spacing:.06em;margin-bottom:6px">${c.emo} ${c.tit.toUpperCase()}</div>
+          <div style="font-size:28px;font-weight:700;color:var(--ink);line-height:1">${stats[c.k]}</div>
+          <div style="font-size:11px;color:var(--ink-3);margin-top:4px">${pct(stats[c.k])}% · ${c.sub}</div>
+        </div>
+      `).join('')}
+    </div>`;
+
+  const linhas = stats.lista.slice(0, 200).map(p => {
+    const foto = (window.FotoResolver && window.FotoResolver.getFoto) ? window.FotoResolver.getFoto(p.ref) : null;
+    const fotoHtml = foto
+      ? `<img src="${foto}" alt="${p.ref}" loading="lazy" style="width:48px;height:64px;object-fit:cover;border-radius:4px;background:#f4efe6"/>`
+      : `<div style="width:48px;height:64px;background:#f4efe6;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#c9a877">🧶</div>`;
+    return `<tr>
+      <td>${fotoHtml}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-weight:600">${p.ref}</td>
+      <td>${_nomeLoja(p.slug)}</td>
+      <td>${p.tipo}</td>
+      <td>${p.cor}</td>
+      <td style="text-align:right">${p.primeira}</td>
+      <td style="text-align:right">${p.ultima}</td>
+      <td style="text-align:right;color:#b03a3a;font-weight:600">${p.idade_meses}m</td>
+      <td style="text-align:right;color:#b03a3a;font-weight:600">${p.parada_meses}m</td>
+      <td style="text-align:right">${p.total}</td>
+      <td><a href="https://plm.colecao.moda/produto/${p.ref}" target="_blank" rel="noopener" style="color:var(--ink-2);text-decoration:none;font-size:11px">PLM →</a></td>
+    </tr>`;
+  }).join('');
+
+  const showing = Math.min(200, stats.lista.length);
+  el.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+      <div>
+        <div style="font-size:11px;color:var(--ink-3);letter-spacing:.06em">VENDAS × EXPOSIÇÃO</div>
+        <h2 style="font-size:22px;font-weight:300;color:var(--ink);margin:0">Peças encalhadas na arara</h2>
+        <div style="font-size:12px;color:var(--ink-3);margin-top:4px">
+          Chegou há ≥6 meses E sem vender há ≥4 meses · proxy "data de chegada" = primeira venda Sisplan
+        </div>
+      </div>
+      <button onclick="exportParadasCSV()" style="background:var(--ink);color:#fff;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-size:12px;letter-spacing:.05em">
+        ↓ EXPORTAR CSV (${stats.lista.length})
+      </button>
+    </div>
+    ${cards}
+    ${stats.lista.length ? `
+      <div style="overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff">
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead style="background:#faf6ed">
+            <tr style="text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);font-size:10px">
+              <th style="padding:10px 8px;text-align:left">Foto</th>
+              <th style="padding:10px 8px;text-align:left">Ref</th>
+              <th style="padding:10px 8px;text-align:left">Loja</th>
+              <th style="padding:10px 8px;text-align:left">Tipo</th>
+              <th style="padding:10px 8px;text-align:left">Cor</th>
+              <th style="padding:10px 8px;text-align:right">Chegou</th>
+              <th style="padding:10px 8px;text-align:right">Últ. venda</th>
+              <th style="padding:10px 8px;text-align:right">Idade</th>
+              <th style="padding:10px 8px;text-align:right">Parada</th>
+              <th style="padding:10px 8px;text-align:right">Vendido</th>
+              <th style="padding:10px 8px;text-align:left">PLM</th>
+            </tr>
+          </thead>
+          <tbody style="font-family:Inter,sans-serif">${linhas}</tbody>
+        </table>
+      </div>
+      ${stats.lista.length > 200 ? `<div style="text-align:center;color:var(--ink-3);font-size:11px;margin-top:8px;font-style:italic">Mostrando 200 de ${stats.lista.length} · use o CSV pra lista completa</div>` : ''}
+    ` : `<div style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:40px;text-align:center;color:var(--ink-3)">Nenhuma peça encalhada nesta seleção.</div>`}
+  `;
+  window._lastParadas = stats;
+}
+window.renderParadas = renderParadas;
+
+function exportParadasCSV(){
+  const s = window._lastParadas;
+  if (!s || !s.lista.length){ alert('Sem dados de paradas pra exportar.'); return; }
+  const header = ['ref','loja','tipo','cor','chegou','ultima_venda','idade_meses','parada_meses','total_vendido'];
+  const csv = [header.join(',')].concat(s.lista.map(p => [
+    p.ref, _nomeLoja(p.slug), p.tipo, p.cor, p.primeira, p.ultima,
+    p.idade_meses, p.parada_meses, p.total
+  ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `pecas_encalhadas_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+window.exportParadasCSV = exportParadasCSV;
+
 /* Override RANKING quando loja selecionada — chama renderRanking depois */
 async function applyRankingForLoja(cod){
   const data = await _computeRankingAuto(cod);
@@ -7483,6 +7704,11 @@ async function applyRankingForLoja(cod){
     data.pecas.forEach(p => RANKING_PECAS.push(p));
   }
   renderRanking();
+  // Render seção "Vendas × Exposição" logo abaixo do ranking
+  try {
+    const paradas = await _computeParadas(cod);
+    renderParadas(paradas);
+  } catch(e){ console.warn('[paradas] falhou:', e); }
 }
 window.applyRankingForLoja = applyRankingForLoja;
 
