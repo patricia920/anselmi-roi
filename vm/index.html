@@ -5319,82 +5319,125 @@ function renderMixLoja(){
 renderHoje();
 renderCores();
 renderMatrix();
-/* ════════ OTIMIZAR VM · sugestões de troca ════════ */
+/* ════════ OTIMIZAR VM · v3 · sugestões reais Sisplan + drill ════════ */
 let OT_PRIO = 'all';
-function gerarSugestoesLoja(lojaCod){
-  /* Pra mockup: usa o layout BATEL como base. Em produção, lê layout específico de cada loja do Drive. */
-  const sugestoes = [];
 
-  /* Identifica peças "saindo": status parado + dias parada */
-  const candidataSai = PECAS.filter(p => p.status==='parado' || (p.status==='buraco' && p.diasParado));
-  const paradas = PECAS.filter(p => p.status==='parado').sort((a,b)=>(b.diasParado||0)-(a.diasParado||0));
+/* Tipos compatíveis pra preservar coerência visual da arara */
+const _TIPOS_COMPATIVEIS = {
+  'Maxipull':['Maxipull','Blusa','Cardigan','Básica'],
+  'Casaco':['Casaco','Capa','Cardigan'],
+  'Capa':['Capa','Casaco'],
+  'Blusa':['Blusa','Maxipull','Cardigan','Básica'],
+  'Básica':['Básica','Blusa','Maxipull','Cardigan'],
+  'Saia':['Saia','Calça','Vestido'],
+  'Vestido':['Vestido','Maxipull','Cardigan'],
+  'Cardigan':['Cardigan','Maxipull','Blusa','Básica'],
+  'Calça':['Calça','Saia'],
+  'Geral':['Geral','Blusa','Básica','Cardigan'],
+};
 
-  /* Identifica peças "entrando": peça-A em buraco com bom estoque */
-  const buracosA = PECAS.filter(p => p.status==='buraco' && (p.abc==='A' || p.abc==='B') && (p.estoque||0)>=10).sort((a,b)=>(b.vendas30||0)-(a.vendas30||0));
+async function gerarSugestoesLoja(lojaCod){
+  // SAI: peças encalhadas reais (chegou há ≥6m, sem vender há ≥4m) na loja escolhida.
+  // ENTRA: peças em buraco (estoque na loja + vende historicamente + não exposta).
+  const cod = lojaCod === '*' ? '*' : lojaCod;
+  let paradasData, buracosData;
+  try {
+    [paradasData, buracosData] = await Promise.all([
+      typeof _computeParadas === 'function' ? _computeParadas(cod) : {lista:[]},
+      typeof _computeBuracos === 'function' ? _computeBuracos(cod) : [],
+    ]);
+  } catch(e){ console.warn('[otimizar] erro:', e); return []; }
 
-  /* Distribui pelas araras de BATEL — em produção viria do PDF da loja */
-  /* Cada loja tem uma seleção de araras simulada */
-  const lojaSeed = (lojaCod || 'patio-batel').charCodeAt(0);
-  const numTrocas = lojaCod === '*' ? 18 : (5 + (lojaSeed % 4));
+  const paradas = (paradasData.lista || []).slice().sort((a,b) => b.parada_meses - a.parada_meses);
+  // Buracos: prioriza maior vendas recentes + estoque
+  const buracos = (buracosData || []).slice().sort((a,b) =>
+    (b.vendasRecentes - a.vendasRecentes) || (b.estoque - a.estoque));
 
-  /* mapeia araras pra zonas */
-  const araraIdxs = [0,1,2,3,4]; // indices das araras
-
-  for(let i=0; i<numTrocas && i<paradas.length && i<buracosA.length; i++){
-    const sai = paradas[i];
-    /* prefere peça que entra do mesmo tipo da peça que sai (ou tipo similar pra preservar coerência da arara) */
-    const tiposCompativeis = {
-      'Maxipull':['Maxipull','Blusa','Cardigan'],
-      'Casaco':['Casaco','Capa','Cardigan'],
-      'Capa':['Capa','Casaco'],
-      'Blusa':['Blusa','Maxipull','Cardigan'],
-      'Saia':['Saia','Calça','Vestido'],
-      'Vestido':['Vestido','Maxipull'],
-      'Cardigan':['Cardigan','Maxipull','Blusa'],
-      'Calça':['Calça','Saia']
+  function lookupRef(r){
+    if (typeof REF_INDEX === 'undefined') return null;
+    return REF_INDEX[r] || REF_INDEX[String(r).padStart(6,'0')] || null;
+  }
+  function asPeca(p){
+    const meta = lookupRef(p.ref);
+    return {
+      ref: p.ref,
+      tipo: p.tipo || meta?.tipo || '—',
+      corPrincipal: p.cor || p.corPrincipal || meta?.corPrincipal || '—',
+      est: meta?.est || 'I-26',
     };
-    const tipos = tiposCompativeis[sai.tipo] || [sai.tipo];
-    let entra = buracosA.find(b => tipos.includes(b.tipo) && !sugestoes.find(s=>s.entra.ref===b.ref));
-    if(!entra) entra = buracosA[i % buracosA.length];
-    if(!entra) break;
+  }
 
-    const araraIdx = araraIdxs[i % 5];
-    const zona = ZONAS_DRILL[araraIdx];
+  // Zonas/araras: usa ARARAS atual do drill se disponível, senão fallback
+  const ARARAS_ATUAIS = (typeof ARARAS !== 'undefined' && ARARAS.length) ? ARARAS : [];
+  const ZONAS = (typeof ZONAS_DRILL !== 'undefined') ? ZONAS_DRILL : [];
+  const usedEntra = new Set();
+  const sugestoes = [];
+  const limite = lojaCod === '*' ? 24 : 12;
+
+  for (let i = 0; i < Math.min(limite, paradas.length); i++){
+    const saiData = paradas[i];
+    const tiposOK = _TIPOS_COMPATIVEIS[saiData.tipo] || [saiData.tipo];
+    // Acha buraco compatível ainda não usado
+    let entraData = buracos.find(b => tiposOK.includes(b.tipo) && !usedEntra.has(b.ref));
+    if (!entraData) entraData = buracos.find(b => !usedEntra.has(b.ref));
+    if (!entraData) break;
+    usedEntra.add(entraData.ref);
+
+    // Zona/arara: distribui ciclicamente nas araras reais do drill (ou usa zonas mock se sem drill)
+    const araraIdx = ARARAS_ATUAIS.length ? (i % ARARAS_ATUAIS.length) : (i % 5);
+    const araraName = ARARAS_ATUAIS[araraIdx]?.nome || `Arara ${araraIdx+1}`;
+    const zona = ZONAS[araraIdx] || {nome:'Sala', tag:'SAL', cor:'#5d7088'};
     const pos = (i % 14) + 1;
 
-    /* Prioridade: alta se peça parada >90d ou se zona é Vitrine/PWR/TV (hot zone) */
     const isHotZone = ['Vitrine','Power Wall','TV Central'].includes(zona.nome);
-    const prio = (sai.diasParado >= 90 || (isHotZone && sai.diasParado >= 60)) ? 'alta' : 'media';
+    const prio = (saiData.parada_meses >= 9 || (isHotZone && saiData.parada_meses >= 4)) ? 'alta' : 'media';
 
-    /* ganho mensal estimado: vendas projetadas (entra) × preço médio */
-    const ganhoMes = Math.round((entra.vendas30 * entra.precoBase) / 1000); // mil R$
+    // Ganho estimado: vendas/mês média da peça que entra × preço médio do tipo
+    const precoMedioTipo = {Maxipull:1490, Blusa:890, Casaco:2290, Capa:2890, Saia:990, Vestido:1690,
+                            Cardigan:1390, Calça:1190, Básica:890, Geral:990, Pelerine:1990}[entraData.tipo] || 1290;
+    const vendaMensal = (entraData.vendasRecentes || 0) / 5; // 5 meses em 2026 já passaram (jan-mai)
+    const ganhoMes = Math.round((vendaMensal * precoMedioTipo) / 1000);
 
     sugestoes.push({
-      arara: araraIdx, araraName: ['Arara 1','Arara 2','Arara 3 · TV','Arara 4','Arara 5'][araraIdx],
-      zona, pos, sai, entra, prio,
-      motivoSai: `Parada há ${sai.diasParado||60}d · STR ${sai.str||0}% · ${sai.idadeColecao||100}d coleção`,
-      motivoEntra: `Peça-${entra.abc} · ${entra.estoque} un. · vende ${entra.vendas30}/30d · STR ${entra.str}%`,
-      ganhoMes, isHotZone
+      arara: araraIdx, araraName, zona, pos, prio,
+      sai: asPeca(saiData), entra: asPeca(entraData),
+      motivoSai: `Encalhada há ${saiData.parada_meses}m · chegou em ${saiData.primeira} · vendeu ${saiData.total} total`,
+      motivoEntra: `Vende ${entraData.vendasRecentes} (2026) em outras lojas · ${entraData.estoque} un. em estoque aqui · não exposta`,
+      ganhoMes, isHotZone,
     });
   }
   return sugestoes;
 }
 
-function renderOtimizar(){
+async function renderOtimizar(){
   const lojaCod = document.getElementById('ot-loja')?.value || 'patio-batel';
-  const lojaInfo = LOJAS.find(l => l.cod === lojaCod) || LOJAS[0];
-  let sugs = gerarSugestoesLoja(lojaCod);
-  if(OT_PRIO !== 'all') sugs = sugs.filter(s => s.prio === OT_PRIO);
+  const lojaInfo = (LOJAS || []).find(l => l.cod === lojaCod) || (LOJAS || [])[0] || {nome:'todas'};
+
+  const container = document.getElementById('ot-trocas');
+  if (container) container.innerHTML = `<div style="text-align:center;color:var(--ink-3);padding:40px">Carregando sugestões…</div>`;
+
+  let sugs;
+  try { sugs = await gerarSugestoesLoja(lojaCod); }
+  catch(e){
+    if (container) container.innerHTML = `<div style="color:var(--bordo);padding:40px;text-align:center">Erro: ${e.message}</div>`;
+    return;
+  }
+  if (OT_PRIO !== 'all') sugs = sugs.filter(s => s.prio === OT_PRIO);
 
   /* KPIs */
   const totalGanho = sugs.reduce((s,x)=>s+x.ganhoMes, 0);
   const slotsVao = sugs.filter(s => s.isHotZone).length;
-  const buracosA = PECAS.filter(p => p.status==='buraco' && p.abc==='A').length;
+  // Total de buracos da loja escolhida — usa _computeBuracos pra puxar valor real
+  let buracosCount = 0;
+  try {
+    const b = typeof _computeBuracos === 'function' ? await _computeBuracos(lojaCod) : [];
+    buracosCount = b.length;
+  } catch(_){}
 
   document.getElementById('ot-kpi-total').textContent = sugs.length;
-  document.getElementById('ot-kpi-loja').textContent = lojaCod==='*' ? '18 lojas · todas' : lojaInfo.nome;
+  document.getElementById('ot-kpi-loja').textContent = lojaCod==='*' ? '18 lojas · todas' : (lojaInfo.nome || lojaCod);
   document.getElementById('ot-kpi-vao').textContent = slotsVao;
-  document.getElementById('ot-kpi-buracos').textContent = buracosA;
+  document.getElementById('ot-kpi-buracos').textContent = buracosCount;
   document.getElementById('ot-kpi-ganho').textContent = 'R$ ' + totalGanho + 'k/mês';
 
   /* Agrupa sugestões por arara */
@@ -5405,7 +5448,6 @@ function renderOtimizar(){
     grupos[key].items.push(s);
   });
 
-  const container = document.getElementById('ot-trocas');
   if(sugs.length === 0){
     container.innerHTML = `<div class="ot-empty"><div class="ic">✓</div><b>Nenhuma sugestão de troca</b><br/>O VM desta loja está alinhado com estoque e vendas.</div>`;
     return;
