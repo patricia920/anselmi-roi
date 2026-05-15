@@ -177,3 +177,100 @@ patricia920/anselmi-pcp/
 - CI/CD: GitHub Actions
 - Tests: Playwright (E2E)
 - Build script: Python 3.10+
+
+---
+
+## Estado em 15/05/2026 — 100% Sisplan-real
+
+**Todas as ~20 telas operacionais agora usam dados reais Sisplan + drill. Zero mock restante em produção.**
+
+### Funções helper centrais (em `vm/index.html`)
+
+Todas seguem o contrato `_computeX(cod)` onde `cod` é storeid Sisplan (`0102`) ou `'*'` (consolidado):
+
+- `_computeRankingAuto(cod)` → `{cores[], pecas[]}` — top peças/cores expostas no drill
+- `_computeParadas(cod)` → `{saudavel, recente, atencao, encalhada, zumbi, lista[]}` — 5 status por (ref × loja). Critério encalhada: chegou há ≥6m loja + ≥4m sem vender. "Chegou" = primeira venda Sisplan (proxy)
+- `_computeBuracos(cod)` → `[]` — refs com estoque + venda mas sem VM (cruza `VAR_ESTOQUE_LOJA` + `VAR_VENDAS_LOJA_2026` + drill)
+- `_computeCDLotado(threshold)` → `[]` — `vw_giro_estoque` cta=CD com qty ≥ threshold, agrupado por ref+cor
+- `_computeCoresPerformance(cod)` → `[]` — VM% (drill) vs Venda% (`VAR_VENDAS_LOJA_2026`) por cor + hex COR_PLM
+- `_computeMixCategoria(cod)` → `[]` — VM% vs Venda% vs Estoque% por tipo
+- `_computeCenarios(cod)` → `{buraco, parado, repor, sucesso}` — 4 cenários unificados pra Matriz cruzada
+
+### Helpers de UI / fluxo
+
+- `_slugToStoreid(slug)` — inverte LOJA_MAP `{storeid: slug}` → `{slug: storeid}`
+- `_nomeLoja(slug)` — nome amigável da loja a partir de LOJAS
+- `_loadDrillData(slug)` — fetch + cache `data/drills/<slug>.json`
+- `_lookupRef(ref)` / `lookupRef(r)` — tolera ref 5d e 6d (zero-pad)
+- `_historiaVendaRefLoja(ref, storeid)` — extrai `{primeira, ultima, idade_meses, parada_meses, total}` de VAR_VENDAS_LOJA_DATA
+- `pieceImage(p)` / `_resolvePhoto(p)` — cascade: cor exata → any color → silhueta. Ver detalhe abaixo.
+
+### Mapa telas → funções
+
+| Tela (menu) | Função render | Helpers usados |
+|---|---|---|
+| Drill por loja | `renderAraras`, `loadDrillForLoja` | `data/drills/<slug>.json` |
+| Planta da loja | `renderPlantaHTML`, `renderPlanta` | `data/plantas/<slug>.jpg/svg` |
+| Estoque CD | `renderEstoqueCD` | `VAR_ESTOQUE` |
+| Estoque Lojas | `renderEstoqueLojas` | `VAR_ESTOQUE_LOJA` |
+| Vendas Loja | `renderVendasLoja` | `VAR_VENDAS_LOJA_2026` |
+| Buracos no VM | `renderBuracos` | `_computeBuracos` |
+| Estoque alto CD | `renderCD` | `_computeCDLotado` |
+| Performance cor | `renderCores` | `_computeCoresPerformance` |
+| Paradas no VM (05) | `renderParadas` | `_computeParadas` (mosaic-grid `#paradas-grid`) |
+| Matriz cruzada | `renderMatrix` → `renderCenarioActive` | `_computeCenarios` (cache `_CEN_DATA_CACHE`) |
+| Mix categoria | `renderMix` | `_computeMixCategoria` |
+| Ranking + Vendas×Exposição | `renderRanking` + `renderParadasVendas` | `_computeRankingAuto` + `_computeParadas` |
+| Otimizar VM | `renderOtimizar` → `gerarSugestoesLoja` | `_computeParadas` (SAI) + `_computeBuracos` (ENTRA) |
+| Hoje · cmd | `renderHoje` | `_computeBuracos` + `_computeParadas` + `_computeCDLotado` |
+| Alerts banner | `renderAlerts` | top de cada cenário |
+| Looks quebrados | `renderLooks` | `VAR_ESTOQUE_LOJA` (estoque=0 = ruptura) |
+
+### Bug raiz #1 — REF_INDEX tinha 2 entradas pra mesma ref
+
+Mock no HTML cadastra refs em `'28871'` (5d). Sisplan vem em `'028871'` (6d zero-pad). Mock tinha cadastros errados (`'28871': {tipo:'Capa', cor:'Off Camelo'}` quando Sisplan diz `'028871': {tipo:'Básica', corPrincipal:'001'}`).
+
+Fix em `vm/vm-loader.js`: o merge do `ref_index_sisplan.json` agora propaga override pras DUAS chaves (5d **e** 6d). Sem isso, lookup de 5d retornava mock errado.
+
+### Bug raiz #2 — `_resolvePhoto` sempre caía em qualquer cor
+
+Antes pegava `getFotoAnyColor()` (primeira cor do banco) antes de tentar a cor específica. Resultado: peça preta mostrava foto roxa.
+
+Fix em `vm/index.html::_resolvePhoto`: tenta cor específica via `getFotosByRefColor(ref, p.corPrincipal)` primeiro; se vazio, fallback `getFotoAnyColor`.
+
+### Bug raiz #3 — formato de cor Oracle vs Sisplan
+
+`vw_giro_estoque` traz cor como `*10` (Oracle). `banco_fotos.json` usa `010` (Sisplan zero-pad).
+
+Fix em `lib/foto-resolver.js::getFotosByRefColor`: nova função `_normCor` normaliza:
+- `*10` → `010`
+- `10` → `010` (zero-pad)
+- `C25`, `A98` etc → mantém
+
+### Bug raiz #4 — URLs no banco_fotos retornam 404
+
+Build script extraiu nomes do `MOA_VW_VITRINE` (catálogo Oracle), mas alguns arquivos foram renomeados/removidos no Zenphoto. Ex: `28871_10_1024.jpg` é 404 mesmo a chave `010` existindo no JSON.
+
+Fix em `vm/index.html::_resolvePhoto`: cadeia onerror — `cor exata 404 → tenta any color → silhueta`. Mantém peça visível mesmo quando a cor pedida não tem foto.
+
+### Status da senha
+
+`SHARED_PASSWORD` (Cloudflare Pages) foi resetada pra `123456` em 15/05. **Trocar pra algo forte quando prático** — `123456` é só pra desbloqueio rápido pós-perda da senha original.
+
+### Resíduo (próxima sessão)
+
+- Botões "Aprovar/Recusar" no Otimizar VM ainda chamam `alert()` → falta gravar no KV state (audit log)
+- Log de atividade no Hoje é placeholder → falta ler do KV
+- 73 refs do `refs_sem_foto_v2.csv` precisam ser fotografadas pelo studio
+- Script de limpeza do `banco_fotos.json`: rodar HEAD em cada URL, marcar 404, regenerar só com URLs válidas
+
+### Commits chave dessa sessão (15/05/2026)
+
+- `ccbcd06` — Otimizar VM (última tela mock migrada)
+- `1a4998d` — Onda 3 (Alerts + Hoje + Looks)
+- `cd49aac` — Cascade onerror das fotos
+- `a2587c9` — Normalização cor Oracle → Sisplan no foto-resolver
+- `4075f07` — vm-loader propaga Sisplan override pras 2 chaves
+- `37c5932` — Onda 1+2 (Buracos + CD + Cores + Mix + Matriz)
+- `2fbf400` — Detector Vendas × Exposição na Análise & Cobertura
+- `8b5e971` — padStart 6 dig no lookup REF_INDEX
