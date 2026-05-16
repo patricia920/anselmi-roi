@@ -7885,9 +7885,10 @@ async function _computeCDLotado(threshold = 5){
   if (!_CD_DATA_CACHE) return [];
 
   // Agrupa por ref+cor (soma tamanhos)
+  // Aceita CD, CD_903, CD_950 etc — Sisplan separou em múltiplos centros após sync 16/05.
   const agg = {};
   (_CD_DATA_CACHE.rows || []).forEach(r => {
-    if (r.cta !== 'CD') return;
+    if (!r.cta || !r.cta.startsWith('CD')) return;
     const qt = r.qt_atual || 0;
     if (qt <= 0) return;
     const key = `${r.cd_item}|${r.cor}`;
