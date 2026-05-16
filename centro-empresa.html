@@ -255,30 +255,30 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   <div class="dash-section">
     <h2 class="dash-section-title">Eficiência do estoque</h2>
 
-    <!-- Donut score (Frente 4: aguardando pipeline calcular score composto) -->
+    <!-- Donut score YoY (paridade com app-stock-efficiency-kpi do ROI Volution) -->
     <div class="eff-hero">
       <div class="eff-hero-donut">
         <svg viewBox="0 0 120 120" style="width:100%;height:100%">
           <circle cx="60" cy="60" r="44" fill="none" stroke="#e6e9db" stroke-width="14"/>
-          <!-- arco do score atual (54% por default) -->
+          <!-- arco do ano atual (bordo: musgo) -->
           <circle id="eff-arc-current" cx="60" cy="60" r="44" fill="none" stroke="#4a5d3a" stroke-width="14"
             stroke-dasharray="149.3 276.5" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 60 60)"/>
-          <!-- marcador da referência (59%) -->
-          <circle id="eff-arc-ref" cx="60" cy="60" r="44" fill="none" stroke="#6b1f2a" stroke-width="14"
-            stroke-dasharray="3 276.5" stroke-dashoffset="-163.1" transform="rotate(-90 60 60)"/>
+          <!-- arco do ano anterior (cinza claro, tracejado) -->
+          <circle id="eff-arc-prev" cx="60" cy="60" r="44" fill="none" stroke="#a89c8c" stroke-width="2"
+            stroke-dasharray="138.2 276.5" stroke-dashoffset="0" transform="rotate(-90 60 60)" opacity="0.7"/>
         </svg>
         <div class="center">
-          <div class="v" id="eff-score-current">54%</div>
-          <div class="l">Eficiência</div>
+          <div class="v" id="eff-score-current">—</div>
+          <div class="l">Ano atual</div>
         </div>
       </div>
       <div class="eff-hero-info">
-        <div class="label">Score composto</div>
+        <div class="label">Eficiência YoY</div>
         <div class="title">Eficiência operacional do estoque</div>
-        <div class="desc">Indicador agregado que combina GMROII, giro e idade do estoque em um único score.</div>
+        <div class="desc">Score composto: 60% saúde de estoque (não-excedente) + 40% giro (alvo 30 dias). Comparado ano-a-ano.</div>
         <div class="ref">
           <span class="dot"></span>
-          Referência setor: <strong id="eff-score-ref">59%</strong> · gap atual <strong id="eff-score-gap">−5pp</strong>
+          Ano anterior: <strong id="eff-score-prev">—</strong> · variação <strong id="eff-score-gap">—</strong>
         </div>
       </div>
     </div>
@@ -508,7 +508,13 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     setText('kpi-tickets', fmtN(k.salesYTD.transactions));
     setText('kpi-ticket-medio', fmtBRL(k.averageTicket.value));
     if (k.lostSales && k.lostSales.qtyEstimate) {
-      setText('kpi-lost-sales-qty', fmtN(k.lostSales.qtyEstimate) + ' unidades não vendidas (sem preço médio confiável)');
+      if (k.lostSales.valueEstimate != null && k.lostSales.valueEstimate > 0) {
+        setText('kpi-lost-sales', fmtBRL(k.lostSales.valueEstimate));
+        setText('kpi-lost-sales-qty', fmtN(k.lostSales.qtyEstimate) + ' unidades · ' + (k.lostSales.scope || ''));
+      } else {
+        setText('kpi-lost-sales-qty', fmtN(k.lostSales.qtyEstimate) + ' unidades não vendidas');
+        markMock('kpi-lost-sales');
+      }
     }
 
     // ===== YoY (Oracle vw_giro_venda) — pode não estar no payload =====
@@ -610,31 +616,40 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     markMock('accept-pedidos-pct');
     markMock('accept-excesso-pct');
 
-    // ===== EFICIÊNCIA — donut score composto (Frente 4) =====
-    // Schema esperado: k.efficiencyScore = { current: 0.54, reference: 0.59 }
+    // ===== EFICIÊNCIA — donut YoY (paridade com app-stock-efficiency-kpi do ROI) =====
+    // Schema esperado: k.efficiencyScore = { current, previous, yoyPp }
     const eff = k.efficiencyScore;
     const C2 = 2 * Math.PI * 44; // circunferência do donut menor ≈ 276.46
     if (eff && eff.current != null) {
       const cur = eff.current * 100;
-      const ref = (eff.reference != null ? eff.reference : 0.59) * 100;
       const curArc = (cur / 100) * C2;
-      const refMarker = 3; // largura do marcador da referência
-      const refOffset = -((ref / 100) * C2);
       const curEl = document.getElementById('eff-arc-current');
-      const refEl = document.getElementById('eff-arc-ref');
       if (curEl) curEl.setAttribute('stroke-dasharray', curArc.toFixed(1) + ' ' + C2.toFixed(1));
-      if (refEl) {
-        refEl.setAttribute('stroke-dasharray', refMarker + ' ' + C2.toFixed(1));
-        refEl.setAttribute('stroke-dashoffset', refOffset.toFixed(1));
-      }
       setText('eff-score-current', Math.round(cur) + '%');
-      setText('eff-score-ref', Math.round(ref) + '%');
-      const gap = cur - ref;
-      setText('eff-score-gap', (gap >= 0 ? '+' : '') + gap.toFixed(0) + 'pp');
+
+      if (eff.previous != null) {
+        const prev = eff.previous * 100;
+        const prevArc = (prev / 100) * C2;
+        const prevEl = document.getElementById('eff-arc-prev');
+        if (prevEl) prevEl.setAttribute('stroke-dasharray', prevArc.toFixed(1) + ' ' + C2.toFixed(1));
+        setText('eff-score-prev', Math.round(prev) + '%');
+        const gap = cur - prev;
+        const gapEl = document.getElementById('eff-score-gap');
+        if (gapEl) {
+          gapEl.textContent = (gap >= 0 ? '+' : '') + gap.toFixed(0) + 'pp';
+          gapEl.style.color = gap >= 0 ? 'var(--musgo)' : 'var(--bordo)';
+        }
+      } else {
+        // Pipeline ainda não persiste snapshot histórico mensal
+        setNA('eff-score-prev', eff.note || 'Snapshot histórico mensal ainda não capturado pelo pipeline');
+        setNA('eff-score-gap', 'sem ano anterior');
+        const prevEl = document.getElementById('eff-arc-prev');
+        if (prevEl) prevEl.setAttribute('stroke-dasharray', '0 ' + C2.toFixed(1));
+      }
     } else {
-      markMock('eff-score-current');
-      markMock('eff-score-ref');
-      markMock('eff-score-gap');
+      setNA('eff-score-current', 'efficiencyScore indisponível no pipeline');
+      setNA('eff-score-prev', '—');
+      setNA('eff-score-gap', '—');
     }
 
     // ===== ACCEPTANCE HISTORY — 12 meses (Frente 2) =====
