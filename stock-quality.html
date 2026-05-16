@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anselmi · Qualidade do estoque</title>
 <script src="lib/data-loader.js"></script>
+<script src="lib/sku-format.js"></script>
 <script src="lib/foto-resolver.js"></script>
 <script src="lib/photo-frame.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -555,7 +556,7 @@ function selectCell(c, i) {
       <div class="drill-thumb">${photo ? `<img src="${photo}" alt="${s.sku}" onload="window.__checkRatio&&window.__checkRatio(this)" onerror="this.style.display='none'">` : ''}</div>
       <div class="drill-info">
         <div class="cat">${s.cat}</div>
-        <div class="sku">${s.sku}</div>
+        <div class="sku">${fmtSku(s.sku)}</div>
         <div class="meta">${s.loja}<br><span style="color:var(--ink-4)">cód ${s.loja_id} · cor ${s.cor}</span></div>
         <div class="vals">
           <span>Idade <span class="v">${s.idade}sem</span></span>

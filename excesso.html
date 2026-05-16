@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anselmi · Relatório de excesso de estoque</title>
 <script src="lib/data-loader.js"></script>
+<script src="lib/sku-format.js"></script>
 <script src="lib/foto-resolver.js"></script>
 <script src="lib/photo-frame.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -481,7 +482,7 @@ function renderCards(items){
       <div class="ovs-body">
         <div>
           <div class="ovs-cat">${p.cat}</div>
-          <div class="ovs-sku">${p.sku}</div>
+          <div class="ovs-sku">${fmtSku(p.sku)}</div>
           <div class="ovs-numlojas">${p.nl} lojas com estoque</div>
         </div>
         <div class="ovs-stock">
@@ -533,7 +534,7 @@ function renderList(items){
   for(const p of items){
     out.push(`<div class="list-row">
       <div class="cell"><div class="thumb">${thumbHTML(p.cat,p.sku)}</div></div>
-      <div class="cell dim">${p.cat}<div class="ref">${p.sku}</div></div>
+      <div class="cell dim">${p.cat}<div class="ref">${fmtSku(p.sku)}</div></div>
       <div class="cell num">${p.var}%</div>
       <div class="cell num">${fmt(p.ea)}</div>
       <div class="cell num">${fmt(p.ed)}</div>

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anselmi · Dashboard in-season</title>
 <script src="lib/data-loader.js"></script>
+<script src="lib/sku-format.js"></script>
 <script src="lib/foto-resolver.js"></script>
 <script src="lib/photo-frame.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -287,7 +288,7 @@ function renderInsights(k) {
     insights.push({
       type: 'good',
       icon: '<path d="M12 2L15 8L21 9L17 14L18 20L12 17L6 20L7 14L3 9L9 8L12 2Z"/>',
-      title: `Top SKU YTD: ${top.sku || top.root}`,
+      title: `Top SKU YTD: ${fmtSku(top.sku || top.root)}`,
       body: `<strong>${fmtBRL(top.revenue)}</strong> em receita · ${fmtN(top.qty)} unidades. ${cross ? 'Cross-sell mais forte: <strong>' + (cross.sku || cross.root) + '</strong> (' + cross.coTicketsPct.toFixed(0) + '% co-tickets).' : ''}`,
     });
   }
@@ -401,7 +402,7 @@ function renderInsights(k) {
       let html = `<div class="bs-top">
         ${photoHtml}
         <div class="bs-info">
-          <div class="root">${skuLabel}</div>
+          <div class="root">${fmtSku(skuLabel)}</div>
           <div class="meta">Top SKU YTD · ref ${top.root} · cor ${top.color || ''}</div>
           <div class="stats">
             <span><span class="v">${fmtBRL(top.revenue)}</span> receita YTD</span>
@@ -422,7 +423,7 @@ function renderInsights(k) {
             ? ' <span style="color:var(--ink-4);font-size:9px">(mesma ref)</span>' : '';
           return `<div class="bs-cross-row">
             ${thumb}
-            <span class="name">${lbl}${sameRef} <span style="color:var(--ink-4);font-size:10px">· ${fmtBRL(c.revenue)}</span></span>
+            <span class="name">${fmtSku(lbl)}${sameRef} <span style="color:var(--ink-4);font-size:10px">· ${fmtBRL(c.revenue)}</span></span>
             <span class="pct">${c.coTicketsPct.toFixed(1).replace('.',',')}%</span>
           </div>`;
         }).join('')}

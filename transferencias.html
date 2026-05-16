@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anselmi · Relatório de transferências</title>
 <script src="lib/data-loader.js"></script>
+<script src="lib/sku-format.js"></script>
 <script src="lib/foto-resolver.js"></script>
 <script src="lib/photo-frame.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -454,7 +455,7 @@ function renderCards(items){
         <div class="t-thumb">${thumbHTML(t.cat, t.sku)}</div>
         <div class="t-info">
           <div class="t-cat">${t.cat}</div>
-          <div class="t-sku">${t.sku}</div>
+          <div class="t-sku">${fmtSku(t.sku)}</div>
           <div class="t-tipo">Tipo: ${tipoNome} · ${t.dias} dias em loja</div>
         </div>
         <div class="t-qty">
@@ -510,7 +511,7 @@ function renderList(items){
     out.push(`<div class="list-row">
       <div class="cell dim">${t.origem}<div class="ref">${t.origem_id}</div></div>
       <div class="cell dim">${t.destino}<div class="ref">${t.destino_id}</div></div>
-      <div class="cell dim">${t.cat}<div class="ref">${t.sku}</div></div>
+      <div class="cell dim">${t.cat}<div class="ref">${fmtSku(t.sku)}</div></div>
       <div class="cell">${t.tipo}</div>
       <div class="cell num">${fmt(t.ea_o)}</div>
       <div class="cell num">${fmt(t.ei_o)}</div>

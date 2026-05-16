@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anselmi · Relatório de compras</title>
 <script src="lib/data-loader.js"></script>
+<script src="lib/sku-format.js"></script>
 <script src="lib/foto-resolver.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -421,7 +422,7 @@ function renderCards(items){
     <div class="cmp-body">
       <div>
         <div class="cmp-cat">${p.cat}</div>
-        <div class="cmp-sku">${p.sku}</div>
+        <div class="cmp-sku">${fmtSku(p.sku)}</div>
         <div class="cmp-arm">${p.armazem}</div>
         <div class="cmp-config">
           <span class="cfg-chip">Lead <strong>${p.lead_time}</strong> sem</span>
@@ -477,7 +478,7 @@ function renderList(items){
   for(const p of items){
     out.push(`<div class="list-row">
       <div class="cell"><div class="thumb">${thumbHTML(p.cat,p.sku)}</div></div>
-      <div class="cell dim">${p.cat}<div class="ref">${p.sku}</div></div>
+      <div class="cell dim">${p.cat}<div class="ref">${fmtSku(p.sku)}</div></div>
       <div class="cell">${p.armazem}</div>
       <div class="cell num">${p.min_mult}</div>
       <div class="cell num">${p.lead_time}</div>

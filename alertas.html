@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anselmi · Alertas</title>
 <script src="lib/data-loader.js"></script>
+<script src="lib/sku-format.js"></script>
 <script src="lib/foto-resolver.js"></script>
 <script src="lib/photo-frame.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -570,7 +571,7 @@ function renderSemVendas(filter=''){
   const items = SEM_VENDAS.filter(s => !filter || s.sku.toLowerCase().includes(filter.toLowerCase()) || s.cat.toLowerCase().includes(filter.toLowerCase()));
   const html = items.map(s => `<tr>
     <td><div class="thumb">${thumbHTML(s.cat, s.sku)}</div></td>
-    <td class="dim">${s.cat}<div class="ref">${s.sku}</div></td>
+    <td class="dim">${s.cat}<div class="ref">${fmtSku(s.sku)}</div></td>
     <td class="num">${fmt(s.est_lojas)}</td>
     <td class="num">${fmt(s.est_dep)}</td>
     <td class="num"><span class="neg">${fmt(s.total)}</span></td>
@@ -582,7 +583,7 @@ function renderDadosBase(filter=''){
   const items = DADOS_BASE.filter(d => !filter || d.sku.toLowerCase().includes(filter.toLowerCase()) || d.loja.toLowerCase().includes(filter.toLowerCase()));
   const html = items.map(d => `<tr>
     <td class="dim">${d.loja}<div class="ref">${d.loja_id}</div></td>
-    <td class="dim">${d.cat}<div class="ref">${d.sku}</div></td>
+    <td class="dim">${d.cat}<div class="ref">${fmtSku(d.sku)}</div></td>
     <td class="num">${d.recep}</td>
     <td class="num"><span class="neg">${d.est_neg}</span></td>
   </tr>`).join('');
@@ -594,7 +595,7 @@ function renderRetardamento(filter=''){
   const html = items.map(r => `<tr>
     <td><div class="thumb">${thumbHTML(r.cat, r.sku)}</div></td>
     <td class="dim">${r.loja}<div class="ref">${r.loja_id}</div></td>
-    <td class="dim">${r.cat}<div class="ref">${r.sku}</div></td>
+    <td class="dim">${r.cat}<div class="ref">${fmtSku(r.sku)}</div></td>
     <td class="num">${r.vendendo.toFixed(1).replace('.',',')}/sem</td>
     <td class="num">${r.limite.toFixed(1).replace('.',',')}/sem</td>
     <td class="num">${r.estoque}</td>
@@ -721,7 +722,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const stPct = (x.selltrough * 100).toFixed(1).replace('.',',') + '%';
         return `<tr>
           <td>${thumb}</td>
-          <td class="dim"><span class="ref">${x.sku||''}</span><br>${x.cat||''}</td>
+          <td class="dim"><span class="ref">${fmtSku(x.sku||'')}</span><br>${x.cat||''}</td>
           <td class="num"><span class="neg">${stPct}</span></td>
           <td class="num">${Number(x.stock).toLocaleString('pt-BR')}</td>
           <td class="num">${Number(x.sales).toLocaleString('pt-BR')}</td>
@@ -747,7 +748,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const thumb = photo ? `<div class="thumb"><img src="${photo}" alt="${x.sku}" onerror="this.style.display='none'"></div>` : '<div class="thumb"></div>';
         return `<tr>
           <td>${thumb}</td>
-          <td class="dim"><span class="ref">${x.sku||''}</span><br>${x.cat||''}</td>
+          <td class="dim"><span class="ref">${fmtSku(x.sku||'')}</span><br>${x.cat||''}</td>
           <td>${x.cat||''}</td>
           <td class="num">${fmtN(x.total||x.est_lojas||0)}</td>
           <td class="num"><span class="${(x.msg||'').includes('cobertura') ? 'neg' : ''}">—</span></td>
@@ -773,7 +774,7 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('sec-aceleracao').classList.remove('empty');
       document.getElementById('sec-aceleracao').classList.add('warn');
       tbody.innerHTML = items.map(x => `<tr>
-        <td class="dim"><span class="ref">${x.sku||''}</span></td>
+        <td class="dim"><span class="ref">${fmtSku(x.sku||'')}</span></td>
         <td>${x.cat||''}</td>
         <td style="font-size:11px;color:var(--ink-3)">${x.msg||''}</td>
       </tr>`).join('');

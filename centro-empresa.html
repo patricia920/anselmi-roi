@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anselmi · Centro da empresa</title>
 <script src="lib/data-loader.js"></script>
+<script src="lib/sku-format.js"></script>
 <script src="lib/foto-resolver.js"></script>
 <script src="lib/photo-frame.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -551,7 +552,7 @@ function renderTopSkus(k) {
       ${photo}
       <div class="top-sku-info">
         <div class="top-sku-rank">#${i+1} TOP YTD</div>
-        <div class="top-sku-sku">${sku}</div>
+        <div class="top-sku-sku">${fmtSku(sku)}</div>
         <div class="top-sku-cat">ref ${item.root} · cor ${item.color || ''}</div>
         <div class="top-sku-rev">${fmtBRL(item.revenue)}</div>
         <div class="top-sku-meta">${fmtN(item.qty)} unidades · ${fmtN(item.ticketsWithItem)} tickets multi</div>
@@ -628,7 +629,7 @@ function renderInsights(k, os) {
     insights.push({
       type: 'good',
       icon: '<path d="M12 2L15 8L21 9L17 14L18 20L12 17L6 20L7 14L3 9L9 8L12 2Z"/>',
-      title: `Top SKU YTD: ${top.sku || top.root}`,
+      title: `Top SKU YTD: ${fmtSku(top.sku || top.root)}`,
       body: `<strong>${fmtBRL(top.revenue)}</strong> em receita · ${fmtN(top.qty)} unidades. Cross-sell mais forte: ${top.crossSell?.[0]?.sku || '—'} (${top.crossSell?.[0]?.coTicketsPct.toFixed(0)}% co-tickets).`,
     });
   }

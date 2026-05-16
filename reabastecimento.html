@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anselmi · Relatório de reabastecimento</title>
 <script src="lib/data-loader.js"></script>
+<script src="lib/sku-format.js"></script>
 <script src="lib/foto-resolver.js"></script>
 <script src="lib/photo-frame.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -615,7 +616,7 @@ function renderList(rows){
     out.push(`<div class="list-row">
       <div class="cell">${thumbHTML(r.cat,r.sku,'list')}</div>
       <div class="cell dim">${r.loja}<div class="ref">${r.lojaId}</div></div>
-      <div class="cell dim">${r.cat}<div class="ref">${r.sku}</div></div>
+      <div class="cell dim">${r.cat}<div class="ref">${fmtSku(r.sku)}</div></div>
       <div class="cell">${r.bloq==='S'?'<span class="chip alert">SIM</span>':'<span class="chip">Não</span>'}</div>
       <div class="cell num">${fmt(r.po)}</div>
       <div class="cell num">${brl(r.cpo)}</div>
@@ -661,7 +662,7 @@ function renderCards(items){
 
         <div class="card-center">
           <div>
-            <div class="cc-sku">${c.sku}</div>
+            <div class="cc-sku">${fmtSku(c.sku)}</div>
             <div class="cc-cat">${c.cat}</div>
           </div>
           <div>
