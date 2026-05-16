@@ -87,16 +87,24 @@ a{color:inherit;text-decoration:none}
 .placeholder a{color:var(--brand-bordo);text-decoration:underline}
 
 /* Best seller */
-.bs-top{display:flex;flex-direction:column;gap:var(--sp-2);margin-bottom:var(--sp-3);padding-bottom:var(--sp-3);border-bottom:1px solid var(--paper-2)}
-.bs-top .root{font-family:Lora,Georgia,serif;font-weight:500;font-size:24px;color:var(--brand-bordo)}
-.bs-top .meta{font-size:11px;color:var(--ink-4)}
-.bs-top .stats{display:flex;gap:var(--sp-3);margin-top:4px;font-size:var(--fs-12)}
-.bs-top .stats .v{font-family:Lora,Georgia,serif;color:var(--ink);font-weight:500}
+.bs-top{display:flex;gap:var(--sp-3);margin-bottom:var(--sp-3);padding-bottom:var(--sp-3);border-bottom:1px solid var(--paper-2)}
+.bs-photo{flex-shrink:0;width:80px;aspect-ratio:3/4;background:#fff;border-radius:var(--r-sm);overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative}
+.bs-photo img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
+.bs-photo.off-ratio{background:linear-gradient(90deg,var(--brand-creme) 0,var(--brand-creme) 6px,#fff 6px,#fff 100%)}
+.bs-photo.empty{background:var(--paper);color:var(--ink-4);font-size:10px;font-style:italic}
+.bs-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:var(--sp-2)}
+.bs-info .root{font-family:Lora,Georgia,serif;font-weight:500;font-size:22px;color:var(--brand-bordo);line-height:1.1}
+.bs-info .meta{font-size:11px;color:var(--ink-4)}
+.bs-info .stats{display:flex;flex-direction:column;gap:2px;margin-top:4px;font-size:var(--fs-12)}
+.bs-info .stats .v{font-family:Lora,Georgia,serif;color:var(--ink);font-weight:500}
 .bs-cross-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-4);margin-bottom:var(--sp-2)}
 .bs-cross-list{display:flex;flex-direction:column;gap:6px}
-.bs-cross-row{display:flex;justify-content:space-between;align-items:baseline;font-size:var(--fs-12);padding:4px 0}
-.bs-cross-row .name{color:var(--ink-2)}
-.bs-cross-row .pct{font-family:Lora,Georgia,serif;color:var(--musgo);font-weight:600}
+.bs-cross-row{display:flex;align-items:center;gap:8px;font-size:var(--fs-12);padding:4px 0}
+.bs-cross-thumb{flex-shrink:0;width:32px;aspect-ratio:3/4;background:#fff;border-radius:3px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bs-cross-thumb img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
+.bs-cross-thumb.empty{background:var(--paper-2)}
+.bs-cross-row .name{color:var(--ink-2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bs-cross-row .pct{font-family:Lora,Georgia,serif;color:var(--musgo);font-weight:600;flex-shrink:0}
 
 /* Assortment quality (bar horizontal stacked) */
 .aq-bar{display:flex;height:36px;border-radius:var(--r-sm);overflow:hidden;margin-bottom:var(--sp-3)}
@@ -231,8 +239,17 @@ a{color:inherit;text-decoration:none}
   document.body.appendChild(badge);
   document.getElementById('hdr-date').textContent = new Date().toLocaleDateString('pt-BR');
 
+  // Carrega banco de fotos em paralelo (não bloqueia o resto)
+  if (window.FotoResolver) {
+    window.FotoResolver.load().catch(() => {});
+  }
+
   try {
-    const result = await RoiDataLoader.load('executive', { fallback: null });
+    // Espera ambos: report e banco de fotos (pra widget Best Seller ter fotos)
+    const [result] = await Promise.all([
+      RoiDataLoader.load('executive', { fallback: null }),
+      window.FotoResolver ? window.FotoResolver.load().catch(() => null) : Promise.resolve(null),
+    ]);
     RoiDataLoader.syncBadge(badge, result);
     if (!result.ok || !result.data || !result.data.kpis) return;
     const k = result.data.kpis;
@@ -285,28 +302,42 @@ a{color:inherit;text-decoration:none}
       setText('sg-exits', fmtN(ss.exits));
     }
 
-    // 4. Best Sellers (SKU completo ref+cor)
+    // 4. Best Sellers (SKU completo ref+cor) — com fotos
     const bs = k.bestSellers;
     const bsEl = document.getElementById('bs-content');
     if (bs && bs.items && bs.items.length > 0 && bsEl) {
-      const top = bs.items[0]; // mostra só o #1 + cross-sell
+      const top = bs.items[0];
       const skuLabel = top.sku || top.root || '';
+      const photoUrl = window.FotoResolver && window.FotoResolver.getFoto(skuLabel);
+      const photoHtml = photoUrl
+        ? `<div class="bs-photo"><img src="${photoUrl}" alt="${skuLabel}" onload="window.__checkRatio&&window.__checkRatio(this)" onerror="this.parentElement.classList.add('empty');this.outerHTML='sem foto'"></div>`
+        : `<div class="bs-photo empty">sem foto</div>`;
+
       let html = `<div class="bs-top">
-        <div class="root">${skuLabel}</div>
-        <div class="meta">Top SKU YTD · ${bs.scope || ''}</div>
-        <div class="stats">
-          <span><span class="v">${fmtBRL(top.revenue)}</span> receita</span>
-          <span><span class="v">${fmtN(top.qty)}</span> un</span>
-          <span><span class="v">${fmtN(top.ticketsWithItem)}</span> tickets multi-item</span>
+        ${photoHtml}
+        <div class="bs-info">
+          <div class="root">${skuLabel}</div>
+          <div class="meta">Top SKU YTD · ref ${top.root} · cor ${top.color || ''}</div>
+          <div class="stats">
+            <span><span class="v">${fmtBRL(top.revenue)}</span> receita YTD</span>
+            <span><span class="v">${fmtN(top.qty)}</span> unidades vendidas</span>
+            <span><span class="v">${fmtN(top.ticketsWithItem)}</span> tickets multi-item</span>
+          </div>
         </div>
       </div>
-      <div class="bs-cross-label">Venda cruzada (mesmo ticket)</div>
+      <div class="bs-cross-label">Venda cruzada (no mesmo ticket)</div>
       <div class="bs-cross-list">
         ${top.crossSell.map(c => {
           const lbl = c.sku || c.root || '';
-          const sameRef = top.root && c.sku && c.sku.startsWith(top.root) ? ' <span style="color:var(--ink-4);font-size:9px">(mesma ref, outra cor)</span>' : '';
+          const cPhoto = window.FotoResolver && window.FotoResolver.getFoto(lbl);
+          const thumb = cPhoto
+            ? `<div class="bs-cross-thumb"><img src="${cPhoto}" alt="${lbl}" onerror="this.parentElement.classList.add('empty');this.style.display='none'"></div>`
+            : `<div class="bs-cross-thumb empty"></div>`;
+          const sameRef = top.root && c.sku && c.sku.startsWith(top.root)
+            ? ' <span style="color:var(--ink-4);font-size:9px">(mesma ref)</span>' : '';
           return `<div class="bs-cross-row">
-            <span class="name">${lbl}${sameRef} <span style="color:var(--ink-4);font-size:10px">· ${fmtBRL(c.revenue)} YTD</span></span>
+            ${thumb}
+            <span class="name">${lbl}${sameRef} <span style="color:var(--ink-4);font-size:10px">· ${fmtBRL(c.revenue)}</span></span>
             <span class="pct">${c.coTicketsPct.toFixed(1).replace('.',',')}%</span>
           </div>`;
         }).join('')}
