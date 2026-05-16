@@ -132,6 +132,20 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .insight p{font-size:11px;color:var(--ink-3);line-height:1.5;margin:0}
 .insight strong{color:var(--ink)}
 
+/* Indicadores YoY (paridade com app-gmroii-kpi, app-inventory-turn-over-kpi, etc) */
+.yoy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--sp-3);margin-bottom:var(--sp-3)}
+.yoy-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-4) var(--sp-5)}
+.yoy-card .lbl{font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.12em;color:var(--ink-4);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.yoy-card .cur{font-family:Lora,Georgia,serif;font-weight:500;font-size:28px;color:var(--ink);line-height:1.1}
+.yoy-card .yoy-row{display:flex;justify-content:space-between;align-items:baseline;margin-top:var(--sp-3);padding-top:var(--sp-3);border-top:1px solid var(--paper-2)}
+.yoy-card .yoy-row .label{font-size:11px;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em}
+.yoy-card .yoy-row .prev{font-family:Lora,Georgia,serif;font-size:var(--fs-13);color:var(--ink-2)}
+.yoy-card .yoy-row .delta{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:600;background:var(--musgo-bg);color:var(--musgo)}
+.yoy-card .yoy-row .delta.neg{background:var(--bordo-bg);color:var(--bordo)}
+.yoy-card .satellite{margin-top:var(--sp-2);display:flex;gap:var(--sp-3);font-size:11px;color:var(--ink-3)}
+.yoy-card .satellite span{display:inline-flex;flex-direction:column;gap:1px}
+.yoy-card .satellite .sat-v{font-family:Lora,Georgia,serif;color:var(--ink);font-weight:500;font-size:var(--fs-13)}
+
 /* Eficiência donut hero (score atual vs referência) */
 .eff-hero{display:grid;grid-template-columns:auto 1fr;gap:var(--sp-5);align-items:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-4) var(--sp-5);margin-bottom:var(--sp-3)}
 .eff-hero-donut{position:relative;width:120px;height:120px;flex-shrink:0}
@@ -319,6 +333,71 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     </div>
   </div>
 
+  <!-- ===== INDICADORES YoY (paridade com widgets separados do ROI Volution) ===== -->
+  <div class="dash-section">
+    <h2 class="dash-section-title">Indicadores YoY</h2>
+    <div class="yoy-grid">
+
+      <!-- GMROII -->
+      <div class="yoy-card">
+        <div class="lbl">GMROII <span class="help" title="Gross Margin Return on Inventory Investment — margem ÷ estoque ao custo.">i</span></div>
+        <div class="cur" id="yoy-gmroii-cur">—</div>
+        <div class="yoy-row">
+          <div><span class="label">Ano anterior</span> <span class="prev" id="yoy-gmroii-prev">—</span></div>
+          <div class="delta" id="yoy-gmroii-delta">—</div>
+        </div>
+        <div class="satellite">
+          <span><span class="sat-v" id="yoy-gmroii-mb">—</span>M.B.</span>
+          <span><span class="sat-v" id="yoy-gmroii-giro">—</span>Giro</span>
+        </div>
+      </div>
+
+      <!-- Giro -->
+      <div class="yoy-card">
+        <div class="lbl">Giro anual</div>
+        <div class="cur" id="yoy-giro-cur">—</div>
+        <div class="yoy-row">
+          <div><span class="label">Ano anterior</span> <span class="prev" id="yoy-giro-prev">—</span></div>
+          <div class="delta" id="yoy-giro-delta">—</div>
+        </div>
+      </div>
+
+      <!-- Margem Bruta -->
+      <div class="yoy-card">
+        <div class="lbl">Margem bruta</div>
+        <div class="cur" id="yoy-mb-cur">—</div>
+        <div class="yoy-row">
+          <div><span class="label">Ano anterior</span> <span class="prev" id="yoy-mb-prev">—</span></div>
+          <div class="delta" id="yoy-mb-delta">—</div>
+        </div>
+        <div class="satellite">
+          <span><span class="sat-v" id="yoy-mb-pct">—</span>% sobre vendas</span>
+        </div>
+      </div>
+
+      <!-- Tickets -->
+      <div class="yoy-card">
+        <div class="lbl">Tickets emitidos</div>
+        <div class="cur" id="yoy-tickets-cur">—</div>
+        <div class="yoy-row">
+          <div><span class="label">Ano anterior</span> <span class="prev" id="yoy-tickets-prev">—</span></div>
+          <div class="delta" id="yoy-tickets-delta">—</div>
+        </div>
+      </div>
+
+      <!-- Ticket Médio -->
+      <div class="yoy-card">
+        <div class="lbl">Ticket médio</div>
+        <div class="cur" id="yoy-tm-cur">—</div>
+        <div class="yoy-row">
+          <div><span class="label">Ano anterior</span> <span class="prev" id="yoy-tm-prev">—</span></div>
+          <div class="delta" id="yoy-tm-delta">—</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ===== CARDS ESPECIAIS ===== -->
   <div class="dash-section">
     <h2 class="dash-section-title">Saúde operacional</h2>
@@ -337,8 +416,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
                 stroke-dasharray="172.6 314" stroke-dashoffset="-141.4" transform="rotate(-90 70 70)"/>
             </svg>
             <div class="donut-center">
-              <div class="pct" id="overstock-pct">55K</div>
-              <div class="lbl">excedente</div>
+              <div class="pct" id="overstock-pct">54%</div>
+              <div class="lbl">Ano atual</div>
             </div>
           </div>
           <div class="donut-info">
@@ -587,7 +666,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
         idealArcEl.setAttribute('stroke-dasharray', idealArc.toFixed(1) + ' ' + C.toFixed(1));
         idealArcEl.setAttribute('stroke-dashoffset', (-excArc).toFixed(1));
       }
-      setText('overstock-pct', fmtK(excedente));
+      setText('overstock-pct', (os.overstockPct || ((excedente / total) * 100)).toFixed(1).replace('.', ',') + '%');
       setText('overstock-excedente', fmtK(excedente) + ' unid');
       setText('overstock-ideal', fmtK(ideal) + ' unid');
       setText('overstock-total', fmtK(total) + ' unid');
@@ -615,6 +694,68 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     }
     markMock('accept-pedidos-pct');
     markMock('accept-excesso-pct');
+
+    // ===== INDICADORES YoY (5 widgets separados — paridade com ROI) =====
+    // GMROII current
+    if (k.gmroii && k.gmroii.pct != null) {
+      setText('yoy-gmroii-cur', fmtPct(k.gmroii.pct, 2).replace('+', ''));
+      markMock('yoy-gmroii-prev');
+      markMock('yoy-gmroii-delta');
+    } else {
+      setNA('yoy-gmroii-cur', (k.gmroii && k.gmroii.note) || 'requer inventoryAtCost');
+    }
+    if (k.marginYTD && k.marginYTD.value) setText('yoy-gmroii-mb', fmtBRL(k.marginYTD.value));
+    if (k.inventoryTurn && k.inventoryTurn.ratio != null) {
+      setText('yoy-gmroii-giro', k.inventoryTurn.ratio.toFixed(2).replace('.', ','));
+    } else {
+      setNA('yoy-gmroii-giro', 'requer inventoryAtCost');
+    }
+
+    // Giro (separado)
+    if (k.inventoryTurn && k.inventoryTurn.ratio != null) {
+      setText('yoy-giro-cur', k.inventoryTurn.ratio.toFixed(2).replace('.', ','));
+      markMock('yoy-giro-prev');
+      markMock('yoy-giro-delta');
+    } else {
+      setNA('yoy-giro-cur', 'requer inventoryAtCost');
+    }
+
+    // Margem bruta YoY (atual real, previous derivado de yearOverYear)
+    if (k.marginYTD && k.marginYTD.value) {
+      setText('yoy-mb-cur', fmtBRL(k.marginYTD.value));
+      setText('yoy-mb-pct', (k.marginYTD.pct || 55).toFixed(1).replace('.', ',') + '%');
+    }
+    if (yoy && yoy.available && yoy.previousYear) {
+      // Margem prev = previousYear.value × markup (55%)
+      const mbPrev = yoy.previousYear.value * 0.55;
+      setText('yoy-mb-prev', fmtBRL(mbPrev));
+      const mbDelta = k.marginYTD && k.marginYTD.value && mbPrev > 0
+        ? ((k.marginYTD.value - mbPrev) / mbPrev * 100) : null;
+      if (mbDelta != null) {
+        const dEl = document.getElementById('yoy-mb-delta');
+        if (dEl) {
+          dEl.textContent = fmtPct(mbDelta);
+          if (mbDelta < 0) dEl.classList.add('neg');
+        }
+      }
+    } else {
+      markMock('yoy-mb-prev');
+      markMock('yoy-mb-delta');
+    }
+
+    // Tickets YoY (atual real; previous = não temos transactions YoY no pipeline)
+    if (k.salesYTD && k.salesYTD.transactions) {
+      setText('yoy-tickets-cur', fmtN(k.salesYTD.transactions));
+    }
+    markMock('yoy-tickets-prev');
+    markMock('yoy-tickets-delta');
+
+    // Ticket médio YoY (atual real)
+    if (k.averageTicket && k.averageTicket.value) {
+      setText('yoy-tm-cur', fmtBRL(k.averageTicket.value));
+    }
+    markMock('yoy-tm-prev');
+    markMock('yoy-tm-delta');
 
     // ===== EFICIÊNCIA — donut YoY (paridade com app-stock-efficiency-kpi do ROI) =====
     // Schema esperado: k.efficiencyScore = { current, previous, yoyPp }
