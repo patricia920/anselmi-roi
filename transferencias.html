@@ -200,11 +200,11 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
       </div>
     </div>
     <div class="hdr-kpi">
-      <div class="hdr-stat"><div class="v">3.766</div><div class="l">Sugestões</div></div>
-      <div class="hdr-stat"><div class="v">R$ 1,08M</div><div class="l">Custo total</div></div>
+      <div class="hdr-stat"><div class="v" id="hdr-sugestoes">—</div><div class="l">Sugestões</div></div>
+      <div class="hdr-stat"><div class="v" id="hdr-recovery">—</div><div class="l">Recovery potencial</div></div>
       <div class="hdr-stat"><div class="v" style="color:var(--bordo)">13%</div><div class="l">Aceitação</div></div>
     </div>
-    <div class="hdr-date">07/05/2026</div>
+    <div class="hdr-date" id="hdr-date">—</div>
   </div>
   <div class="tab-nav">
     <div class="tab" onclick="location.href='index.html'">
@@ -660,6 +660,15 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     console.log('[transferencias] Pipeline:', result.rows.length, 'sugestões →', TRANSF.length, 'mostradas');
+
+    // Atualiza header com totais reais
+    const totalRecovery = result.rows.reduce((s, r) => s + (+r.estimatedRecoveryBRL || 0), 0);
+    const fmtBRL = n => Math.abs(n) >= 1e6 ? 'R$ ' + (n/1e6).toFixed(2).replace('.',',') + 'M' : 'R$ ' + (n/1e3).toFixed(0) + 'K';
+    const setText = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+    setText('hdr-sugestoes', result.rows.length.toLocaleString('pt-BR'));
+    setText('hdr-recovery', totalRecovery > 0 ? fmtBRL(totalRecovery) : '—');
+    setText('hdr-date', new Date().toLocaleDateString('pt-BR'));
+
     if (typeof applyFilters === 'function') applyFilters();
   } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; console.warn('[transferencias]', e); }
 })();
