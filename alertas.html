@@ -338,25 +338,53 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   </div>
 
   <!-- ===== ACELERAÇÃO (vazio) ===== -->
-  <div class="alert-section empty" id="sec-aceleracao">
+  <!-- ===== EXCESSO SEVERO ===== -->
+  <div class="alert-section warn" id="sec-overstock">
+    <div class="alert-section-head" onclick="toggleSection('overstock')">
+      <div class="ttl">
+        <span class="arr">▶</span>
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="1"/><path d="M3 12H21"/><path d="M9 7V3H15V7"/></svg></div>
+        <div>
+          <div class="nm">Excesso severo de estoque</div>
+          <div class="desc-line">SKUs com sobra projetada acima do limite — risco de toxicidade</div>
+        </div>
+      </div>
+      <span class="badge" id="badge-overstock">0 alertas</span>
+      <span class="impacto" id="impacto-overstock">capital imobilizado</span>
+    </div>
+    <div class="alert-section-body">
+      <div class="atable-toolbar">
+        <div class="search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21L16.65 16.65"/></svg>
+          <input type="text" id="search-overstock" placeholder="Buscar produto…" oninput="filterTable('overstock')">
+        </div>
+        <div class="filt-info" id="filt-overstock">—</div>
+      </div>
+      <table class="atable" id="tbl-overstock">
+        <thead><tr><th></th><th>SKU</th><th>Categoria</th><th class="num">Estoque</th><th class="num">Cobertura</th><th>Mensagem</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="alert-section warn" id="sec-aceleracao">
     <div class="alert-section-head" onclick="toggleSection('aceleracao')">
       <div class="ttl">
         <span class="arr">▶</span>
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12L19 12"/><path d="M15 8L19 12L15 16"/></svg></div>
         <div>
-          <div class="nm">Aceleração da venda</div>
-          <div class="desc-line">SKUs vendendo acima do esperado · risco de ruptura</div>
+          <div class="nm">Aceleração / desaceleração da venda</div>
+          <div class="desc-line">SKUs vendendo bem acima ou abaixo do esperado (anomalia)</div>
         </div>
       </div>
-      <span class="badge">0 alertas</span>
-      <span class="impacto">tudo dentro do esperado</span>
+      <span class="badge" id="badge-aceleracao">0 alertas</span>
+      <span class="impacto" id="impacto-aceleracao">monitorar</span>
     </div>
     <div class="alert-section-body">
-      <div class="empty-state">
-        <div class="icon-big"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12L10 17L20 7"/></svg></div>
-        <h4>Nenhum SKU vendendo acima do limite</h4>
-        <p>Não há SKUs com risco de ruptura por aceleração de vendas hoje.</p>
-      </div>
+      <table class="atable" id="tbl-aceleracao">
+        <thead><tr><th>SKU</th><th>Categoria</th><th>Mensagem</th></tr></thead>
+        <tbody></tbody>
+      </table>
     </div>
   </div>
 
@@ -628,18 +656,77 @@ window.addEventListener('DOMContentLoaded', () => {
     const semVendas    = result.rows.filter(r => r.type === 'no_sales').map(mapAlert).slice(0, 200);
     const dadosBase    = result.rows.filter(r => r.type === 'data_base').map(mapAlert).slice(0, 200);
     const retardamento = result.rows.filter(r => r.type === 'late_reception' || r.type === 'critical_coverage').map(mapAlert).slice(0, 200);
+    const overstock    = result.rows.filter(r => r.type === 'severe_overstock').map(mapAlert).slice(0, 200);
+    const aceleracao   = result.rows.filter(r => r.type === 'velocity_outlier').map(mapAlert).slice(0, 200);
 
     SEM_VENDAS.length = 0;    semVendas.forEach(x => SEM_VENDAS.push(x));
     DADOS_BASE.length = 0;    dadosBase.forEach(x => DADOS_BASE.push(x));
     RETARDAMENTO.length = 0;  retardamento.forEach(x => RETARDAMENTO.push(x));
 
     console.log('[alertas] Pipeline:', result.rows.length, 'alertas →',
-                'sem_vendas:', SEM_VENDAS.length, 'dados_base:', DADOS_BASE.length, 'retardamento:', RETARDAMENTO.length);
+                'sem_vendas:', SEM_VENDAS.length, 'dados_base:', DADOS_BASE.length,
+                'retardamento:', RETARDAMENTO.length, 'overstock:', overstock.length,
+                'aceleracao:', aceleracao.length);
 
-    // Re-render
     if (typeof renderSemVendas === 'function')   renderSemVendas();
     if (typeof renderDadosBase === 'function')   renderDadosBase();
     if (typeof renderRetardamento === 'function') renderRetardamento();
+
+    // Render overstock + aceleração (não havia render functions, fazemos inline)
+    renderOverstock(overstock);
+    renderAceleracao(aceleracao);
+
+    function renderOverstock(items) {
+      const tbody = document.querySelector('#tbl-overstock tbody');
+      const badge = document.getElementById('badge-overstock');
+      const impacto = document.getElementById('impacto-overstock');
+      const filt = document.getElementById('filt-overstock');
+      if (!tbody) return;
+      const fullTotal = result.rows.filter(r => r.type === 'severe_overstock').length;
+      badge.textContent = fullTotal + ' alertas' + (fullTotal > items.length ? ' (top ' + items.length + ')' : '');
+      // soma estoque total
+      const totalStock = items.reduce((s, x) => s + (x.total || x.est_lojas || 0), 0);
+      impacto.textContent = totalStock > 0 ? fmtN(totalStock) + ' un imobilizadas' : 'capital imobilizado';
+      filt.textContent = items.length + ' de ' + fullTotal + ' alertas';
+      tbody.innerHTML = items.map(x => {
+        const photo = window.FotoResolver && window.FotoResolver.getFoto(x.sku);
+        const thumb = photo ? `<div class="thumb"><img src="${photo}" alt="${x.sku}" onerror="this.style.display='none'"></div>` : '<div class="thumb"></div>';
+        return `<tr>
+          <td>${thumb}</td>
+          <td class="dim"><span class="ref">${x.sku||''}</span><br>${x.cat||''}</td>
+          <td>${x.cat||''}</td>
+          <td class="num">${fmtN(x.total||x.est_lojas||0)}</td>
+          <td class="num"><span class="${(x.msg||'').includes('cobertura') ? 'neg' : ''}">—</span></td>
+          <td style="font-size:11px;color:var(--ink-3)">${x.msg||''}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function renderAceleracao(items) {
+      const tbody = document.querySelector('#tbl-aceleracao tbody');
+      const badge = document.getElementById('badge-aceleracao');
+      const impacto = document.getElementById('impacto-aceleracao');
+      if (!tbody) return;
+      badge.textContent = items.length + ' alertas';
+      impacto.textContent = items.length > 0 ? 'anomalia detectada' : 'tudo dentro do esperado';
+      // Se vazio, mostra empty-state. Se tem, mostra tabela.
+      if (items.length === 0) {
+        document.getElementById('sec-aceleracao').classList.add('empty');
+        document.getElementById('sec-aceleracao').classList.remove('warn');
+        tbody.innerHTML = '';
+        return;
+      }
+      document.getElementById('sec-aceleracao').classList.remove('empty');
+      document.getElementById('sec-aceleracao').classList.add('warn');
+      tbody.innerHTML = items.map(x => `<tr>
+        <td class="dim"><span class="ref">${x.sku||''}</span></td>
+        <td>${x.cat||''}</td>
+        <td style="font-size:11px;color:var(--ink-3)">${x.msg||''}</td>
+      </tr>`).join('');
+    }
+
+    function fmtN(n) { return n == null ? '—' : Number(n).toLocaleString('pt-BR'); }
+
   } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; console.warn('[alertas]', e.message); }
 })();
 </script>
