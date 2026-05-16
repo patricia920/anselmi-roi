@@ -119,6 +119,18 @@ a{color:inherit;text-decoration:none}
 .aq-legend .item .pct{font-family:Lora,Georgia,serif;color:var(--ink);font-weight:500;margin-left:auto}
 .aq-note{margin-top:var(--sp-3);font-size:10px;color:var(--ink-4);font-style:italic}
 
+/* Insights dinâmicos */
+.insight{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-4);display:flex;gap:var(--sp-3);align-items:flex-start}
+.insight .icon{flex-shrink:0;width:36px;height:36px;border-radius:var(--r-sm);display:grid;place-items:center;background:var(--ambar-bg);color:var(--ambar)}
+.insight.alert .icon{background:var(--bordo-bg);color:var(--bordo)}
+.insight.good .icon{background:var(--musgo-bg);color:var(--musgo)}
+.insight h3{font-family:Lora,Georgia,serif;font-size:var(--fs-13);color:var(--ink);font-weight:500;margin:0 0 3px 0;line-height:1.3}
+.insight p{font-size:11px;color:var(--ink-3);line-height:1.5;margin:0}
+.insight strong{color:var(--ink)}
+@media (max-width:980px){
+  #insights-container{grid-template-columns:1fr !important}
+}
+
 #hdr-sync{position:fixed;top:8px;right:12px;font:500 11px/1.2 Inter,sans-serif;color:var(--ambar);background:rgba(245,241,234,.92);padding:4px 10px;border-radius:99px;z-index:9999;letter-spacing:.02em;border:1px solid rgba(0,0,0,.06)}
 
 @media (max-width:980px){
@@ -229,9 +241,82 @@ a{color:inherit;text-decoration:none}
 
   </div>
 
+  <!-- ===== INSIGHTS DINÂMICOS ===== -->
+  <div style="margin-top:var(--sp-5)">
+    <h2 class="widget-title" style="font-size:var(--fs-18);margin-bottom:var(--sp-3)">Pontos de atenção</h2>
+    <div id="insights-container" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)"></div>
+  </div>
+
 </div>
 
 <script>
+function renderInsights(k) {
+  const container = document.getElementById('insights-container');
+  if (!container) return;
+  const insights = [];
+  const fmtBRL = n => n == null ? '—' : (Math.abs(n) >= 1e6 ? 'R$ ' + (n/1e6).toFixed(2).replace('.',',') + 'M' : 'R$ ' + (n/1e3).toFixed(0) + 'K');
+  const fmtN = n => n == null ? '—' : n.toLocaleString('pt-BR');
+
+  // 1. Stock evolution
+  if (k.stockEvolution && k.stockEvolution.current) {
+    insights.push({
+      type: '',
+      icon: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="9"/><rect x="3" y="14" width="9" height="7"/>',
+      title: `Estoque imobilizado: ${fmtBRL(k.stockEvolution.current)}`,
+      body: `Valor ao custo (preço médio derivado × estoque atual). Pra acompanhar evolução YoY precisa de snapshot histórico mensal — ainda não implementado.`,
+    });
+  }
+
+  // 2. Markdown YoY
+  if (k.markdownRate && k.markdownRate.current != null && k.markdownRate.previous != null) {
+    const cur = k.markdownRate.current * 100, prev = k.markdownRate.previous * 100;
+    const delta = cur - prev;
+    const isGood = delta < 0;
+    insights.push({
+      type: isGood ? 'good' : 'alert',
+      icon: '<path d="M3 17L9 11L13 15L21 7"/>',
+      title: isGood ? `Markdown caiu ${(-delta).toFixed(1).replace('.',',')} pp YoY` : `Markdown subiu ${delta.toFixed(1).replace('.',',')} pp YoY`,
+      body: `Atual <strong>${cur.toFixed(2).replace('.',',')}%</strong> · Anterior <strong>${prev.toFixed(2).replace('.',',')}%</strong>. Detectado via P90 + threshold 80%. ${isGood ? 'Mais venda no preço cheio — melhor margem.' : 'Mais venda com desconto — possível excesso escoando.'}`,
+    });
+  }
+
+  // 3. Best Seller
+  if (k.bestSellers && k.bestSellers.items && k.bestSellers.items.length > 0) {
+    const top = k.bestSellers.items[0];
+    const cross = top.crossSell?.[0];
+    insights.push({
+      type: 'good',
+      icon: '<path d="M12 2L15 8L21 9L17 14L18 20L12 17L6 20L7 14L3 9L9 8L12 2Z"/>',
+      title: `Top SKU YTD: ${top.sku || top.root}`,
+      body: `<strong>${fmtBRL(top.revenue)}</strong> em receita · ${fmtN(top.qty)} unidades. ${cross ? 'Cross-sell mais forte: <strong>' + (cross.sku || cross.root) + '</strong> (' + cross.coTicketsPct.toFixed(0) + '% co-tickets).' : ''}`,
+    });
+  }
+
+  // 4. Assortment Quality
+  if (k.assortmentQuality && k.assortmentQuality.total > 0) {
+    const aq = k.assortmentQuality;
+    const isHealthy = aq.topSellersPct + aq.goodPct >= 10;
+    insights.push({
+      type: isHealthy ? 'good' : 'alert',
+      icon: '<path d="M12 9V14"/><path d="M12 17.5V18"/><path d="M10.29 3.86L1.82 18A2 2 0 003.55 21H20.45A2 2 0 0022.18 18L13.71 3.86A2 2 0 0010.29 3.86Z"/>',
+      title: `${aq.nonePct.toFixed(0)}% do sortido sem venda relevante`,
+      body: `<strong>${aq.counts.none}</strong> SKUs concentrados na cauda longa da curva ABC. Top sellers + Boa juntos: <strong>${(aq.topSellersPct + aq.goodPct).toFixed(1).replace('.',',')}%</strong> (${aq.counts.topSellers + aq.counts.good} SKUs geram 50% da receita).`,
+    });
+  }
+
+  container.innerHTML = insights.slice(0, 4).map(ins => `
+    <div class="insight ${ins.type}">
+      <div class="icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${ins.icon}</svg>
+      </div>
+      <div>
+        <h3>${ins.title}</h3>
+        <p>${ins.body}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
 (async () => {
   if (typeof RoiDataLoader === 'undefined') return;
   const badge = document.createElement('span');
@@ -369,6 +454,9 @@ a{color:inherit;text-decoration:none}
     } else if (aqEl) {
       aqEl.innerHTML = '<div class="placeholder">sem dados de selltrough</div>';
     }
+
+    // 6. Insights dinâmicos
+    renderInsights(k);
 
   } catch (e) {
     badge.textContent = 'Modo demo · dados estáticos';
