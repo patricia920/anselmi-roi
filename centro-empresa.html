@@ -395,6 +395,20 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
         </div>
       </div>
 
+      <!-- Faturamento (Turn-over current month, issue #12) -->
+      <div class="yoy-card">
+        <div class="lbl">Faturamento YoY <span class="help" title="Vendas R$ YTD com comparativo Ano anterior (vw_giro_venda · Oracle). Inclui todos os canais.">i</span></div>
+        <div class="cur" id="yoy-fat-cur">—</div>
+        <div class="yoy-row">
+          <div><span class="label">Ano anterior</span> <span class="prev" id="yoy-fat-prev">—</span></div>
+          <div class="delta" id="yoy-fat-delta">—</div>
+        </div>
+        <div class="satellite">
+          <span><span class="sat-v" id="yoy-fat-pct-year">—</span>% do ano</span>
+          <span><span class="sat-v" id="yoy-fat-source">—</span>fonte</span>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -764,6 +778,28 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     }
     markMock('yoy-tm-prev');
     markMock('yoy-tm-delta');
+
+    // Faturamento YoY (issue #12) — yearOverYear já tem prev populado
+    if (yoy && yoy.available) {
+      setText('yoy-fat-cur', fmtBRL(yoy.currentYear.value));
+      setText('yoy-fat-prev', fmtBRL(yoy.previousYear.value));
+      const pct = yoy.yoy.valuePct;
+      if (pct != null) {
+        const dEl = document.getElementById('yoy-fat-delta');
+        if (dEl) {
+          dEl.textContent = fmtPct(pct);
+          if (pct < 0) dEl.classList.add('neg');
+        }
+      }
+      const now = new Date();
+      const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
+      setText('yoy-fat-pct-year', (dayOfYear / 365 * 100).toFixed(0) + '%');
+      setText('yoy-fat-source', 'Oracle');
+    } else {
+      markMock('yoy-fat-cur');
+      markMock('yoy-fat-prev');
+      markMock('yoy-fat-delta');
+    }
 
     // ===== EFICIÊNCIA — donut YoY (paridade com app-stock-efficiency-kpi do ROI) =====
     // Schema esperado: k.efficiencyScore = { current, previous, yoyPp }
