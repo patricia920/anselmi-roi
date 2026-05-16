@@ -200,11 +200,11 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
       </div>
     </div>
     <div class="hdr-kpi">
-      <div class="hdr-stat"><div class="v" style="color:var(--bordo)">R$ 23M</div><div class="l">Sobra 12 sem</div></div>
-      <div class="hdr-stat"><div class="v">117K</div><div class="l">Unid 12 sem</div></div>
-      <div class="hdr-stat"><div class="v">3.667</div><div class="l">SKUs</div></div>
+      <div class="hdr-stat"><div class="v" id="hdr-sobra12" style="color:var(--bordo)">—</div><div class="l">Sobra 12 sem (custo)</div></div>
+      <div class="hdr-stat"><div class="v" id="hdr-sobra12-un">—</div><div class="l">Unid 12 sem</div></div>
+      <div class="hdr-stat"><div class="v" id="hdr-skus">—</div><div class="l">SKUs com sobra</div></div>
     </div>
-    <div class="hdr-date">07/05/2026</div>
+    <div class="hdr-date" id="hdr-date">—</div>
   </div>
   <div class="tab-nav">
     <div class="tab" onclick="location.href='index.html'">
@@ -670,6 +670,19 @@ window.addEventListener('DOMContentLoaded', () => {
     PRODUTOS.length = 0;
     newProds.slice(0, 200).forEach(p => PRODUTOS.push(p));
     console.log('[excesso] Pipeline:', result.rows.length, 'rows →', PRODUTOS.length, 'mostradas');
+
+    // Atualiza header com totais reais
+    const skuCount = result.rows.filter(r => (+r.sobra12 || 0) > 0).length;
+    const totalSobra12 = result.rows.reduce((s, r) => s + (+r.sobra12 || 0), 0);
+    const totalCusto12 = result.rows.reduce((s, r) => s + (+r.custo12 || 0), 0);
+    const fmtBRL = n => Math.abs(n) >= 1e6 ? 'R$ ' + (n/1e6).toFixed(1).replace('.',',') + 'M' : 'R$ ' + (n/1e3).toFixed(0) + 'K';
+    const fmtK = n => Math.abs(n) >= 1e3 ? (n/1e3).toFixed(0) + 'K' : Math.round(n).toString();
+    const setText = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+    setText('hdr-sobra12', fmtBRL(totalCusto12));
+    setText('hdr-sobra12-un', fmtK(totalSobra12));
+    setText('hdr-skus', skuCount.toLocaleString('pt-BR'));
+    setText('hdr-date', new Date().toLocaleDateString('pt-BR'));
+
     if (typeof applyFilters === 'function') applyFilters();
   } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; console.warn('[excesso]', e.message); }
 })();

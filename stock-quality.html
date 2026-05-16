@@ -221,9 +221,9 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
       </div>
     </div>
     <div class="hdr-kpi">
-      <div class="hdr-stat"><div class="v">122.4K</div><div class="l">Unidades</div></div>
-      <div class="hdr-stat"><div class="v">R$ 24,5M</div><div class="l">Custo</div></div>
-      <div class="hdr-stat"><div class="v" style="color:var(--q4-fg)">26,9%</div><div class="l">Tóxico</div></div>
+      <div class="hdr-stat"><div class="v" id="hdr-unid">—</div><div class="l">Unidades</div></div>
+      <div class="hdr-stat"><div class="v" id="hdr-custo">—</div><div class="l">Custo</div></div>
+      <div class="hdr-stat"><div class="v" id="hdr-toxico" style="color:var(--q4-fg)">—</div><div class="l">Tóxico</div></div>
     </div>
     <div class="hdr-date">07/05/2026</div>
   </div>
@@ -613,9 +613,27 @@ window.addEventListener('DOMContentLoaded', () => {
   badge.style.cssText = 'position:fixed;top:8px;right:12px;font:500 11px/1.2 Inter,sans-serif;color:#a86d1f;background:rgba(245,241,234,.92);padding:4px 10px;border-radius:99px;z-index:9999;letter-spacing:.02em;border:1px solid rgba(0,0,0,.06);';
   document.body.appendChild(badge);
   try {
-    const result = await RoiDataLoader.load('stock-quality', { fallback: null });
-    RoiDataLoader.syncBadge(badge, result);
-  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; }
+    // Carrega executive (tem inventoryAtCost + overstock) + stock-quality em paralelo
+    const [sq, exec] = await Promise.all([
+      RoiDataLoader.load('stock-quality', { fallback: null }),
+      RoiDataLoader.load('executive', { fallback: null }),
+    ]);
+    RoiDataLoader.syncBadge(badge, sq);
+
+    // Atualiza header com dados reais do executive-report
+    if (exec && exec.ok && exec.data) {
+      const os = exec.data.overstock;
+      const inv = exec.data.kpis && exec.data.kpis.inventoryAtCost;
+      const fmtBRL = n => n == null ? '—' : (Math.abs(n) >= 1e6 ? 'R$ ' + (n/1e6).toFixed(1).replace('.',',') + 'M' : 'R$ ' + (n/1e3).toFixed(0) + 'K');
+      const fmtK = n => n == null ? '—' : (Math.abs(n) >= 1e3 ? (n/1e3).toFixed(1).replace('.',',') + 'K' : String(n));
+      const setText = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+      if (os && os.totalStockUnits) setText('hdr-unid', fmtK(os.totalStockUnits));
+      if (inv && inv.value) setText('hdr-custo', fmtBRL(inv.value));
+      // Tóxico = overstockPct (% do estoque que está em excesso = proxy de "tóxico")
+      if (os && os.overstockPct != null) setText('hdr-toxico', os.overstockPct.toFixed(1).replace('.',',') + '%');
+      setText('hdr-date', new Date().toLocaleDateString('pt-BR'));
+    }
+  } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; console.warn('[stock-quality]', e.message); }
 })();
 </script>
 </body>

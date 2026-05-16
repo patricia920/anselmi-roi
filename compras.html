@@ -176,11 +176,11 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
       </div>
     </div>
     <div class="hdr-kpi">
-      <div class="hdr-stat"><div class="v">659</div><div class="l">SKUs</div></div>
-      <div class="hdr-stat"><div class="v">12.877</div><div class="l">Pedido</div></div>
-      <div class="hdr-stat"><div class="v" style="color:var(--bordo)">R$ 2,76M</div><div class="l">Custo</div></div>
+      <div class="hdr-stat"><div class="v" id="hdr-skus">—</div><div class="l">SKUs</div></div>
+      <div class="hdr-stat"><div class="v" id="hdr-pedido">—</div><div class="l">Pedido</div></div>
+      <div class="hdr-stat"><div class="v" id="hdr-custo" style="color:var(--bordo)">—</div><div class="l">Custo</div></div>
     </div>
-    <div class="hdr-date">07/05/2026</div>
+    <div class="hdr-date" id="hdr-date">—</div>
   </div>
   <div class="tab-nav">
     <div class="tab" onclick="location.href='index.html'">
@@ -621,6 +621,20 @@ window.addEventListener('DOMContentLoaded', () => {
     COMPRAS.length = 0;
     newComp.slice(0, 200).forEach(c => COMPRAS.push(c));
     console.log('[compras] Pipeline:', result.rows.length, 'rows →', COMPRAS.length, 'mostradas');
+
+    // Atualiza header com totais reais
+    const skuCount = result.rows.filter(r => +r.adjustedOrder > 0).length;
+    const totalQty = result.rows.reduce((s, r) => s + (+r.adjustedOrder || 0), 0);
+    // Custo: usa unitCost se disponível (do overstock?) — aqui não temos preço por SKU,
+    // estimativa via venda média (não disponível); mostra qty + nota
+    const fmtN = n => Math.abs(n) >= 1e3 ? (n/1e3).toFixed(1).replace('.',',') + 'K' : Math.round(n).toString();
+    const setText = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+    setText('hdr-skus', skuCount.toLocaleString('pt-BR'));
+    setText('hdr-pedido', fmtN(totalQty));
+    setText('hdr-custo', '—'); // sem preço por SKU no purchases-report
+    document.getElementById('hdr-custo').title = 'Custo total não calculado — purchases-report não expõe unitCost por SKU';
+    setText('hdr-date', new Date().toLocaleDateString('pt-BR'));
+
     if (typeof applyFilters === 'function') applyFilters();
   } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; console.warn('[compras]', e.message); }
 })();
