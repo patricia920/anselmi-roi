@@ -86,6 +86,31 @@ a{color:inherit;text-decoration:none}
 .placeholder{display:flex;align-items:center;justify-content:center;color:var(--ink-4);font-style:italic;font-size:var(--fs-12);padding:var(--sp-6) 0;text-align:center;min-height:160px}
 .placeholder a{color:var(--brand-bordo);text-decoration:underline}
 
+/* Best seller */
+.bs-top{display:flex;flex-direction:column;gap:var(--sp-2);margin-bottom:var(--sp-3);padding-bottom:var(--sp-3);border-bottom:1px solid var(--paper-2)}
+.bs-top .root{font-family:Lora,Georgia,serif;font-weight:500;font-size:24px;color:var(--brand-bordo)}
+.bs-top .meta{font-size:11px;color:var(--ink-4)}
+.bs-top .stats{display:flex;gap:var(--sp-3);margin-top:4px;font-size:var(--fs-12)}
+.bs-top .stats .v{font-family:Lora,Georgia,serif;color:var(--ink);font-weight:500}
+.bs-cross-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-4);margin-bottom:var(--sp-2)}
+.bs-cross-list{display:flex;flex-direction:column;gap:6px}
+.bs-cross-row{display:flex;justify-content:space-between;align-items:baseline;font-size:var(--fs-12);padding:4px 0}
+.bs-cross-row .name{color:var(--ink-2)}
+.bs-cross-row .pct{font-family:Lora,Georgia,serif;color:var(--musgo);font-weight:600}
+
+/* Assortment quality (bar horizontal stacked) */
+.aq-bar{display:flex;height:36px;border-radius:var(--r-sm);overflow:hidden;margin-bottom:var(--sp-3)}
+.aq-bar .seg{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:11px;min-width:0;overflow:hidden}
+.aq-bar .seg-top{background:var(--musgo)}
+.aq-bar .seg-good{background:#7a8d5a}
+.aq-bar .seg-poor{background:var(--ambar)}
+.aq-bar .seg-none{background:var(--bordo)}
+.aq-legend{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2);font-size:var(--fs-12)}
+.aq-legend .item{display:flex;align-items:center;gap:6px;color:var(--ink-3)}
+.aq-legend .item .swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.aq-legend .item .pct{font-family:Lora,Georgia,serif;color:var(--ink);font-weight:500;margin-left:auto}
+.aq-note{margin-top:var(--sp-3);font-size:10px;color:var(--ink-4);font-style:italic}
+
 #hdr-sync{position:fixed;top:8px;right:12px;font:500 11px/1.2 Inter,sans-serif;color:var(--ambar);background:rgba(245,241,234,.92);padding:4px 10px;border-radius:99px;z-index:9999;letter-spacing:.02em;border:1px solid rgba(0,0,0,.06)}
 
 @media (max-width:980px){
@@ -169,21 +194,19 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
 
-    <!-- 4. Best seller (P2 — placeholder) -->
+    <!-- 4. Best seller -->
     <div class="widget">
-      <h2 class="widget-title">Best Seller</h2>
-      <div class="placeholder">
-        Widget ainda não implementado. Requer motor <code>best_sellers.py</code> + análise de cesta. <br>
-        <a href="https://github.com/patricia920/anselmi-roi/issues/17">issue #17</a>
+      <h2 class="widget-title">Best Seller + venda cruzada</h2>
+      <div id="bs-content">
+        <div class="placeholder">carregando…</div>
       </div>
     </div>
 
-    <!-- 5. Qualidade do sortido (P2 — placeholder) -->
+    <!-- 5. Qualidade do sortido -->
     <div class="widget">
       <h2 class="widget-title">Qualidade do sortido</h2>
-      <div class="placeholder">
-        Widget ainda não implementado. Requer motor <code>assortment_quality.py</code> classificando Top/Boa/Pouca/Nenhuma. <br>
-        <a href="https://github.com/patricia920/anselmi-roi/issues/16">issue #16</a>
+      <div id="aq-content">
+        <div class="placeholder">carregando…</div>
       </div>
     </div>
 
@@ -260,6 +283,55 @@ a{color:inherit;text-decoration:none}
       setText('sg-orig', fmtN(ss.originalOrder));
       setText('sg-need', fmtN(ss.stockNeed));
       setText('sg-exits', fmtN(ss.exits));
+    }
+
+    // 4. Best Sellers
+    const bs = k.bestSellers;
+    const bsEl = document.getElementById('bs-content');
+    if (bs && bs.items && bs.items.length > 0 && bsEl) {
+      const top = bs.items[0]; // mostra só o #1 + cross-sell
+      let html = `<div class="bs-top">
+        <div class="root">Ref ${top.root}</div>
+        <div class="meta">Top SKU YTD · ${bs.scope || ''}</div>
+        <div class="stats">
+          <span><span class="v">${fmtBRL(top.revenue)}</span> receita</span>
+          <span><span class="v">${fmtN(top.qty)}</span> un</span>
+          <span><span class="v">${fmtN(top.ticketsWithItem)}</span> tickets multi-item</span>
+        </div>
+      </div>
+      <div class="bs-cross-label">Venda cruzada (mesmo ticket)</div>
+      <div class="bs-cross-list">
+        ${top.crossSell.map(c => `<div class="bs-cross-row">
+          <span class="name">Ref ${c.root} <span style="color:var(--ink-4);font-size:10px">· ${fmtBRL(c.revenue)} YTD</span></span>
+          <span class="pct">${c.coTicketsPct.toFixed(1).replace('.',',')}%</span>
+        </div>`).join('')}
+      </div>`;
+      bsEl.innerHTML = html;
+    } else if (bsEl) {
+      bsEl.innerHTML = '<div class="placeholder">sem dados de basket</div>';
+    }
+
+    // 5. Assortment Quality (stacked bar)
+    const aq = k.assortmentQuality;
+    const aqEl = document.getElementById('aq-content');
+    if (aq && aq.total > 0 && aqEl) {
+      const cap = pct => Math.max(pct, 6); // largura mínima de 6% pra labels caberem
+      const tot = aq.topSellersPct + aq.goodPct + aq.poorPct + aq.nonePct;
+      aqEl.innerHTML = `<div class="aq-bar">
+        <div class="seg seg-top" style="width:${aq.topSellersPct}%" title="Top sellers: ${aq.counts.topSellers} SKUs">${aq.topSellersPct >= 8 ? aq.topSellersPct.toFixed(1).replace('.',',') + '%' : ''}</div>
+        <div class="seg seg-good" style="width:${aq.goodPct}%" title="Boa: ${aq.counts.good} SKUs">${aq.goodPct >= 8 ? aq.goodPct.toFixed(1).replace('.',',') + '%' : ''}</div>
+        <div class="seg seg-poor" style="width:${aq.poorPct}%" title="Pouca: ${aq.counts.poor} SKUs">${aq.poorPct >= 8 ? aq.poorPct.toFixed(1).replace('.',',') + '%' : ''}</div>
+        <div class="seg seg-none" style="width:${aq.nonePct}%" title="Nenhuma: ${aq.counts.none} SKUs">${aq.nonePct >= 8 ? aq.nonePct.toFixed(1).replace('.',',') + '%' : ''}</div>
+      </div>
+      <div class="aq-legend">
+        <div class="item"><span class="swatch" style="background:var(--musgo)"></span>Top sellers <span class="pct">${aq.topSellersPct.toFixed(1).replace('.',',')}%</span></div>
+        <div class="item"><span class="swatch" style="background:#7a8d5a"></span>Boa <span class="pct">${aq.goodPct.toFixed(1).replace('.',',')}%</span></div>
+        <div class="item"><span class="swatch" style="background:var(--ambar)"></span>Pouca <span class="pct">${aq.poorPct.toFixed(1).replace('.',',')}%</span></div>
+        <div class="item"><span class="swatch" style="background:var(--bordo)"></span>Nenhuma <span class="pct">${aq.nonePct.toFixed(1).replace('.',',')}%</span></div>
+      </div>
+      <div class="aq-note">${aq.total} SKUs classificados via sell-through · thresholds: Top ≥80%, Boa 50-80%, Pouca 10-50%, Nenhuma <10%</div>`;
+    } else if (aqEl) {
+      aqEl.innerHTML = '<div class="placeholder">sem dados de selltrough</div>';
     }
 
   } catch (e) {
