@@ -494,52 +494,101 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   <!-- ===== INSIGHTS ===== -->
   <div class="dash-section">
     <h2 class="dash-section-title">Pontos de atenção</h2>
-    <div class="insights">
-      <div class="insight good">
-        <div class="icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17L9 11L13 15L21 7"/></svg>
-        </div>
-        <div>
-          <h3>Margem bruta cresceu mais que vendas</h3>
-          <p>Vendas <strong>+27,9%</strong> · Margem <strong>+59,4%</strong>. Significa que o mix está melhorando — produtos vendidos com margem maior que ano anterior. GMROII subiu de 94,5% para 105,1%.</p>
-        </div>
-      </div>
-
-      <div class="insight alert">
-        <div class="icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9V14"/><path d="M12 17.5V18"/><path d="M10.29 3.86L1.82 18A2 2 0 003.55 21H20.45A2 2 0 0022.18 18L13.71 3.86A2 2 0 0010.29 3.86Z"/></svg>
-        </div>
-        <div>
-          <h3>Estoque cresceu R$ 10,4M (+42%) em um ano</h3>
-          <p>Estoque ao custo passou de <strong>R$ 24,68M</strong> para <strong>R$ 35,07M</strong>. DV caiu (estoque mais novo) mas o volume total imobilizado é alto — <strong>26,9% (R$ 6,6M) classificado como tóxico</strong>. Risco se vendas desacelerarem.</p>
-        </div>
-      </div>
-
-      <div class="insight">
-        <div class="icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10L17 10"/><path d="M14 7L17 10L14 13"/><path d="M17 14L7 14"/><path d="M10 11L7 14L10 17"/></svg>
-        </div>
-        <div>
-          <h3>87% das transferências sugeridas são ignoradas</h3>
-          <p>Anselmi aceita só <strong>13%</strong> das transferências propostas. Se a aceitação subir pra 50% (Pedidos: 35%), libera ~R$ 400K de produto travado em loja errada. Maior alavanca operacional do clone.</p>
-        </div>
-      </div>
-
-      <div class="insight good">
-        <div class="icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12C3 12 6 5 12 5C18 5 21 12 21 12C21 12 18 19 12 19C6 19 3 12 3 12Z"/><circle cx="12" cy="12" r="3"/></svg>
-        </div>
-        <div>
-          <h3>Estoque está mais novo (DV −22%)</h3>
-          <p>De <strong>60,7d para 47,4d</strong> de idade média. Reflete melhoria no fluxo de novidades + giro mais rápido em básicos. Continuar nessa direção comprime o tóxico naturalmente.</p>
-        </div>
-      </div>
+    <div class="insights" id="insights-container">
+      <!-- Renderizado dinamicamente pelo JS abaixo com base nos kpis reais -->
     </div>
   </div>
 
 </div>
 
 <script>
+// === Insights dinâmicos: gera 4 cards baseado nos KPIs reais ===
+function renderInsights(k, os) {
+  const container = document.getElementById('insights-container');
+  if (!container) return;
+  const insights = [];
+
+  const fmtPct = p => (p == null ? '—' : (p > 0 ? '+' : '') + p.toFixed(1).replace('.',',') + '%');
+  const fmtBRL = n => n == null ? '—' : (Math.abs(n) >= 1e6 ? 'R$ ' + (n/1e6).toFixed(2).replace('.',',') + 'M' : 'R$ ' + (n/1e3).toFixed(0) + 'K');
+  const fmtN = n => n == null ? '—' : n.toLocaleString('pt-BR');
+
+  // 1. YoY vendas vs margem
+  if (k.yearOverYear && k.yearOverYear.available) {
+    const valPct = k.yearOverYear.yoy.valuePct;
+    if (valPct != null) {
+      const isGood = valPct >= 0;
+      insights.push({
+        type: isGood ? 'good' : 'alert',
+        icon: '<path d="M3 17L9 11L13 15L21 7"/>',
+        title: isGood ? `Vendas crescendo ${fmtPct(valPct)} YoY` : `Vendas em queda ${fmtPct(valPct)} YoY`,
+        body: `Ano atual <strong>${fmtBRL(k.yearOverYear.currentYear.value)}</strong> vs ano anterior <strong>${fmtBRL(k.yearOverYear.previousYear.value)}</strong> (mesma janela). Margem bruta estimada em ${(k.marginYTD?.pct || 55).toFixed(0)}% sobre vendas — Anselmi mantém o markup.`,
+      });
+    }
+  }
+
+  // 2. Overstock
+  if (os && os.overstockPct != null) {
+    const pct = os.overstockPct;
+    const isAlert = pct >= 50;
+    insights.push({
+      type: isAlert ? 'alert' : 'warn',
+      icon: '<path d="M12 9V14"/><path d="M12 17.5V18"/><path d="M10.29 3.86L1.82 18A2 2 0 003.55 21H20.45A2 2 0 0022.18 18L13.71 3.86A2 2 0 0010.29 3.86Z"/>',
+      title: `${pct.toFixed(1).replace('.',',')}% do estoque está em excesso`,
+      body: `${fmtN(os.totalStockUnits)} unidades em estoque · <strong>${fmtN(os.overstockUnits)}</strong> classificadas como excedente acima do ideal. ${k.inventoryAtCost?.value ? 'Total imobilizado ' + fmtBRL(k.inventoryAtCost.value) + ' ao custo.' : ''}`,
+    });
+  }
+
+  // 3. Aceitação transferências
+  if (k.transferAcceptance && k.transferAcceptance.pct != null) {
+    const pct = k.transferAcceptance.pct;
+    const lost = 100 - pct;
+    insights.push({
+      type: 'warn',
+      icon: '<path d="M7 10L17 10"/><path d="M14 7L17 10L14 13"/><path d="M17 14L7 14"/><path d="M10 11L7 14L10 17"/>',
+      title: `${lost.toFixed(0)}% das transferências sugeridas não são executadas`,
+      body: `Apenas <strong>${pct.toFixed(0)}%</strong> das transferências sugeridas viram movimentação real (${fmtN(k.transferAcceptance.executedCount || 0)} em 90d vs ${fmtN(k.transferAcceptance.pendingCount || 0)} pendentes). Aumentar essa taxa libera produto travado em loja errada.`,
+    });
+  }
+
+  // 4. Markdown YoY
+  if (k.markdownRate && k.markdownRate.current != null && k.markdownRate.previous != null) {
+    const cur = k.markdownRate.current * 100;
+    const prev = k.markdownRate.previous * 100;
+    const delta = cur - prev;
+    const isGood = delta < 0; // menos desconto = melhor
+    insights.push({
+      type: isGood ? 'good' : 'alert',
+      icon: '<path d="M3 12C3 12 6 5 12 5C18 5 21 12 21 12C21 12 18 19 12 19C6 19 3 12 3 12Z"/><circle cx="12" cy="12" r="3"/>',
+      title: isGood ? `Markdown caiu ${(-delta).toFixed(1).replace('.',',')} pp YoY` : `Markdown subiu ${delta.toFixed(1).replace('.',',')} pp YoY`,
+      body: `<strong>${cur.toFixed(2).replace('.',',')}%</strong> das vendas R$ via outlet (era <strong>${prev.toFixed(2).replace('.',',')}%</strong>). ${isGood ? 'Menor desconto = mais venda no preço cheio = melhor margem.' : 'Mais venda com desconto pode indicar excesso de estoque sendo escoado.'}`,
+    });
+  }
+
+  // 5. Best seller (se disponível, substitui se não tiver dado suficiente acima)
+  if (k.bestSellers && k.bestSellers.items && k.bestSellers.items.length > 0 && insights.length < 4) {
+    const top = k.bestSellers.items[0];
+    insights.push({
+      type: 'good',
+      icon: '<path d="M12 2L15 8L21 9L17 14L18 20L12 17L6 20L7 14L3 9L9 8L12 2Z"/>',
+      title: `Top SKU YTD: ${top.sku || top.root}`,
+      body: `<strong>${fmtBRL(top.revenue)}</strong> em receita · ${fmtN(top.qty)} unidades. Cross-sell mais forte: ${top.crossSell?.[0]?.sku || '—'} (${top.crossSell?.[0]?.coTicketsPct.toFixed(0)}% co-tickets).`,
+    });
+  }
+
+  // Render
+  container.innerHTML = insights.slice(0, 4).map(ins => `
+    <div class="insight ${ins.type === 'good' ? 'good' : ins.type === 'alert' ? 'alert' : ''}">
+      <div class="icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${ins.icon}</svg>
+      </div>
+      <div>
+        <h3>${ins.title}</h3>
+        <p>${ins.body}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
 // === Caminho B: pipeline anselmi-pcp/data/volution/executive-report.json.gz ===
 (async () => {
   if (typeof RoiDataLoader === 'undefined') return;
@@ -915,6 +964,9 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
         noteEl.textContent = 'Série mensal real do pipeline · ' + series.length + ' meses.';
       }
     }
+
+    // ===== INSIGHTS DINÂMICOS — gerados com base nos kpis reais =====
+    renderInsights(k, os);
 
     console.log('[centro-empresa] KPIs reais carregados:', { kpis: k, overstock: os });
   } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; console.warn('[centro-empresa]', e); }
