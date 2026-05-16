@@ -695,7 +695,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     }
 
     // ===== ACCEPTANCE BARS =====
-    // Pipeline só tem transferAcceptance (uma das 3). Pedidos e Excesso ficam mock.
+    // Transferências: pct reconciliado via stock_mov vs storepending (issue #3).
+    // Pedidos e Excesso: pipeline retorna null — sem fonte de execução real.
     const ta = k.transferAcceptance;
     if (ta && ta.pct != null) {
       const pct = ta.pct;
@@ -703,19 +704,38 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
       const pctEl = document.getElementById('accept-transferencias-pct');
       if (fillEl) fillEl.style.width = Math.max(2, pct) + '%';
       if (pctEl) pctEl.textContent = pct.toFixed(0) + '%';
-      // Atualiza nota com contexto real
       const note = document.getElementById('accept-note');
-      if (note && ta.totalSuggestions) {
-        const acc = ta.accepted || 0;
-        if (acc === 0) {
-          note.innerHTML = '<strong>' + fmtN(ta.totalSuggestions) + '</strong> sugestões de transferência geradas · <strong>0 aceitas</strong> até agora. Aceitação ainda não está sendo capturada — métrica fica em 0% até o fluxo de feedback ser conectado.';
+      if (note) {
+        if (ta.executedCount > 0) {
+          note.innerHTML = '<strong>' + fmtN(ta.executedCount) + '</strong> transferências executadas (90d, ' + fmtN(ta.executedQty) + ' un) vs <strong>' + fmtN(ta.pendingCount) + '</strong> pendentes (' + fmtN(ta.pendingQty) + ' un). Proxy de aceitação via stock_mov_roi · ROI Volution canônico mostra 13%.';
         } else {
-          note.innerHTML = '<strong>' + fmtN(acc) + '/' + fmtN(ta.totalSuggestions) + '</strong> transferências aceitas. Subir aceitação é a maior alavanca operacional do clone.';
+          note.innerHTML = '<strong>' + fmtN(ta.totalSuggestions) + '</strong> sugestões totais · <strong>0 executadas</strong> nos últimos 90d.';
         }
       }
     }
-    markMock('accept-pedidos-pct');
-    markMock('accept-excesso-pct');
+
+    // Pedidos: pipeline tem contexto (totalSuggestedQty) mas pct null
+    const oa = k.orderAcceptance;
+    if (oa && oa.totalSuggestedQty != null) {
+      const pctEl = document.getElementById('accept-pedidos-pct');
+      if (pctEl) pctEl.textContent = '—';
+      // Adiciona tooltip explicando
+      if (pctEl) pctEl.title = oa.note || 'aguardando fonte de execução real';
+      pctEl.style.color = 'var(--ink-4)';
+    } else {
+      markMock('accept-pedidos-pct');
+    }
+
+    // Excesso: pipeline tem contexto mas pct null
+    const oxa = k.overstockAcceptance;
+    if (oxa && oxa.skuCountWithOverstock != null) {
+      const pctEl = document.getElementById('accept-excesso-pct');
+      if (pctEl) pctEl.textContent = '—';
+      if (pctEl) pctEl.title = oxa.note || 'aguardando fonte de execução real';
+      pctEl.style.color = 'var(--ink-4)';
+    } else {
+      markMock('accept-excesso-pct');
+    }
 
     // ===== INDICADORES YoY (5 widgets separados — paridade com ROI) =====
     // GMROII current
