@@ -338,6 +338,28 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   </div>
 
   <!-- ===== ACELERAÇÃO (vazio) ===== -->
+  <!-- ===== SELLTHROUGH BAIXO ===== -->
+  <div class="alert-section warn" id="sec-sellthrough">
+    <div class="alert-section-head" onclick="toggleSection('sellthrough')">
+      <div class="ttl">
+        <span class="arr">▶</span>
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17L9 11L13 15L21 7"/><path d="M21 7L21 13"/><path d="M21 7L15 7"/></svg></div>
+        <div>
+          <div class="nm">Sell-through baixo</div>
+          <div class="desc-line">SKUs com giro &lt; 10% do estoque — stagnantes</div>
+        </div>
+      </div>
+      <span class="badge" id="badge-sellthrough">0 alertas</span>
+      <span class="impacto" id="impacto-sellthrough">giro lento</span>
+    </div>
+    <div class="alert-section-body">
+      <table class="atable" id="tbl-sellthrough">
+        <thead><tr><th></th><th>SKU</th><th class="num">Sell-through</th><th class="num">Estoque</th><th class="num">Vendas</th><th>Mensagem</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- ===== EXCESSO SEVERO ===== -->
   <div class="alert-section warn" id="sec-overstock">
     <div class="alert-section-head" onclick="toggleSection('overstock')">
@@ -658,6 +680,13 @@ window.addEventListener('DOMContentLoaded', () => {
     const retardamento = result.rows.filter(r => r.type === 'late_reception' || r.type === 'critical_coverage').map(mapAlert).slice(0, 200);
     const overstock    = result.rows.filter(r => r.type === 'severe_overstock').map(mapAlert).slice(0, 200);
     const aceleracao   = result.rows.filter(r => r.type === 'velocity_outlier').map(mapAlert).slice(0, 200);
+    const sellthrough  = result.rows.filter(r => r.type === 'low_selltrough').map(r => ({
+      sku: r.rootProductCode, cat: r.rootProductName || 'GERAL',
+      selltrough: (r.evidence || {}).selltrough || 0,
+      stock: (r.evidence || {}).actualStock || 0,
+      sales: (r.evidence || {}).totalSales || 0,
+      msg: r.message || '',
+    })).slice(0, 200);
 
     SEM_VENDAS.length = 0;    semVendas.forEach(x => SEM_VENDAS.push(x));
     DADOS_BASE.length = 0;    dadosBase.forEach(x => DADOS_BASE.push(x));
@@ -672,9 +701,34 @@ window.addEventListener('DOMContentLoaded', () => {
     if (typeof renderDadosBase === 'function')   renderDadosBase();
     if (typeof renderRetardamento === 'function') renderRetardamento();
 
-    // Render overstock + aceleração (não havia render functions, fazemos inline)
+    // Render overstock + aceleração + sellthrough (sem render functions, inline)
     renderOverstock(overstock);
     renderAceleracao(aceleracao);
+    renderSellthrough(sellthrough);
+
+    function renderSellthrough(items) {
+      const tbody = document.querySelector('#tbl-sellthrough tbody');
+      const badge = document.getElementById('badge-sellthrough');
+      const impacto = document.getElementById('impacto-sellthrough');
+      if (!tbody) return;
+      const fullTotal = result.rows.filter(r => r.type === 'low_selltrough').length;
+      badge.textContent = fullTotal + ' alertas' + (fullTotal > items.length ? ' (top ' + items.length + ')' : '');
+      const totalStuck = items.reduce((s, x) => s + (x.stock || 0), 0);
+      impacto.textContent = totalStuck > 0 ? totalStuck.toLocaleString('pt-BR') + ' un travadas' : 'giro lento';
+      tbody.innerHTML = items.map(x => {
+        const photo = window.FotoResolver && window.FotoResolver.getFoto(x.sku);
+        const thumb = photo ? `<div class="thumb"><img src="${photo}" alt="${x.sku}" onerror="this.style.display='none'"></div>` : '<div class="thumb"></div>';
+        const stPct = (x.selltrough * 100).toFixed(1).replace('.',',') + '%';
+        return `<tr>
+          <td>${thumb}</td>
+          <td class="dim"><span class="ref">${x.sku||''}</span><br>${x.cat||''}</td>
+          <td class="num"><span class="neg">${stPct}</span></td>
+          <td class="num">${Number(x.stock).toLocaleString('pt-BR')}</td>
+          <td class="num">${Number(x.sales).toLocaleString('pt-BR')}</td>
+          <td style="font-size:11px;color:var(--ink-3)">${x.msg||''}</td>
+        </tr>`;
+      }).join('');
+    }
 
     function renderOverstock(items) {
       const tbody = document.querySelector('#tbl-overstock tbody');
