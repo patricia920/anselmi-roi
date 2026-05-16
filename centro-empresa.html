@@ -132,10 +132,42 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .insight p{font-size:11px;color:var(--ink-3);line-height:1.5;margin:0}
 .insight strong{color:var(--ink)}
 
+/* Eficiência donut hero (score atual vs referência) */
+.eff-hero{display:grid;grid-template-columns:auto 1fr;gap:var(--sp-5);align-items:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-4) var(--sp-5);margin-bottom:var(--sp-3)}
+.eff-hero-donut{position:relative;width:120px;height:120px;flex-shrink:0}
+.eff-hero-donut .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.eff-hero-donut .center .v{font-family:Lora,Georgia,serif;font-weight:500;font-size:28px;color:var(--musgo);line-height:1}
+.eff-hero-donut .center .l{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-4);margin-top:2px}
+.eff-hero-info .label{font-size:var(--fs-10);text-transform:uppercase;letter-spacing:.12em;color:var(--ink-4);margin-bottom:4px}
+.eff-hero-info .title{font-family:Lora,Georgia,serif;font-size:var(--fs-18);color:var(--ink);margin-bottom:6px;font-weight:500}
+.eff-hero-info .desc{font-size:var(--fs-12);color:var(--ink-3);line-height:1.5}
+.eff-hero-info .ref{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:11px;color:var(--ink-3)}
+.eff-hero-info .ref .dot{width:8px;height:8px;border-radius:50%;background:var(--bordo);display:inline-block}
+
+/* Bar chart de aceitação 12 meses */
+.history-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-4) var(--sp-5);margin-top:var(--sp-3)}
+.history-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:var(--sp-4);gap:var(--sp-3);flex-wrap:wrap}
+.history-title{font-family:Lora,Georgia,serif;font-size:var(--fs-15);color:var(--ink);font-weight:500}
+.history-legend{display:flex;gap:var(--sp-3);font-size:var(--fs-12);color:var(--ink-3)}
+.history-legend .item{display:inline-flex;align-items:center;gap:5px}
+.history-legend .swatch{width:10px;height:10px;border-radius:2px;display:inline-block}
+.history-chart{position:relative;height:180px;display:flex;align-items:flex-end;gap:2%;padding:0 var(--sp-2);border-bottom:1px solid var(--line-2)}
+.history-chart .month{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;position:relative}
+.history-chart .month .bars{display:flex;gap:2px;align-items:flex-end;height:100%;width:100%;justify-content:center}
+.history-chart .month .bar{width:30%;min-width:6px;background:var(--musgo);border-radius:2px 2px 0 0;transition:opacity .15s}
+.history-chart .month .bar.b2{background:var(--bordo)}
+.history-chart .month .bar.b3{background:var(--ambar)}
+.history-chart .month:hover .bar{opacity:.7}
+.history-x{display:flex;gap:2%;padding:6px var(--sp-2) 0}
+.history-x .label{flex:1;text-align:center;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+.history-note{margin-top:var(--sp-3);font-size:11px;color:var(--ink-3);line-height:1.5;border-top:1px solid var(--paper-2);padding-top:var(--sp-3)}
+
 @media (max-width:1100px){
   .hero{grid-template-columns:1fr}
   .special-grid{grid-template-columns:1fr}
   .insights{grid-template-columns:1fr}
+  .eff-hero{grid-template-columns:1fr;text-align:center}
+  .eff-hero-donut{margin:0 auto}
 }
 @media (max-width:760px){
   .hdr{flex-wrap:wrap}
@@ -222,37 +254,66 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   <!-- ===== EFICIÊNCIA DO ESTOQUE ===== -->
   <div class="dash-section">
     <h2 class="dash-section-title">Eficiência do estoque</h2>
+
+    <!-- Donut score (Frente 4: aguardando pipeline calcular score composto) -->
+    <div class="eff-hero">
+      <div class="eff-hero-donut">
+        <svg viewBox="0 0 120 120" style="width:100%;height:100%">
+          <circle cx="60" cy="60" r="44" fill="none" stroke="#e6e9db" stroke-width="14"/>
+          <!-- arco do score atual (54% por default) -->
+          <circle id="eff-arc-current" cx="60" cy="60" r="44" fill="none" stroke="#4a5d3a" stroke-width="14"
+            stroke-dasharray="149.3 276.5" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+          <!-- marcador da referência (59%) -->
+          <circle id="eff-arc-ref" cx="60" cy="60" r="44" fill="none" stroke="#6b1f2a" stroke-width="14"
+            stroke-dasharray="3 276.5" stroke-dashoffset="-163.1" transform="rotate(-90 60 60)"/>
+        </svg>
+        <div class="center">
+          <div class="v" id="eff-score-current">54%</div>
+          <div class="l">Eficiência</div>
+        </div>
+      </div>
+      <div class="eff-hero-info">
+        <div class="label">Score composto</div>
+        <div class="title">Eficiência operacional do estoque</div>
+        <div class="desc">Indicador agregado que combina GMROII, giro e idade do estoque em um único score.</div>
+        <div class="ref">
+          <span class="dot"></span>
+          Referência setor: <strong id="eff-score-ref">59%</strong> · gap atual <strong id="eff-score-gap">−5pp</strong>
+        </div>
+      </div>
+    </div>
+
     <div class="kpi-grid">
       <div class="kpi-card">
         <div class="lbl">GMROII <span class="help" title="Gross Margin Return on Inventory Investment — margem bruta dividida pelo custo médio do estoque. Acima de 100% = ganhar mais margem que o capital imobilizado.">i</span></div>
-        <div class="v">105,08%</div>
+        <div class="v" id="kpi-gmroii">105,08%</div>
         <div class="compare">
-          <div>vs <span class="v-prev">94,51%</span> ano anterior</div>
-          <div class="delta">+11,1pp</div>
+          <div>vs <span class="v-prev" id="kpi-gmroii-prev">94,51%</span> ano anterior</div>
+          <div class="delta" id="kpi-gmroii-delta">+11,1pp</div>
         </div>
       </div>
       <div class="kpi-card">
         <div class="lbl">DV — Days of Visibility <span class="help" title="Idade média do estoque em dias. Menor = estoque mais novo.">i</span></div>
-        <div class="v">47,4 dias</div>
+        <div class="v" id="kpi-dv">47,4 dias</div>
         <div class="compare">
-          <div>vs <span class="v-prev">60,7 dias</span> ano anterior</div>
-          <div class="delta">−22,0%</div>
+          <div>vs <span class="v-prev" id="kpi-dv-prev">60,7 dias</span> ano anterior</div>
+          <div class="delta" id="kpi-dv-delta">−22,0%</div>
         </div>
       </div>
       <div class="kpi-card">
         <div class="lbl">Giro anual <span class="help" title="Vendas R$ ÷ Estoque médio R$. Quantas vezes o estoque rodou no ano.">i</span></div>
-        <div class="v">2,05</div>
+        <div class="v" id="kpi-giro">2,05</div>
         <div class="compare">
-          <div>vs <span class="v-prev">2,06</span> ano anterior</div>
-          <div class="delta neg">−0,5%</div>
+          <div>vs <span class="v-prev" id="kpi-giro-prev">2,06</span> ano anterior</div>
+          <div class="delta neg" id="kpi-giro-delta">−0,5%</div>
         </div>
       </div>
       <div class="kpi-card">
         <div class="lbl">Estoque ao custo</div>
-        <div class="v">R$ 35,07M</div>
+        <div class="v" id="kpi-estoque-custo">R$ 35,07M</div>
         <div class="compare">
-          <div>vs <span class="v-prev">R$ 24,68M</span> ano anterior</div>
-          <div class="delta neg">+42,1%</div>
+          <div>vs <span class="v-prev" id="kpi-estoque-custo-prev">R$ 24,68M</span> ano anterior</div>
+          <div class="delta neg" id="kpi-estoque-custo-delta">+42,1%</div>
         </div>
       </div>
     </div>
@@ -270,22 +331,20 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
           <div class="donut-svg">
             <svg viewBox="0 0 140 140" style="width:100%;height:100%">
               <circle cx="70" cy="70" r="50" fill="none" stroke="#e6e9db" stroke-width="20"/>
-              <!-- Excesso (55K / 122K = 45%) -->
-              <circle cx="70" cy="70" r="50" fill="none" stroke="#a86d1f" stroke-width="20"
+              <circle id="overstock-arc-excedente" cx="70" cy="70" r="50" fill="none" stroke="#a86d1f" stroke-width="20"
                 stroke-dasharray="141.4 314" stroke-dashoffset="0" transform="rotate(-90 70 70)"/>
-              <!-- Ideal (67K / 122K = 55%) -->
-              <circle cx="70" cy="70" r="50" fill="none" stroke="#4a5d3a" stroke-width="20"
+              <circle id="overstock-arc-ideal" cx="70" cy="70" r="50" fill="none" stroke="#4a5d3a" stroke-width="20"
                 stroke-dasharray="172.6 314" stroke-dashoffset="-141.4" transform="rotate(-90 70 70)"/>
             </svg>
             <div class="donut-center">
-              <div class="pct">55K</div>
+              <div class="pct" id="overstock-pct">55K</div>
               <div class="lbl">excedente</div>
             </div>
           </div>
           <div class="donut-info">
-            <div class="row"><span><span style="display:inline-block;width:8px;height:8px;background:var(--ambar);border-radius:2px;margin-right:5px"></span>Excedente</span><span class="v">55K unid</span></div>
-            <div class="row"><span><span style="display:inline-block;width:8px;height:8px;background:var(--musgo);border-radius:2px;margin-right:5px"></span>Estoque ideal</span><span class="v">67K unid</span></div>
-            <div class="row" style="padding-top:6px;border-top:1px solid var(--paper-2);margin-top:4px"><span>Estoque atual</span><span class="v">122K unid</span></div>
+            <div class="row"><span><span style="display:inline-block;width:8px;height:8px;background:var(--ambar);border-radius:2px;margin-right:5px"></span>Excedente</span><span class="v" id="overstock-excedente">55K unid</span></div>
+            <div class="row"><span><span style="display:inline-block;width:8px;height:8px;background:var(--musgo);border-radius:2px;margin-right:5px"></span>Estoque ideal</span><span class="v" id="overstock-ideal">67K unid</span></div>
+            <div class="row" style="padding-top:6px;border-top:1px solid var(--paper-2);margin-top:4px"><span>Estoque atual</span><span class="v" id="overstock-total">122K unid</span></div>
           </div>
         </div>
       </div>
@@ -296,21 +355,21 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
         <div class="accept-bars">
           <div class="accept-row">
             <span class="name">Pedidos</span>
-            <div class="bar"><div class="fill" style="width:35%"></div></div>
-            <span class="pct-val">35%</span>
+            <div class="bar"><div class="fill" id="accept-pedidos-fill" style="width:35%"></div></div>
+            <span class="pct-val" id="accept-pedidos-pct">35%</span>
           </div>
           <div class="accept-row">
             <span class="name">Transferências</span>
-            <div class="bar"><div class="fill alert" style="width:13%"></div></div>
-            <span class="pct-val">13%</span>
+            <div class="bar"><div class="fill alert" id="accept-transferencias-fill" style="width:13%"></div></div>
+            <span class="pct-val" id="accept-transferencias-pct">13%</span>
           </div>
           <div class="accept-row">
             <span class="name">Excesso de reposição</span>
-            <div class="bar"><div class="fill" style="width:60%"></div></div>
-            <span class="pct-val">60%</span>
+            <div class="bar"><div class="fill" id="accept-excesso-fill" style="width:60%"></div></div>
+            <span class="pct-val" id="accept-excesso-pct">60%</span>
           </div>
         </div>
-        <p style="margin-top:var(--sp-3);font-size:11px;color:var(--ink-3);line-height:1.5;border-top:1px solid var(--paper-2);padding-top:var(--sp-3)">Transferências têm a menor aceitação — <strong>oportunidade de R$ 1,08M</strong> em produto certo no lugar errado.</p>
+        <p id="accept-note" style="margin-top:var(--sp-3);font-size:11px;color:var(--ink-3);line-height:1.5;border-top:1px solid var(--paper-2);padding-top:var(--sp-3)">Transferências têm a menor aceitação — <strong>oportunidade de R$ 1,08M</strong> em produto certo no lugar errado.</p>
       </div>
 
       <!-- Vendas perdidas -->
@@ -321,6 +380,21 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
         <div class="lost-context">Esse valor é capturado pelo motor a partir da Ruptura iminente do Reabastecimento. Cada unidade tem preço médio de venda <strong>R$ 76,63</strong>.</div>
       </div>
 
+    </div>
+
+    <!-- Histórico 12 meses de aceitação (Frente 2: aguardando série temporal no pipeline) -->
+    <div class="history-card">
+      <div class="history-head">
+        <div class="history-title">Aceitação das sugestões — últimos 12 meses</div>
+        <div class="history-legend">
+          <div class="item"><span class="swatch" style="background:var(--musgo)"></span>Pedidos</div>
+          <div class="item"><span class="swatch" style="background:var(--bordo)"></span>Transferências</div>
+          <div class="item"><span class="swatch" style="background:var(--ambar)"></span>Excesso de reposição</div>
+        </div>
+      </div>
+      <div class="history-chart" id="history-chart"></div>
+      <div class="history-x" id="history-x"></div>
+      <div class="history-note" id="history-note">Aguardando série temporal no pipeline (<code>executive-report.json.gz · kpis.acceptanceHistory[]</code>). Render mostrando placeholder com valores médios do snapshot atual.</div>
     </div>
   </div>
 
@@ -386,15 +460,47 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     if (!result.ok || !result.data || !result.data.kpis) return;
 
     const k = result.data.kpis;
+    const os = result.data.overstock || null;
+
+    // ===== Helpers =====
     const fmtBRL = (n) => {
       if (n == null) return '—';
       if (Math.abs(n) >= 1e6) return 'R$ ' + (n/1e6).toFixed(2).replace('.',',') + 'M';
-      if (Math.abs(n) >= 100e3) return 'R$ ' + (n/1e3).toFixed(0) + 'K';  // só usa K acima de R$ 100k
+      if (Math.abs(n) >= 100e3) return 'R$ ' + (n/1e3).toFixed(0) + 'K';
       return 'R$ ' + n.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     };
     const fmtN = (n) => n == null ? '—' : n.toLocaleString('pt-BR');
+    const fmtK = (n) => {
+      if (n == null) return '—';
+      if (Math.abs(n) >= 1e6) return (n/1e6).toFixed(1).replace('.',',') + 'M';
+      if (Math.abs(n) >= 1e3) return Math.round(n/1e3) + 'K';
+      return String(n);
+    };
+    const fmtPct = (p, decimals) => {
+      if (p == null) return '—';
+      const d = decimals == null ? 1 : decimals;
+      return (p > 0 ? '+' : '') + p.toFixed(d).replace('.',',') + '%';
+    };
     const setText = (id, txt) => { const e = document.getElementById(id); if (e) e.textContent = txt; };
+    const setNA = (id, reason) => {
+      const e = document.getElementById(id);
+      if (!e) return;
+      e.textContent = '—';
+      e.title = reason;
+      e.style.color = 'var(--ink-4)';
+    };
+    const markMock = (id) => {
+      const e = document.getElementById(id);
+      if (!e || e.dataset.mockMarked) return;
+      e.dataset.mockMarked = '1';
+      const tag = document.createElement('span');
+      tag.textContent = 'mock';
+      tag.style.cssText = 'display:inline-block;font:600 8px/1 Inter,sans-serif;text-transform:uppercase;letter-spacing:.08em;color:var(--ambar);background:var(--ambar-bg);padding:2px 4px;border-radius:3px;margin-left:6px;vertical-align:middle';
+      tag.title = 'Valor ainda hardcoded — pipeline upstream não exporta esse campo';
+      e.appendChild(tag);
+    };
 
+    // ===== HERO: vendas / margem / tickets =====
     setText('kpi-vendas-anualizadas', fmtBRL(k.salesYTD.valueAnnualized));
     setText('kpi-vendas-ytd', fmtBRL(k.salesYTD.value));
     setText('kpi-vendas-ytd-meta', fmtN(k.salesYTD.qty) + ' unid · ' + fmtN(k.salesYTD.transactions) + ' tickets');
@@ -405,24 +511,192 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
       setText('kpi-lost-sales-qty', fmtN(k.lostSales.qtyEstimate) + ' unidades não vendidas (sem preço médio confiável)');
     }
 
-    // YoY real (Oracle vw_giro_venda) — substitui +27,9% / +59,4% hardcoded
+    // ===== YoY (Oracle vw_giro_venda) — pode não estar no payload =====
     const yoy = k.yearOverYear;
     if (yoy && yoy.available) {
       const valPct = yoy.yoy.valuePct;
       const qtyPct = yoy.yoy.qtyPct;
-      const fmtPct = p => (p == null ? '—' : (p > 0 ? '+' : '') + p.toFixed(1).replace('.',',') + '%');
       setText('kpi-yoy-valor', fmtPct(valPct));
       setText('kpi-yoy-qty', fmtPct(qtyPct));
       const cur = yoy.currentYear, prev = yoy.previousYear;
       setText('kpi-yoy-window', `${cur.year} vs ${prev.year} · jan→${cur.windowEnd.slice(5)}`);
-      // Cor: verde se positivo, bordo se negativo
       const valEl = document.getElementById('kpi-yoy-valor');
       const qtyEl = document.getElementById('kpi-yoy-qty');
       if (valEl) valEl.style.color = (valPct >= 0 ? 'var(--musgo)' : 'var(--bordo)');
       if (qtyEl) qtyEl.style.color = (qtyPct >= 0 ? 'var(--musgo)' : 'var(--bordo)');
+    } else {
+      // YoY não vem no JSON ainda — marca como mock
+      markMock('kpi-yoy-valor');
+      markMock('kpi-yoy-qty');
     }
 
-    console.log('[centro-empresa] KPIs reais carregados:', k);
+    // ===== EFICIÊNCIA =====
+    // GMROII (null no pipeline — requer unit_cost)
+    if (k.gmroii && k.gmroii.pct != null) {
+      setText('kpi-gmroii', fmtPct(k.gmroii.pct, 2).replace('+',''));
+    } else {
+      setNA('kpi-gmroii', (k.gmroii && k.gmroii.note) || 'Não disponível no pipeline ainda');
+      setNA('kpi-gmroii-prev', 'Histórico GMROII não disponível');
+      const d = document.getElementById('kpi-gmroii-delta');
+      if (d) { d.style.display = 'none'; }
+    }
+
+    // DV — Days of Visibility (pipeline expõe daysOfStock.days)
+    if (k.daysOfStock && k.daysOfStock.days != null) {
+      setText('kpi-dv', k.daysOfStock.days.toFixed(1).replace('.',',') + ' dias');
+      // valor anterior não vem no JSON ainda
+      markMock('kpi-dv-prev');
+      markMock('kpi-dv-delta');
+    } else {
+      setNA('kpi-dv', 'Não disponível');
+    }
+
+    // Giro (null no pipeline — requer valor monetário do estoque)
+    if (k.inventoryTurn && k.inventoryTurn.ratio != null) {
+      setText('kpi-giro', k.inventoryTurn.ratio.toFixed(2).replace('.',','));
+    } else {
+      setNA('kpi-giro', (k.inventoryTurn && k.inventoryTurn.note) || 'Não disponível no pipeline ainda');
+      setNA('kpi-giro-prev', 'Histórico não disponível');
+      const d = document.getElementById('kpi-giro-delta');
+      if (d) { d.style.display = 'none'; }
+    }
+
+    // Estoque ao custo — não está no JSON ainda
+    markMock('kpi-estoque-custo');
+    markMock('kpi-estoque-custo-prev');
+    markMock('kpi-estoque-custo-delta');
+
+    // ===== OVERSTOCK DONUT =====
+    if (os && os.totalStockUnits && os.overstockUnits != null) {
+      const total = os.totalStockUnits;
+      const excedente = os.overstockUnits;
+      const ideal = Math.max(0, total - excedente);
+      const C = 2 * Math.PI * 50; // circunferência ≈ 314.16
+      const excArc = (excedente / total) * C;
+      const idealArc = (ideal / total) * C;
+      const excArcEl = document.getElementById('overstock-arc-excedente');
+      const idealArcEl = document.getElementById('overstock-arc-ideal');
+      if (excArcEl) excArcEl.setAttribute('stroke-dasharray', excArc.toFixed(1) + ' ' + C.toFixed(1));
+      if (idealArcEl) {
+        idealArcEl.setAttribute('stroke-dasharray', idealArc.toFixed(1) + ' ' + C.toFixed(1));
+        idealArcEl.setAttribute('stroke-dashoffset', (-excArc).toFixed(1));
+      }
+      setText('overstock-pct', fmtK(excedente));
+      setText('overstock-excedente', fmtK(excedente) + ' unid');
+      setText('overstock-ideal', fmtK(ideal) + ' unid');
+      setText('overstock-total', fmtK(total) + ' unid');
+    }
+
+    // ===== ACCEPTANCE BARS =====
+    // Pipeline só tem transferAcceptance (uma das 3). Pedidos e Excesso ficam mock.
+    const ta = k.transferAcceptance;
+    if (ta && ta.pct != null) {
+      const pct = ta.pct;
+      const fillEl = document.getElementById('accept-transferencias-fill');
+      const pctEl = document.getElementById('accept-transferencias-pct');
+      if (fillEl) fillEl.style.width = Math.max(2, pct) + '%';
+      if (pctEl) pctEl.textContent = pct.toFixed(0) + '%';
+      // Atualiza nota com contexto real
+      const note = document.getElementById('accept-note');
+      if (note && ta.totalSuggestions) {
+        const acc = ta.accepted || 0;
+        if (acc === 0) {
+          note.innerHTML = '<strong>' + fmtN(ta.totalSuggestions) + '</strong> sugestões de transferência geradas · <strong>0 aceitas</strong> até agora. Aceitação ainda não está sendo capturada — métrica fica em 0% até o fluxo de feedback ser conectado.';
+        } else {
+          note.innerHTML = '<strong>' + fmtN(acc) + '/' + fmtN(ta.totalSuggestions) + '</strong> transferências aceitas. Subir aceitação é a maior alavanca operacional do clone.';
+        }
+      }
+    }
+    markMock('accept-pedidos-pct');
+    markMock('accept-excesso-pct');
+
+    // ===== EFICIÊNCIA — donut score composto (Frente 4) =====
+    // Schema esperado: k.efficiencyScore = { current: 0.54, reference: 0.59 }
+    const eff = k.efficiencyScore;
+    const C2 = 2 * Math.PI * 44; // circunferência do donut menor ≈ 276.46
+    if (eff && eff.current != null) {
+      const cur = eff.current * 100;
+      const ref = (eff.reference != null ? eff.reference : 0.59) * 100;
+      const curArc = (cur / 100) * C2;
+      const refMarker = 3; // largura do marcador da referência
+      const refOffset = -((ref / 100) * C2);
+      const curEl = document.getElementById('eff-arc-current');
+      const refEl = document.getElementById('eff-arc-ref');
+      if (curEl) curEl.setAttribute('stroke-dasharray', curArc.toFixed(1) + ' ' + C2.toFixed(1));
+      if (refEl) {
+        refEl.setAttribute('stroke-dasharray', refMarker + ' ' + C2.toFixed(1));
+        refEl.setAttribute('stroke-dashoffset', refOffset.toFixed(1));
+      }
+      setText('eff-score-current', Math.round(cur) + '%');
+      setText('eff-score-ref', Math.round(ref) + '%');
+      const gap = cur - ref;
+      setText('eff-score-gap', (gap >= 0 ? '+' : '') + gap.toFixed(0) + 'pp');
+    } else {
+      markMock('eff-score-current');
+      markMock('eff-score-ref');
+      markMock('eff-score-gap');
+    }
+
+    // ===== ACCEPTANCE HISTORY — 12 meses (Frente 2) =====
+    // Schema esperado: k.acceptanceHistory = [{ month: 'YYYY-MM', pedidos: 0.35, transferencias: 0.13, excesso: 0.60 }, ...]
+    const hist = k.acceptanceHistory;
+    const chartEl = document.getElementById('history-chart');
+    const xEl = document.getElementById('history-x');
+    const noteEl = document.getElementById('history-note');
+    if (!chartEl || !xEl) { /* skip render */ }
+    else {
+      let series, isMock = false;
+      if (Array.isArray(hist) && hist.length > 0) {
+        series = hist.slice(-12);
+      } else {
+        // Placeholder: 12 meses mock variando ao redor dos valores atuais
+        isMock = true;
+        const now = new Date();
+        const baseP = 0.35, baseT = 0.13, baseE = 0.60;
+        series = [];
+        for (let i = 11; i >= 0; i--) {
+          const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          const month = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+          // variação determinística (não-random) por índice pra parecer crível
+          const wave = Math.sin((11-i) * 0.7);
+          series.push({
+            month,
+            pedidos: Math.max(0, Math.min(1, baseP + wave * 0.08)),
+            transferencias: Math.max(0, Math.min(1, baseT + wave * 0.04)),
+            excesso: Math.max(0, Math.min(1, baseE + wave * 0.10))
+          });
+        }
+      }
+      const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+      chartEl.innerHTML = '';
+      xEl.innerHTML = '';
+      const maxVal = 1.0;
+      series.forEach(s => {
+        const mDiv = document.createElement('div');
+        mDiv.className = 'month';
+        const bars = document.createElement('div');
+        bars.className = 'bars';
+        const h1 = (s.pedidos / maxVal) * 100;
+        const h2 = (s.transferencias / maxVal) * 100;
+        const h3 = (s.excesso / maxVal) * 100;
+        bars.innerHTML =
+          '<div class="bar" style="height:' + h1.toFixed(1) + '%" title="Pedidos: ' + (s.pedidos*100).toFixed(0) + '%"></div>' +
+          '<div class="bar b2" style="height:' + h2.toFixed(1) + '%" title="Transferências: ' + (s.transferencias*100).toFixed(0) + '%"></div>' +
+          '<div class="bar b3" style="height:' + h3.toFixed(1) + '%" title="Excesso: ' + (s.excesso*100).toFixed(0) + '%"></div>';
+        mDiv.appendChild(bars);
+        chartEl.appendChild(mDiv);
+        const monthNum = parseInt(s.month.split('-')[1], 10);
+        const lDiv = document.createElement('div');
+        lDiv.className = 'label';
+        lDiv.textContent = meses[monthNum - 1] || s.month;
+        xEl.appendChild(lDiv);
+      });
+      if (!isMock && noteEl) {
+        noteEl.textContent = 'Série mensal real do pipeline · ' + series.length + ' meses.';
+      }
+    }
+
+    console.log('[centro-empresa] KPIs reais carregados:', { kpis: k, overstock: os });
   } catch (e) { badge.textContent = 'Modo demo · dados estáticos'; console.warn('[centro-empresa]', e); }
 })();
 </script>
