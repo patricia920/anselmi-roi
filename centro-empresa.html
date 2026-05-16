@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anselmi · Centro da empresa</title>
 <script src="lib/data-loader.js"></script>
+<script src="lib/foto-resolver.js"></script>
+<script src="lib/photo-frame.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
@@ -175,6 +177,24 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .history-x{display:flex;gap:2%;padding:6px var(--sp-2) 0}
 .history-x .label{flex:1;text-align:center;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
 .history-note{margin-top:var(--sp-3);font-size:11px;color:var(--ink-3);line-height:1.5;border-top:1px solid var(--paper-2);padding-top:var(--sp-3)}
+
+/* Top SKUs YTD — 3 cards horizontal com foto */
+.top-skus{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-3)}
+.top-sku-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-4);display:flex;gap:var(--sp-3);align-items:flex-start;box-shadow:var(--shadow-sm);transition:box-shadow .15s}
+.top-sku-card:hover{box-shadow:var(--shadow-md)}
+.top-sku-photo{flex-shrink:0;width:64px;aspect-ratio:3/4;background:#fff;border-radius:var(--r-sm);overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative}
+.top-sku-photo img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
+.top-sku-photo.off-ratio{background:linear-gradient(90deg,var(--brand-creme) 0,var(--brand-creme) 5px,#fff 5px,#fff 100%)}
+.top-sku-photo.empty{background:var(--paper-2);color:var(--ink-4);font-size:9px;font-style:italic;text-align:center}
+.top-sku-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.top-sku-rank{font-size:var(--fs-10);color:var(--ink-4);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.top-sku-sku{font-family:Lora,Georgia,serif;font-size:var(--fs-15);color:var(--ink);font-weight:500;line-height:1.1}
+.top-sku-cat{font-size:11px;color:var(--ink-3)}
+.top-sku-rev{font-family:Lora,Georgia,serif;font-weight:500;font-size:var(--fs-15);color:var(--brand-bordo);margin-top:auto}
+.top-sku-meta{font-size:10px;color:var(--ink-4)}
+@media (max-width:980px){
+  .top-skus{grid-template-columns:1fr}
+}
 
 @media (max-width:1100px){
   .hero{grid-template-columns:1fr}
@@ -491,6 +511,14 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     </div>
   </div>
 
+  <!-- ===== TOP SKUs YTD ===== -->
+  <div class="dash-section">
+    <h2 class="dash-section-title">Top SKUs YTD</h2>
+    <div class="top-skus" id="top-skus-container">
+      <!-- Renderizado dinamicamente pelo JS abaixo a partir de kpis.bestSellers -->
+    </div>
+  </div>
+
   <!-- ===== INSIGHTS ===== -->
   <div class="dash-section">
     <h2 class="dash-section-title">Pontos de atenção</h2>
@@ -502,6 +530,36 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 </div>
 
 <script>
+// === Top SKUs YTD — 3 cards com foto ===
+function renderTopSkus(k) {
+  const container = document.getElementById('top-skus-container');
+  if (!container) return;
+  const items = (k.bestSellers && k.bestSellers.items) || [];
+  if (items.length === 0) {
+    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--ink-4);font-style:italic">Sem dados de bestSellers no pipeline</div>';
+    return;
+  }
+  const fmtBRL = n => n == null ? '—' : (Math.abs(n) >= 1e6 ? 'R$ ' + (n/1e6).toFixed(2).replace('.',',') + 'M' : 'R$ ' + (n/1e3).toFixed(0) + 'K');
+  const fmtN = n => n == null ? '—' : n.toLocaleString('pt-BR');
+  container.innerHTML = items.slice(0, 3).map((item, i) => {
+    const sku = item.sku || item.root || '';
+    const photoUrl = window.FotoResolver && window.FotoResolver.getFoto(sku);
+    const photo = photoUrl
+      ? `<div class="top-sku-photo"><img src="${photoUrl}" alt="${sku}" onload="window.__checkRatio&&window.__checkRatio(this)" onerror="this.parentElement.classList.add('empty');this.style.display='none'"></div>`
+      : `<div class="top-sku-photo empty">sem foto</div>`;
+    return `<div class="top-sku-card">
+      ${photo}
+      <div class="top-sku-info">
+        <div class="top-sku-rank">#${i+1} TOP YTD</div>
+        <div class="top-sku-sku">${sku}</div>
+        <div class="top-sku-cat">ref ${item.root} · cor ${item.color || ''}</div>
+        <div class="top-sku-rev">${fmtBRL(item.revenue)}</div>
+        <div class="top-sku-meta">${fmtN(item.qty)} unidades · ${fmtN(item.ticketsWithItem)} tickets multi</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 // === Insights dinâmicos: gera 4 cards baseado nos KPIs reais ===
 function renderInsights(k, os) {
   const container = document.getElementById('insights-container');
@@ -597,7 +655,11 @@ function renderInsights(k, os) {
   badge.style.cssText = 'position:fixed;top:8px;right:12px;font:500 11px/1.2 Inter,sans-serif;color:#a86d1f;background:rgba(245,241,234,.92);padding:4px 10px;border-radius:99px;z-index:9999;letter-spacing:.02em;border:1px solid rgba(0,0,0,.06);';
   document.body.appendChild(badge);
   try {
-    const result = await RoiDataLoader.load('executive', { fallback: null });
+    // Carrega executive-report + banco de fotos em paralelo
+    const [result] = await Promise.all([
+      RoiDataLoader.load('executive', { fallback: null }),
+      window.FotoResolver ? window.FotoResolver.load().catch(() => null) : Promise.resolve(null),
+    ]);
     RoiDataLoader.syncBadge(badge, result);
     if (!result.ok || !result.data || !result.data.kpis) return;
 
@@ -964,6 +1026,9 @@ function renderInsights(k, os) {
         noteEl.textContent = 'Série mensal real do pipeline · ' + series.length + ' meses.';
       }
     }
+
+    // ===== TOP SKUs YTD — 3 cards com foto =====
+    renderTopSkus(k);
 
     // ===== INSIGHTS DINÂMICOS — gerados com base nos kpis reais =====
     renderInsights(k, os);
