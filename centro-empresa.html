@@ -587,11 +587,19 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
     setText('kpi-tickets', fmtN(k.salesYTD.transactions));
     setText('kpi-ticket-medio', fmtBRL(k.averageTicket.value));
     if (k.lostSales && k.lostSales.qtyEstimate) {
-      if (k.lostSales.valueEstimate != null && k.lostSales.valueEstimate > 0) {
-        setText('kpi-lost-sales', fmtBRL(k.lostSales.valueEstimate));
-        setText('kpi-lost-sales-qty', fmtN(k.lostSales.qtyEstimate) + ' unidades · ' + (k.lostSales.scope || ''));
+      // Prefere valor anualizado (compara com YoY do ROI Volution); fallback pro snapshot semanal
+      const val = k.lostSales.valueAnnualized != null && k.lostSales.valueAnnualized > 0
+        ? k.lostSales.valueAnnualized
+        : k.lostSales.valueEstimate;
+      const qty = k.lostSales.qtyAnnualized != null && k.lostSales.qtyAnnualized > 0
+        ? k.lostSales.qtyAnnualized
+        : k.lostSales.qtyEstimate;
+      const isAnnualized = k.lostSales.qtyAnnualized != null;
+      if (val && val > 0) {
+        setText('kpi-lost-sales', fmtBRL(val));
+        setText('kpi-lost-sales-qty', fmtN(qty) + ' unidades · ' + (isAnnualized ? 'projeção 52sem' : 'snapshot atual'));
       } else {
-        setText('kpi-lost-sales-qty', fmtN(k.lostSales.qtyEstimate) + ' unidades não vendidas');
+        setText('kpi-lost-sales-qty', fmtN(qty) + ' unidades não vendidas');
         markMock('kpi-lost-sales');
       }
     }
