@@ -119,44 +119,63 @@ with open(mv) as f:
 
 print(f'Fotos em MOA_VW_VITRINE: {len(fotos):,}')
 
-# ---------- 5) Aplica algoritmo de match ----------
+# ---------- 5) Aplica algoritmo de match (V3: permissivo + tier 4) ----------
 banco = collections.defaultdict(lambda: collections.defaultdict(list))
 pendencias = []
 stats = collections.Counter()
 
+def _norm_cor(c: str) -> str:
+    """Normaliza cor: '*04' → '004', 'C25' fica 'C25', '4' → '004'."""
+    s = c.strip()
+    if re.fullmatch(r'\*\d{2}', s):
+        return '0' + s[1:]
+    if re.fullmatch(r'\d{1,2}', s):
+        return s.zfill(3)
+    return s
+
 for ref, cor_file, url in fotos:
     s_set = sisplan.get(ref, set())
+    cor_norm = _norm_cor(cor_file)
 
-    if not s_set:
-        if not oracle.get(ref):
-            pendencias.append((ref, cor_file, url, 'ref_nao_existe'))
-            stats['ref_nao_existe'] += 1
-        else:
-            pendencias.append((ref, cor_file, url, 'so_oracle_sem_sisplan'))
-            stats['so_oracle_sem_sisplan'] += 1
-        continue
-
+    # TIER 1: match exato com Sisplan
     if cor_file in s_set:
         banco[ref][cor_file].append(url)
         stats['match_sisplan_direto'] += 1
         continue
 
+    # TIER 2: match normalizado (*04→004, etc) com Sisplan
+    if cor_norm in s_set:
+        banco[ref][cor_norm].append(url)
+        stats['match_normalizado'] += 1
+        continue
+
+    # TIER 3: match via ora_to_sis (mapeamento construído acima)
     if cor_file in ora_to_sis.get(ref, {}):
         cs = ora_to_sis[ref][cor_file]
         banco[ref][cs].append(url)
         stats['match_via_oracle'] += 1
         continue
 
-    if re.fullmatch(r'\*\d{2}', cor_file):
-        cand = '0' + cor_file[1:]
-        if cand in s_set:
-            banco[ref][cand].append(url)
-            stats['match_starrule_direto'] += 1
-            continue
+    # TIER 4 (NOVO): ref tem Sisplan mas cor não bate — registra com cor_file
+    # original (sem normalizar). Frontend usa fallback "qualquer cor da ref"
+    # mas a foto vira disponível pra buscas alternativas.
+    if s_set:
+        banco[ref][cor_file].append(url)
+        stats['match_cor_indireta'] += 1
+        continue
 
-    # Sem match
-    pendencias.append((ref, cor_file, url, f'sem_match (sis={sorted(s_set)[:3]})'))
-    stats['sem_match'] += 1
+    # TIER 5 (NOVO): ref não está no Sisplan mas existe na Oracle (giro).
+    # Aceita mesmo assim — produto pode estar ativo mesmo sem cadastro completo.
+    if oracle.get(ref):
+        banco[ref][cor_norm].append(url)
+        stats['match_so_oracle'] += 1
+        continue
+
+    # TIER 6 (NOVO): ref não está em nenhum dos catálogos. Aceita ainda assim
+    # porque a foto existe e PODE bater com algum SKU vendido. Frontend
+    # decide se mostra ou não.
+    banco[ref][cor_norm].append(url)
+    stats['match_orfa'] += 1
 
 # ---------- 6) Dedupe URLs ----------
 for ref in banco:
@@ -169,7 +188,7 @@ meta = {
     '_meta': {
         'fonte': 'moa_vw_vitrine (Sisplan via Oracle, sincronizado do anselmi-pcp)',
         'gerado_em': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
-        'algoritmo': 'cor_arquivo (MOA_VW_VITRINE) → color_sisplan via JOIN — TIER 1+2+3 + starrule',
+        'algoritmo': 'cor_arquivo (MOA_VW_VITRINE) → color_sisplan via JOIN — V3 permissivo (TIER 1-6: direto, normalizado, oracle, indireto, so-oracle, orfa)',
         'estatisticas': dict(stats),
         'fotos_processadas': sum(stats.values()),
         'refs_no_banco': len(banco),
