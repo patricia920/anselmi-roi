@@ -5939,10 +5939,43 @@ function updateAddPiece(i, field, val){
     _addPieces[i][field] = val.trim().toUpperCase();
   }
   if(field === 'ref'){
-    /* mudou ref: limpa cor (cores diferentes pra cada ref) e re-renderiza
-       pra atualizar o select de cores */
+    /* mudou ref: limpa cor + atualiza SÓ o select de cores e o preview da linha i,
+       SEM re-render total (destrói input atual e cursor pula). */
     _addPieces[i].cor = '';
-    renderAddPieces();
+    const row = document.querySelectorAll('.add-piece-row')[i];
+    if(row){
+      // Atualiza o <select> de cores
+      const cores = _coresParaRef(_addPieces[i].ref);
+      const comEstoque = cores.filter(c => c.qty > 0);
+      const semEstoque = cores.filter(c => !c.qty);
+      let corOptions = `<option value="">${cores.length ? 'Escolha…' : '— digite ref —'}</option>`;
+      if(comEstoque.length){
+        corOptions += '<optgroup label="Em estoque">';
+        corOptions += comEstoque.map(c => `<option value="${c.nome}">${c.nome} · ${c.qty} pç</option>`).join('');
+        corOptions += '</optgroup>';
+      }
+      if(semEstoque.length){
+        corOptions += '<optgroup label="Outras cores (com foto)">';
+        corOptions += semEstoque.map(c => `<option value="${c.nome}">${c.nome}</option>`).join('');
+        corOptions += '</optgroup>';
+      }
+      const corSelect = row.querySelector('select');
+      if(corSelect){
+        corSelect.innerHTML = corOptions;
+        corSelect.disabled = !_addPieces[i].ref;
+        corSelect.style.opacity = _addPieces[i].ref ? '' : '.5';
+      }
+      // Atualiza label "Cor (N c/ estoque)"
+      const corLabel = row.querySelectorAll('.lbl')[1];
+      if(corLabel){
+        corLabel.textContent = 'Cor' + (comEstoque.length ? ' ('+comEstoque.length+' c/ estoque)' : (cores.length ? ' ('+cores.length+')' : ''));
+      }
+      // Atualiza preview
+      const prev = row.querySelector('.preview');
+      const p = REF_INDEX[_addPieces[i].ref];
+      if(prev) prev.innerHTML = p ? pieceImage(p) : `<span style="color:var(--ink-4);font-size:18px">?</span>`;
+    }
+    validateAdd();
     return;
   }
   if(field === 'cor'){
