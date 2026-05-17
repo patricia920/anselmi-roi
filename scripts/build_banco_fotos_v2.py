@@ -88,14 +88,24 @@ for ref in (set(oracle) | set(sisplan)):
     ora_to_sis[ref] = pairs
 
 # ---------- 4) Lê MOA_VW_VITRINE como fonte de URLs ----------
-PHOTO_BASE = 'https://photo.anselmi.ind.br/cache/Fotos/'
+# URL canônica descoberta 17/05: https://photo.anselmi.ind.br/Fotos/{name}.jpg
+# (sem path /cache/ e sem sufixo _1024 — o CDN não tem versão escalada)
+# Cor em minúscula no filename: "11739_C25.jpg" → URL com "c25"
+PHOTO_BASE = 'https://photo.anselmi.ind.br/Fotos/'
 
 def make_url(filename):
-    """10541_01.jpg → https://photo.anselmi.ind.br/cache/Fotos/10541_01_1024.jpg"""
+    """11739_C25.jpg → https://photo.anselmi.ind.br/Fotos/11739_c25.jpg"""
     m = re.match(r'^(.+)\.(jpg|jpeg|png)$', filename, re.I)
     if not m: return None
     name, ext = m.groups()
-    return f'{PHOTO_BASE}{name}_1024.{ext.lower()}'
+    # Mantém prefixo numérico em maiúsculo, mas força cor (após último _) minúscula
+    parts = name.rsplit('_', 1)
+    if len(parts) == 2:
+        ref_part, cor_part = parts
+        name = f'{ref_part}_{cor_part.lower()}'
+    else:
+        name = name.lower()
+    return f'{PHOTO_BASE}{name}.{ext.lower()}'
 
 # Extrai código da cor: "*01 - COR UM" → "*01"
 def cor_code(cor_raw):
