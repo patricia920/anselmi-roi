@@ -1,0 +1,64 @@
+name: clean_banco_fotos
+
+# Limpa banco_fotos.json removendo URLs que retornam 404 no Zenphoto.
+# Trigger MANUAL — vai em Actions → "clean_banco_fotos" → "Run workflow".
+# Roda no GitHub-hosted runner (sem firewall corporativo), checa as ~42k URLs
+# em paralelo (~5-10 min), commita o JSON limpo + CSV das 4xx.
+#
+# Não inclui em cron: rodar só quando vier nota de "muitas fotos sumiram",
+# pra evitar regenerar com latência alta sem necessidade.
+
+on:
+  workflow_dispatch:
+    inputs:
+      workers:
+        description: "Workers paralelos (default 32)"
+        required: false
+        default: "32"
+      dry_run:
+        description: "Dry-run? (só relata, não regrava)"
+        type: boolean
+        default: false
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run check_banco_fotos_404
+        run: |
+          FLAGS="--workers ${{ inputs.workers }}"
+          if [ "${{ inputs.dry_run }}" = "true" ]; then FLAGS="$FLAGS --dry-run"; fi
+          python3 scripts/check_banco_fotos_404.py $FLAGS
+
+      - name: Commit + push (se não foi dry-run)
+        if: inputs.dry_run != true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet data/banco_fotos.json data/banco_fotos_404.csv 2>/dev/null; then
+            echo "Sem mudanças — nada a commitar."
+            exit 0
+          fi
+          git add data/banco_fotos.json data/banco_fotos_404.csv
+          git commit -m "chore(banco_fotos): limpa URLs 404 do Zenphoto
+
+          Workflow clean_banco_fotos · $(date -u +%Y-%m-%dT%H:%MZ)
+          "
+          git push
+
+      - name: Upload CSV como artifact (sempre)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: banco_fotos_404
+          path: data/banco_fotos_404.csv
+          if-no-files-found: warn
