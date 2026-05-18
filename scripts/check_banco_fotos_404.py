@@ -20,6 +20,7 @@ Dependências: só stdlib (urllib + concurrent.futures). Sem requirements.txt.
 
 Tempo esperado: ~5-10 min com 32 workers (depende latência photo.anselmi.ind.br).
 """
+from __future__ import annotations
 import argparse
 import csv
 import json
