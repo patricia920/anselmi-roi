@@ -4238,7 +4238,7 @@ async function loadDrillForLoja(cod){
   const status = document.getElementById('drill-loja-status');
   if(status) status.textContent = 'carregando...';
   try {
-    const res = await fetch(`../data/drills/${cod}.json`, {credentials:'omit'});
+    const res = await fetch(`../data/drills/${cod}.json`, {credentials:'same-origin'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
     // Converte JSON → ARARAS format
@@ -7642,7 +7642,7 @@ const _drillCache = {};
 async function _loadDrillData(cod){
   if(_drillCache[cod]) return _drillCache[cod];
   try {
-    const res = await fetch(`../data/drills/${cod}.json`, {credentials:'omit'});
+    const res = await fetch(`../data/drills/${cod}.json`, {credentials:'same-origin'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     _drillCache[cod] = await res.json();
     return _drillCache[cod];
