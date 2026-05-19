@@ -1,0 +1,201 @@
+name: sync_from_pcp
+
+# Sincroniza arquivos do repo privado patricia920/anselmi-pcp pro anselmi-roi.
+# Roda a cada 30 min e on-demand. Pega:
+#   • ved_varejo.js (root) — Sisplan publicado pelo bot
+#   • data/cores_plm.json — metadata de cor (hex/nome) usada pelo vm-loader
+#   • data/plantas/*      — JPG/PNG/SVG das plantas de loja
+#   • data/drills/*       — JSONs de drill por loja
+#
+# Fotos NÃO vêm daqui: o vm-loader usa lib/foto-resolver.js + data/banco_fotos.json
+# (que já vive no anselmi-roi, apontando pra photo.anselmi.ind.br).
+#
+# Pré-requisitos (uma vez):
+#   • Settings → Secrets → Actions do anselmi-roi:
+#       PCP_PAT  =  fine-grained PAT com Read access a Contents do anselmi-pcp
+#
+# Commit é feito por github-actions[bot] e dispara Cloudflare Pages deploy.
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'   # a cada 30 min
+  workflow_dispatch:          # botão manual
+  push:
+    paths:
+      - '.github/workflows/sync_from_pcp.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync_from_pcp
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout anselmi-roi
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Checkout anselmi-pcp (somente arquivos relevantes)
+        uses: actions/checkout@v4
+        with:
+          repository: patricia920/anselmi-pcp
+          token: ${{ secrets.PCP_PAT }}
+          path: _pcp
+          sparse-checkout: |
+            ved_varejo.js
+            data/cores_plm.json
+            data/plantas
+            data/drills
+            data/oracle/vw_giro_estoque.json
+            data/oracle/vw_giro_costura.json
+            data/oracle/vw_giro_venda.json.gz
+            data/oracle/moa_vw_vitrine.json
+            data/sisplan/vw_prod_info_roi.json
+          sparse-checkout-cone-mode: false
+          fetch-depth: 1
+
+      - name: Copiar arquivos
+        run: |
+          set -euo pipefail
+
+          # ved_varejo.js no root
+          if [ -f _pcp/ved_varejo.js ]; then
+            cp _pcp/ved_varejo.js ./ved_varejo.js
+            echo "✓ ved_varejo.js copiado ($(wc -c < ved_varejo.js) bytes)"
+          else
+            echo "⚠ ved_varejo.js não encontrado no anselmi-pcp"
+          fi
+
+          mkdir -p data data/plantas data/drills
+
+          # cores_plm.json — só sobrescreve se origem existe
+          if [ -f "_pcp/data/cores_plm.json" ]; then
+            cp "_pcp/data/cores_plm.json" "data/cores_plm.json"
+            echo "✓ data/cores_plm.json copiado ($(wc -c < data/cores_plm.json) bytes)"
+          else
+            echo "⚠ data/cores_plm.json não encontrado no anselmi-pcp"
+          fi
+
+          # Dumps Oracle/Sisplan pra build_banco_fotos_v2.py
+          mkdir -p data/oracle data/sisplan
+          for f in \
+            oracle/vw_giro_estoque.json \
+            oracle/vw_giro_costura.json \
+            oracle/vw_giro_venda.json.gz \
+            oracle/moa_vw_vitrine.json \
+            sisplan/vw_prod_info_roi.json; do
+            if [ -f "_pcp/data/$f" ]; then
+              cp "_pcp/data/$f" "data/$f"
+              echo "✓ data/$f copiado ($(wc -c < data/$f) bytes)"
+            else
+              echo "⚠ data/$f não encontrado no anselmi-pcp"
+            fi
+          done
+
+          # Plantas (imagens) — espelhamento completo
+          if [ -d _pcp/data/plantas ]; then
+            rsync -av --delete _pcp/data/plantas/ data/plantas/
+          fi
+
+          # Drills (JSON por loja) — espelhamento completo
+          if [ -d _pcp/data/drills ]; then
+            rsync -av --delete _pcp/data/drills/ data/drills/
+          fi
+
+          # Limpa o clone temporário
+          rm -rf _pcp
+
+      - name: Renomear drills/plantas — códigos curtos → slugs Sisplan
+        run: |
+          set -euo pipefail
+          # Lê o mapa de aliases legados (curto -> slug) do próprio repo, derivado
+          # de data/loja_map.json. Anselmi-pcp continua nomeando arquivos com
+          # BATEL.json, JK.json, etc. — aqui traduzimos pros slugs canônicos
+          # usados pela página VM (patio-batel, jk, etc.).
+          declare -A ALIAS=(
+            [ALPH]=alphaville
+            [BAR]=barra-shopping
+            [BATEL]=patio-batel
+            [BC]=barigui
+            [BELV]=jardim-belvedere
+            [BPOA]=porto-alegre
+            [BSB]=brasilia
+            [CMP]=campinas
+            [DIA]=diamond-mall
+            [FARIA]=faria-lima
+            [FLN]=beira-mar
+            [GMD]=gramado
+            [HIGI]=patio-higienopolis
+            [IGTM]=goiania
+            [JK]=jk
+            [LEBL]=leblon
+            [MOR]=morumbi
+            [VIL]=village-mall
+          )
+          renamed_drills=0
+          renamed_plantas=0
+          for OLD in "${!ALIAS[@]}"; do
+            NEW="${ALIAS[$OLD]}"
+            if [ -f "data/drills/$OLD.json" ]; then
+              mv "data/drills/$OLD.json" "data/drills/$NEW.json"
+              renamed_drills=$((renamed_drills + 1))
+            fi
+            if [ -f "data/plantas/$OLD.jpg" ]; then
+              mv "data/plantas/$OLD.jpg" "data/plantas/$NEW.jpg"
+              renamed_plantas=$((renamed_plantas + 1))
+            fi
+          done
+          echo "✓ renomeados: $renamed_drills drills, $renamed_plantas plantas"
+
+      - name: Rebuild banco_fotos.json (cruza MOA_VW_VITRINE + Sisplan + Oracle)
+        run: |
+          if [ ! -f data/oracle/moa_vw_vitrine.json ]; then
+            echo "⚠ moa_vw_vitrine.json ausente — skip rebuild do banco_fotos"
+            exit 0
+          fi
+          if [ ! -f scripts/build_banco_fotos_v2.py ]; then
+            echo "⚠ script build_banco_fotos_v2.py ausente — skip"
+            exit 0
+          fi
+          python3 scripts/build_banco_fotos_v2.py || echo "build_banco_fotos falhou — mantendo banco anterior"
+
+      - name: Validar URLs (remove 404s do Zenphoto)
+        # build_banco_fotos_v2 gera URLs especulativas (cruzando MOA + Sisplan).
+        # Várias retornam 404 porque o arquivo no Zenphoto foi renomeado/removido.
+        # Sem esta validação, o app tenta carregar URLs mortas e o flash de
+        # "SEM FOTO" (silhueta) aparece. check_banco_fotos_404 faz HEAD em
+        # paralelo nas ~42k URLs (~5-10 min com 32 workers).
+        run: |
+          if [ ! -f scripts/check_banco_fotos_404.py ]; then
+            echo "⚠ script check_banco_fotos_404.py ausente — skip validação"
+            exit 0
+          fi
+          python3 scripts/check_banco_fotos_404.py --workers 32 || \
+            echo "check_banco_fotos falhou — mantendo banco SEM limpeza"
+
+      - name: Detectar alterações
+        id: diff
+        run: |
+          if [ -n "$(git status --porcelain ved_varejo.js data/)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit + push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ved_varejo.js data/cores_plm.json data/plantas data/drills data/oracle data/sisplan data/banco_fotos.json data/banco_fotos_pendencias.csv 2>/dev/null || true
+          git commit -m "chore(sync): atualiza arquivos de anselmi-pcp"
+          git push
+
+      - name: Sem mudanças
+        if: steps.diff.outputs.changed == 'false'
+        run: echo "Nada novo — anselmi-roi já estava em dia."
