@@ -161,6 +161,16 @@
       }
     }).catch(err => console.warn('[vm-loader] GERENTES load falhou:', err.message));
 
+    // CARTELAS_PLM: lista de refs cuja foto no VED_IMG é cartela (paletinha)
+    // detectada por aspect ratio quadrado (≠ 3:4 de peça vestida).
+    // Gerado offline via measure_plm.js — Playwright mede naturalWidth/Height
+    // de cada uma das ~4.4k URLs PLM. ~544 refs caem nessa blacklist.
+    loadJSON('../data/cartelas_plm.json').then(data => {
+      if (!data || !Array.isArray(data.refs)) return;
+      window.CARTELAS_PLM = new Set(data.refs);
+      console.info('[vm-loader] CARTELAS_PLM ·', data.refs.length, 'refs com cover-cartela (descartadas do VED_IMG)');
+    }).catch(err => console.warn('[vm-loader] CARTELAS_PLM load falhou:', err.message));
+
     // REF_INDEX_SISPLAN: carrega data/ref_index_sisplan.json (1.6k refs com tipo/descrição
     // do Sisplan) e MERGE com const REF_INDEX da página. Sem isso, renderEstoqueCD /
     // renderEstoqueLojas pulam ~94% das refs reais porque PECAS mock só cobre ~100.

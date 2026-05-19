@@ -4162,11 +4162,13 @@ function _photoUrlsForRefCor(ref, cor){
   return urls;
 }
 
-// Cartela = URL reusada em 2+ refs (heurística: foto vestida não se repete entre refs).
-// Pre-computa set único na primeira chamada. Sem isso, refs que viraram cartela no
-// PLM (~315 refs) mostram a paletinha de cores em vez da peça.
-// sync_plm.py::find_cartela_urls usa threshold=3 — frouxo demais.
+// Cartela detection — 2 camadas:
+// (a) URL reusada em 2+ refs no VED_IMG (foto vestida não se repete entre refs)
+// (b) Set de refs cuja imagem PLM mediu 1:1 ou wider — pré-computado em
+//     data/cartelas_plm.json pela varredura de aspect ratio (cartelas são square,
+//     peças vestidas são 3:4 tall). Cobre ~520 refs que escapavam só com (a).
 let _CARTELA_URLS_CACHE = null;
+let _CARTELA_REFS_CACHE = null;
 function _getCartelaUrls(){
   if (_CARTELA_URLS_CACHE) return _CARTELA_URLS_CACHE;
   const ved = window.VED_IMG || {};
@@ -4179,6 +4181,25 @@ function _getCartelaUrls(){
   for (const u in counts) if (counts[u] >= 2) cartelas.add(u);
   _CARTELA_URLS_CACHE = cartelas;
   return cartelas;
+}
+function _getCartelaRefs(){
+  if (_CARTELA_REFS_CACHE) return _CARTELA_REFS_CACHE;
+  if (window.CARTELAS_PLM_REFS instanceof Set) {
+    _CARTELA_REFS_CACHE = window.CARTELAS_PLM_REFS;
+  } else {
+    _CARTELA_REFS_CACHE = new Set();
+    // Lazy load
+    fetch('../data/cartelas_plm.json', {credentials:'same-origin'})
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && Array.isArray(data.refs)) {
+          window.CARTELAS_PLM_REFS = new Set(data.refs.map(String));
+          _CARTELA_REFS_CACHE = window.CARTELAS_PLM_REFS;
+        }
+      })
+      .catch(() => {});
+  }
+  return _CARTELA_REFS_CACHE;
 }
 
 function _resolvePhoto(p, refFallback){
@@ -4195,7 +4216,14 @@ function _resolvePhoto(p, refFallback){
     const refUnpad = String(ref).replace(/^0+/, '') || '0';
     const urlPlm = window.VED_IMG[refUnpad] || window.VED_IMG[String(ref)];
     const cartelas = _getCartelaUrls();
-    if (urlPlm && !cartelas.has(urlPlm)) {
+    // 2 níveis de filtro de cartela:
+    //   (a) URL reusada em 2+ refs → cartela compartilhada (~315 refs)
+    //   (b) ref está em data/cartelas_plm.json → cartela detectada por aspect
+    //       ratio quadrado (~544 refs, gerado offline via measure_plm.js)
+    const refIsCartela = window.CARTELAS_PLM && (
+      window.CARTELAS_PLM.has(refUnpad) || window.CARTELAS_PLM.has(String(ref))
+    );
+    if (urlPlm && !cartelas.has(urlPlm) && !refIsCartela) {
       const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
       // Onerror cai pro Zenphoto (via proxy /api/foto) se PLM falhar; depois silhueta
       const fallbackZen = (window.FotoResolver && p && p.corPrincipal)
