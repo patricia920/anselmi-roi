@@ -46,13 +46,20 @@ export async function onRequest(context) {
   // Debug mode: ?debug=1 retorna info sobre o upstream em vez da imagem
   const debug = url.searchParams.get('debug') === '1';
   try {
-    const r = await fetch(upstream, {
+    // Cache-busting no upstream: força CDN do Zenphoto a revalidar com origem.
+    // O photo.anselmi.ind.br está atrás de CDN CF que cacheou 404 STALE muito tempo.
+    // Query param qualquer (cb=timestamp) faz a request virar "única" pro edge,
+    // bypassa o cache e força MISS no CDN deles.
+    const upstreamWithBust = upstream + '?cb=' + Date.now();
+    const r = await fetch(upstreamWithBust, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
         'Accept-Language': 'pt-BR,pt;q=0.9,en;q=0.8',
+        'Cache-Control': 'no-cache',
       },
       redirect: 'follow',
+      cf: { cacheTtl: 0, cacheEverything: false },
     });
 
     if (debug) {
