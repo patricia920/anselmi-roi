@@ -42,26 +42,41 @@ export async function onRequest(context) {
   }
 
   // 2) Fetch upstream sem Referer (server-side, sem hotlink protection)
+  // Debug mode: ?debug=1 retorna info sobre o upstream em vez da imagem
+  const debug = url.searchParams.get('debug') === '1';
   try {
     const r = await fetch(upstream, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (anselmi-roi-proxy)',
-        'Accept': 'image/jpeg,image/png,image/webp,image/*,*/*;q=0.8',
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+        'Accept-Language': 'pt-BR,pt;q=0.9,en;q=0.8',
       },
       redirect: 'follow',
     });
 
+    if (debug) {
+      const head = {};
+      r.headers.forEach((v, k) => head[k] = v);
+      return new Response(JSON.stringify({
+        upstream,
+        status: r.status,
+        redirected: r.redirected,
+        url: r.url,
+        headers: head,
+      }, null, 2), { headers: { 'Content-Type': 'application/json' } });
+    }
+
     if (!r.ok) {
-      // 404 do Zenphoto: cacheia o 404 por 1h pra não martelar
-      const notFound = new Response('Not Found', {
-        status: 404,
+      // Upstream falhou: passa pelo status original + corpo do erro pro debug
+      const errBody = await r.text().catch(() => '');
+      return new Response(errBody.slice(0, 200) || ('Upstream ' + r.status), {
+        status: r.status,
         headers: {
-          'Cache-Control': 'public, max-age=3600',
+          'Cache-Control': r.status === 404 ? 'public, max-age=3600' : 'no-store',
           'Content-Type': 'text/plain',
+          'X-Upstream-Status': String(r.status),
         },
       });
-      await cache.put(cacheKey, notFound.clone());
-      return notFound;
     }
 
     // 3) Sucesso: devolve com cache de 1 dia
