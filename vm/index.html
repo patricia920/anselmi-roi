@@ -4162,16 +4162,40 @@ function _photoUrlsForRefCor(ref, cor){
   return urls;
 }
 
+// Cartela = URL reusada em 2+ refs (heurística: foto vestida não se repete entre refs).
+// Pre-computa set único na primeira chamada. Sem isso, refs que viraram cartela no
+// PLM (~315 refs) mostram a paletinha de cores em vez da peça.
+// sync_plm.py::find_cartela_urls usa threshold=3 — frouxo demais.
+let _CARTELA_URLS_CACHE = null;
+function _getCartelaUrls(){
+  if (_CARTELA_URLS_CACHE) return _CARTELA_URLS_CACHE;
+  const ved = window.VED_IMG || {};
+  const counts = {};
+  for (const ref in ved) {
+    const u = ved[ref];
+    if (u) counts[u] = (counts[u] || 0) + 1;
+  }
+  const cartelas = new Set();
+  for (const u in counts) if (counts[u] >= 2) cartelas.add(u);
+  _CARTELA_URLS_CACHE = cartelas;
+  return cartelas;
+}
+
 function _resolvePhoto(p, refFallback){
   const ref = (p && p.ref) || refFallback;
   // 0a) VED_IMG (PLM via image-resizer-2.colecao.moda) — fonte PRIMÁRIA.
   //     PLM é CDN público sem hotlink protection — funciona direto sem proxy.
   //     Cobertura ~4.4k refs (vs ~16k do Zenphoto), mas pra refs do PLM as
   //     URLs são confiáveis (Zenphoto tem ~24% URLs 404 + anti-hotlinking).
+  //     Filtro extra: descarta URL que aparece em 2+ refs (=cartela, paletinha
+  //     de cores). Tipicamente a cartela escapa do safety net do sync_plm.py
+  //     que tem threshold=3 — aqui aplicamos 2 do lado client pra remover ~315
+  //     refs que mostrariam cartela.
   if (ref && window.VED_IMG) {
     const refUnpad = String(ref).replace(/^0+/, '') || '0';
     const urlPlm = window.VED_IMG[refUnpad] || window.VED_IMG[String(ref)];
-    if (urlPlm) {
+    const cartelas = _getCartelaUrls();
+    if (urlPlm && !cartelas.has(urlPlm)) {
       const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
       // Onerror cai pro Zenphoto (via proxy /api/foto) se PLM falhar; depois silhueta
       const fallbackZen = (window.FotoResolver && p && p.corPrincipal)
