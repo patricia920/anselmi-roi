@@ -4204,44 +4204,15 @@ function _getCartelaRefs(){
 
 function _resolvePhoto(p, refFallback){
   const ref = (p && p.ref) || refFallback;
-  // 0a) VED_IMG (PLM via image-resizer-2.colecao.moda) — fonte PRIMÁRIA.
-  //     PLM é CDN público sem hotlink protection — funciona direto sem proxy.
-  //     Cobertura ~4.4k refs (vs ~16k do Zenphoto), mas pra refs do PLM as
-  //     URLs são confiáveis (Zenphoto tem ~24% URLs 404 + anti-hotlinking).
-  //     Filtro extra: descarta URL que aparece em 2+ refs (=cartela, paletinha
-  //     de cores). Tipicamente a cartela escapa do safety net do sync_plm.py
-  //     que tem threshold=3 — aqui aplicamos 2 do lado client pra remover ~315
-  //     refs que mostrariam cartela.
-  if (ref && window.VED_IMG) {
-    const refUnpad = String(ref).replace(/^0+/, '') || '0';
-    const urlPlm = window.VED_IMG[refUnpad] || window.VED_IMG[String(ref)];
-    const cartelas = _getCartelaUrls();
-    // 2 níveis de filtro de cartela:
-    //   (a) URL reusada em 2+ refs → cartela compartilhada (~315 refs)
-    //   (b) ref está em data/cartelas_plm.json → cartela detectada por aspect
-    //       ratio quadrado (~544 refs, gerado offline via measure_plm.js)
-    const refIsCartela = window.CARTELAS_PLM && (
-      window.CARTELAS_PLM.has(refUnpad) || window.CARTELAS_PLM.has(String(ref))
-    );
-    if (urlPlm && !cartelas.has(urlPlm) && !refIsCartela) {
-      const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
-      // Onerror cai pro Zenphoto (via proxy /api/foto) se PLM falhar; depois silhueta
-      const fallbackZen = (window.FotoResolver && p && p.corPrincipal)
-        ? (window.FotoResolver.getFotosByRefColor(String(ref), p.corPrincipal) || [])[0] ||
-          window.FotoResolver.getFotoAnyColor(String(ref))
-        : null;
-      const cadeia = fallbackZen
-        ? `this.dataset.t='1';this.src='${fallbackZen.replace(/'/g,"\\'")}';return;`
-        : `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
-      const finalChain = `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
-      const onerr = `if(this.dataset.t==='1'){${finalChain}return;}${cadeia}`;
-      return `<img src="${urlPlm}" alt="${ref}" loading="lazy" onerror="${onerr}"/><div style="display:none">${sil}</div>`;
-    }
-  }
-  // 0b) FotoResolver com cascata: cor específica → qualquer cor → silhueta.
-  //    Crítico: o banco_fotos tem URLs que retornam 404 no Zenphoto (build script gerou
-  //    nomes baseado no MOA_VW_VITRINE mas alguns arquivos foram renomeados/removidos).
-  //    Implementa onerror em cadeia: tenta foto da cor → fallback any color → silhueta.
+  // REGRA DA PATI: 1º Zenphoto (banco_fotos / FotoResolver via /api/foto proxy),
+  // só cai pro PLM (VED_IMG) se NÃO achar no Zenphoto. Zenphoto é a fonte oficial
+  // de foto do produto (studio); PLM é metadata, vem com cartelas misturadas
+  // mesmo após pickcover + blacklist.
+  //
+  // 0a) FotoResolver (banco_fotos.json via Zenphoto, com cor específica → any color)
+  //     Cobertura: ~16k refs. URLs proxificadas pra /api/foto (foto-resolver.js
+  //     reescreve photo.anselmi.ind.br/Fotos/X → /api/foto?u=X). Onerror em
+  //     cadeia: cor exata 404 → any color → PLM fallback → silhueta.
   if (ref && typeof window.FotoResolver === 'object' && window.FotoResolver) {
     let urlCor = null;
     if (p && p.corPrincipal) {
@@ -4252,12 +4223,38 @@ function _resolvePhoto(p, refFallback){
     const urlInicial = urlCor || urlAny;
     if (urlInicial) {
       const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
-      const cadeia = urlCor && urlAny && urlCor !== urlAny
-        ? `this.dataset.t='1';this.src='${urlAny.replace(/'/g,"\\'")}';return;`
-        : `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
+      // Fallback PLM (com filtro de cartela) — só ativa se URL inicial 404
+      const refUnpad = String(ref).replace(/^0+/, '') || '0';
+      const urlPlm = window.VED_IMG ? (window.VED_IMG[refUnpad] || window.VED_IMG[String(ref)]) : null;
+      const cartelas = _getCartelaUrls();
+      const refIsCartela = window.CARTELAS_PLM && (
+        window.CARTELAS_PLM.has(refUnpad) || window.CARTELAS_PLM.has(String(ref))
+      );
+      const plmValido = urlPlm && !cartelas.has(urlPlm) && !refIsCartela ? urlPlm : null;
+      // Cadeia: urlInicial → (urlAny se diferente) → PLM → silhueta
+      const steps = [];
+      if (urlCor && urlAny && urlCor !== urlAny) steps.push(urlAny);
+      if (plmValido) steps.push(plmValido);
       const finalChain = `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
-      const onerr = `if(this.dataset.t==='1'){${finalChain}return;}${cadeia}`;
-      return `<img src="${urlInicial}" alt="${ref}" loading="lazy" onerror="${onerr}"/><div style="display:none">${sil}</div>`;
+      const onerrChain = steps.map((u, i) =>
+        `if(this.dataset.t==='${i}'){this.dataset.t='${i+1}';this.src='${u.replace(/'/g,"\\'")}';return;}`
+      ).join('');
+      const onerr = `${onerrChain}${finalChain}`;
+      return `<img src="${urlInicial}" alt="${ref}" loading="lazy" data-t="0" onerror="${onerr}"/><div style="display:none">${sil}</div>`;
+    }
+  }
+  // 0b) PLM fallback puro — quando Zenphoto não tem nada pra essa ref
+  if (ref && window.VED_IMG) {
+    const refUnpad = String(ref).replace(/^0+/, '') || '0';
+    const urlPlm = window.VED_IMG[refUnpad] || window.VED_IMG[String(ref)];
+    const cartelas = _getCartelaUrls();
+    const refIsCartela = window.CARTELAS_PLM && (
+      window.CARTELAS_PLM.has(refUnpad) || window.CARTELAS_PLM.has(String(ref))
+    );
+    if (urlPlm && !cartelas.has(urlPlm) && !refIsCartela) {
+      const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
+      const onerr = `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
+      return `<img src="${urlPlm}" alt="${ref}" loading="lazy" onerror="${onerr}"/><div style="display:none">${sil}</div>`;
     }
   }
   // 1) Tenta foto específica da cor principal (ref+cor)
