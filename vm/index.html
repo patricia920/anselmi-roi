@@ -4151,13 +4151,15 @@ function _photoUrlsForRefCor(ref, cor){
   const refPad5 = String(ref).padStart(5, '0');
   // Proxy do CF Pages contorna o anti-hotlinking do Zenphoto baseado em Referer.
   // (servidor pega a imagem sem mandar Referer; ver functions/api/foto.js)
+  // &v=2 busta cache antigo de 404 do edge.
   const base = '/api/foto?u=';
+  const ver = '&v=2';
   const urls = [];
   if(cor){
-    urls.push(base + ref + '_' + cor + '.jpg');
-    urls.push(base + ref + '_cor_' + cor + '.jpg');
-    urls.push(base + refPad6 + '_' + cor + '.jpg');
-    urls.push(base + refPad5 + '_' + cor + '.jpg');
+    urls.push(base + ref + '_' + cor + '.jpg' + ver);
+    urls.push(base + ref + '_cor_' + cor + '.jpg' + ver);
+    urls.push(base + refPad6 + '_' + cor + '.jpg' + ver);
+    urls.push(base + refPad5 + '_' + cor + '.jpg' + ver);
   }
   return urls;
 }

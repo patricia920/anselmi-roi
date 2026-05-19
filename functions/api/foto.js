@@ -29,13 +29,14 @@ export async function onRequest(context) {
   }
 
   const upstream = ZENPHOTO_BASE + u;
-  const cacheKey = new Request(upstream, { method: 'GET' });
+  // Bump v= no cacheKey pra invalidar cache antigo. Incrementar quando a
+  // política de cache mudar (ex: passamos a NÃO cachear 404).
+  const cacheKey = new Request(upstream + '?v=2', { method: 'GET' });
   const cache = caches.default;
 
-  // 1) Tenta cache primeiro
+  // 1) Tenta cache primeiro — só serve se for 2xx (não confiamos em 404s antigos)
   let resp = await cache.match(cacheKey);
-  if (resp) {
-    // Repassa com cache-control pro browser
+  if (resp && resp.status >= 200 && resp.status < 300) {
     const headers = new Headers(resp.headers);
     headers.set('X-Cache', 'HIT');
     return new Response(resp.body, { status: resp.status, headers });
@@ -67,12 +68,13 @@ export async function onRequest(context) {
     }
 
     if (!r.ok) {
-      // Upstream falhou: passa pelo status original + corpo do erro pro debug
+      // Upstream falhou: NÃO cacheamos (o anti-hotlinking do Zenphoto pode estar
+      // intermitente; cache de 404 mantinha refs presas em erro velho).
       const errBody = await r.text().catch(() => '');
       return new Response(errBody.slice(0, 200) || ('Upstream ' + r.status), {
         status: r.status,
         headers: {
-          'Cache-Control': r.status === 404 ? 'public, max-age=3600' : 'no-store',
+          'Cache-Control': 'no-store',
           'Content-Type': 'text/plain',
           'X-Upstream-Status': String(r.status),
         },
