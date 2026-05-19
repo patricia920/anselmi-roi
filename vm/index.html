@@ -10636,13 +10636,18 @@ spWireDropdowns();
   } else { setTimeout(tryUpdate, 300); }
 })();
 
-/* v37 · Re-render Buracos/CD/Paradas após vm-loader popular VAR_ESTOQUE_LOJA etc.
-   Sem isso, o rerender() inline lá em cima roda antes do defer do vm-loader.js
-   terminar e as 3 telas mostram "Nenhum buraco detectado." pra sempre. */
+/* v38 · Re-render Buracos/CD/Paradas DEPOIS do vm-loader terminar tudo
+   (LOJA_MAP, REF_INDEX, COR_PLM, FotoResolver). VAR_ESTOQUE_LOJA fica
+   disponível imediatamente quando ved_varejo.js parseia — bem antes do
+   vm-loader popular o resto. Esperar só por VAR_ESTOQUE_LOJA causava
+   rerender prematuro com drillCache vazio → 0 buracos.
+   Sinal autoritativo: window.__vmLoaderReady = true (setado junto com
+   o evento vm-loader:ready). */
 (function(){
   let done = false;
   function rerenderAll(){
     if (done) return;
+    if (!window.__vmLoaderReady) return;
     if (!window.VAR_ESTOQUE_LOJA || Object.keys(window.VAR_ESTOQUE_LOJA).length === 0) return;
     done = true;
     if (typeof rerender === 'function') rerender();
@@ -10650,11 +10655,11 @@ spWireDropdowns();
     if (typeof renderAlerts === 'function') renderAlerts();
   }
   document.addEventListener('vm-loader:ready', rerenderAll);
-  // Fallback: poll por 15s caso o evento não dispare por algum motivo
+  // Fallback: poll por 30s caso o evento não chegue
   let polls = 0;
   (function poll(){
     rerenderAll();
-    if (!done && ++polls < 30) setTimeout(poll, 500);
+    if (!done && ++polls < 60) setTimeout(poll, 500);
   })();
 })();
 </script>
