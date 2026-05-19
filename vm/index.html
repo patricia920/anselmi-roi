@@ -4164,7 +4164,29 @@ function _photoUrlsForRefCor(ref, cor){
 
 function _resolvePhoto(p, refFallback){
   const ref = (p && p.ref) || refFallback;
-  // 0) FotoResolver com cascata: cor específica → qualquer cor → silhueta.
+  // 0a) VED_IMG (PLM via image-resizer-2.colecao.moda) — fonte PRIMÁRIA.
+  //     PLM é CDN público sem hotlink protection — funciona direto sem proxy.
+  //     Cobertura ~4.4k refs (vs ~16k do Zenphoto), mas pra refs do PLM as
+  //     URLs são confiáveis (Zenphoto tem ~24% URLs 404 + anti-hotlinking).
+  if (ref && window.VED_IMG) {
+    const refUnpad = String(ref).replace(/^0+/, '') || '0';
+    const urlPlm = window.VED_IMG[refUnpad] || window.VED_IMG[String(ref)];
+    if (urlPlm) {
+      const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
+      // Onerror cai pro Zenphoto (via proxy /api/foto) se PLM falhar; depois silhueta
+      const fallbackZen = (window.FotoResolver && p && p.corPrincipal)
+        ? (window.FotoResolver.getFotosByRefColor(String(ref), p.corPrincipal) || [])[0] ||
+          window.FotoResolver.getFotoAnyColor(String(ref))
+        : null;
+      const cadeia = fallbackZen
+        ? `this.dataset.t='1';this.src='${fallbackZen.replace(/'/g,"\\'")}';return;`
+        : `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
+      const finalChain = `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
+      const onerr = `if(this.dataset.t==='1'){${finalChain}return;}${cadeia}`;
+      return `<img src="${urlPlm}" alt="${ref}" loading="lazy" onerror="${onerr}"/><div style="display:none">${sil}</div>`;
+    }
+  }
+  // 0b) FotoResolver com cascata: cor específica → qualquer cor → silhueta.
   //    Crítico: o banco_fotos tem URLs que retornam 404 no Zenphoto (build script gerou
   //    nomes baseado no MOA_VW_VITRINE mas alguns arquivos foram renomeados/removidos).
   //    Implementa onerror em cadeia: tenta foto da cor → fallback any color → silhueta.
