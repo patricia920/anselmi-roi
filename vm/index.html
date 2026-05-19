@@ -235,6 +235,7 @@ table.list td:first-child{padding-left:18px}
 .mosaic-card:hover{box-shadow:var(--shadow-md);border-color:var(--line-2);transform:translateY(-2px)}
 .mosaic-photo{width:100%;aspect-ratio:3/4;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;border-bottom:1px solid var(--line)}
 .mosaic-photo svg,.mosaic-photo img{width:100%;height:100%;object-fit:contain}
+.cd-thumb svg,.cd-thumb img{width:100%;height:100%;object-fit:contain}
 .mosaic-photo .photo-tag{position:absolute;top:8px;right:8px;background:rgba(26,23,20,.78);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:var(--r-sm);letter-spacing:.04em;backdrop-filter:blur(4px);text-transform:uppercase}
 .mosaic-photo .photo-tag.crit{background:var(--bordo)}
 .mosaic-photo .photo-tag.warn{background:var(--ambar)}
@@ -2039,6 +2040,10 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
           <span class="pill" data-bf="campanha" style="border-color:var(--bordo);color:var(--bordo)">★ Da campanha</span>
         </div>
         <div class="cen-controls">
+          <label>Loja</label>
+          <select id="buracos-loja" onchange="renderBuracos()">
+            <option value="*">Todas as lojas</option>
+          </select>
           <label>Ordenar por</label>
           <select id="buracos-sort" onchange="rerender()">
             <option value="estoque">Estoque (maior)</option>
@@ -4672,7 +4677,11 @@ async function renderBuracos(){
   if (!grid) return;
   grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--ink-3);padding:40px;font-size:13px">Carregando buracos…</div>`;
 
-  const cod = (typeof window.currentStore === 'object' && window.currentStore?.cod) || '*';
+  // Prioridade: seletor da aba > loja ativa no header > consolidado
+  const sel = document.getElementById('buracos-loja');
+  const cod = (sel && sel.value && sel.value !== '*')
+    ? sel.value
+    : ((typeof window.currentStore === 'object' && window.currentStore?.cod) || '*');
   let lista;
   try { lista = await _computeBuracos(cod); }
   catch(e){
@@ -4696,7 +4705,11 @@ async function renderBuracos(){
     lista.sort((a,b) => b.estoque - a.estoque);
   }
 
-  const html = lista.slice(0, 18).map(p => {
+  // Quando filtra por uma loja específica, mostra mais cards (até 60).
+  // Consolidado limita a 18 pra não estourar render (top do top).
+  const limit = (cod !== '*') ? 60 : 18;
+  const total = lista.length;
+  const html = lista.slice(0, limit).map(p => {
     const peca = { ref: p.ref, tipo: p.tipo, corPrincipal: p.cor };
     const camp = (typeof CAMPANHAS !== 'undefined' && CAMPANHAS[p.ref]) ? CAMPANHAS[p.ref] : null;
     const campTag = camp ? `<div class="bur-camp-tag">★ ${camp}</div>` : '';
@@ -4721,11 +4734,20 @@ async function renderBuracos(){
       </div>
     </div>`;
   }).join('');
-  grid.innerHTML = html || `<div style="grid-column:1/-1;text-align:center;color:var(--ink-3);padding:40px">Nenhum buraco detectado.</div>`;
+  const more = total > limit
+    ? `<div style="grid-column:1/-1;text-align:center;color:var(--ink-3);font-size:11px;padding:14px;font-style:italic">Mostrando ${limit} de ${total} · refine com filtro / sort</div>`
+    : '';
+  grid.innerHTML = (html + more) || `<div style="grid-column:1/-1;text-align:center;color:var(--ink-3);padding:40px">Nenhum buraco detectado.</div>`;
 
   const h = document.getElementById('buracos-h');
-  if (h) h.textContent = `${lista.length} buracos${buracoFilter==='campanha'?' (campanha)':''}`;
+  if (h) {
+    const lojaTxt = (cod !== '*')
+      ? ` em ${typeof _nomeLoja === 'function' ? (_nomeLoja((window.LOJA_MAP||{})[cod]) || cod) : cod}`
+      : '';
+    h.textContent = `${total} buracos${lojaTxt}${buracoFilter==='campanha'?' (campanha)':''}`;
+  }
 }
+window.renderBuracos = renderBuracos;
 
 /* v2 · CD especializado: sugestão por tipo, cross-sell, custo carregamento */
 const SUG_EXPOSICAO = {
@@ -7399,7 +7421,7 @@ function renderEstoqueCD(){
       if(!hay.includes(search)) return;
     }
     const total = window.VAR_ESTOQUE[ref] || 0;
-    rows.push({ ref, tipo: p.tipo, descricao: p.descricao || '', cd, total, lojas: total - cd, fotoUrl: p.fotoUrl });
+    rows.push({ ref, tipo: p.tipo, descricao: p.descricao || '', cd, total, lojas: total - cd, fotoUrl: p.fotoUrl, corPrincipal: p.corPrincipal });
   });
   rows.sort((a,b) => b.cd - a.cd);
 
@@ -7411,7 +7433,7 @@ function renderEstoqueCD(){
     <table style="width:100%;border-collapse:collapse;font-size:13px;background:#fff;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden">
       <thead>
         <tr style="background:var(--ink);color:#fff">
-          <th style="padding:10px 12px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;width:60px">Foto</th>
+          <th style="padding:10px 12px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;width:100px">Foto</th>
           <th style="padding:10px 12px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;width:80px">REF</th>
           <th style="padding:10px 12px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;width:90px">Tipo</th>
           <th style="padding:10px 12px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase">Descrição</th>
@@ -7423,7 +7445,7 @@ function renderEstoqueCD(){
       <tbody>
         ${rows.slice(0, 500).map(r => `
           <tr style="border-bottom:1px solid var(--paper-2);cursor:pointer" onclick="if(typeof openModal==='function')openModal('${r.ref}')">
-            <td style="padding:6px 12px"><div style="width:36px;height:48px;background:var(--paper-2);border-radius:2px;overflow:hidden;display:flex;align-items:center;justify-content:center">${r.fotoUrl ? `<img src="${r.fotoUrl}" alt="${r.ref}" loading="lazy" style="max-width:100%;max-height:100%;object-fit:contain"/>` : '<span style="font-size:10px;color:#aaa">—</span>'}</div></td>
+            <td style="padding:6px 12px"><div class="cd-thumb" style="width:80px;height:108px;background:var(--paper-2);border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center">${typeof pieceImage === 'function' ? pieceImage({ref:r.ref, tipo:r.tipo, corPrincipal:r.corPrincipal, fotoUrl:r.fotoUrl}, r.ref) : (r.fotoUrl ? `<img src="${r.fotoUrl}" alt="${r.ref}" loading="lazy" style="max-width:100%;max-height:100%;object-fit:contain"/>` : '<span style="font-size:10px;color:#aaa">—</span>')}</div></td>
             <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-weight:600">${r.ref}</td>
             <td style="padding:10px 12px;color:var(--ink-2)">${r.tipo}</td>
             <td style="padding:10px 12px;color:var(--ink-2);font-size:12px">${r.descricao}</td>
@@ -10645,11 +10667,26 @@ spWireDropdowns();
    o evento vm-loader:ready). */
 (function(){
   let done = false;
+  function populateBuracosLoja(){
+    const sel = document.getElementById('buracos-loja');
+    if (!sel || sel.options.length > 1) return;
+    const entries = Object.entries(window.LOJA_MAP || {})
+      .filter(([_, slug]) => slug)
+      .map(([cod, slug]) => ({ cod, slug, nome: (typeof _nomeLoja === 'function' ? _nomeLoja(slug) : slug) }))
+      .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+    entries.forEach(e => {
+      const opt = document.createElement('option');
+      opt.value = e.cod;
+      opt.textContent = e.nome;
+      sel.appendChild(opt);
+    });
+  }
   function rerenderAll(){
     if (done) return;
     if (!window.__vmLoaderReady) return;
     if (!window.VAR_ESTOQUE_LOJA || Object.keys(window.VAR_ESTOQUE_LOJA).length === 0) return;
     done = true;
+    populateBuracosLoja();
     if (typeof rerender === 'function') rerender();
     if (typeof renderHoje === 'function') renderHoje();
     if (typeof renderAlerts === 'function') renderAlerts();
