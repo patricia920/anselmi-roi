@@ -10635,6 +10635,28 @@ spWireDropdowns();
     document.addEventListener('DOMContentLoaded', tryUpdate);
   } else { setTimeout(tryUpdate, 300); }
 })();
+
+/* v37 · Re-render Buracos/CD/Paradas após vm-loader popular VAR_ESTOQUE_LOJA etc.
+   Sem isso, o rerender() inline lá em cima roda antes do defer do vm-loader.js
+   terminar e as 3 telas mostram "Nenhum buraco detectado." pra sempre. */
+(function(){
+  let done = false;
+  function rerenderAll(){
+    if (done) return;
+    if (!window.VAR_ESTOQUE_LOJA || Object.keys(window.VAR_ESTOQUE_LOJA).length === 0) return;
+    done = true;
+    if (typeof rerender === 'function') rerender();
+    if (typeof renderHoje === 'function') renderHoje();
+    if (typeof renderAlerts === 'function') renderAlerts();
+  }
+  document.addEventListener('vm-loader:ready', rerenderAll);
+  // Fallback: poll por 15s caso o evento não dispare por algum motivo
+  let polls = 0;
+  (function poll(){
+    rerenderAll();
+    if (!done && ++polls < 30) setTimeout(poll, 500);
+  })();
+})();
 </script>
 </body>
 </html>
