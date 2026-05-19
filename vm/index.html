@@ -2893,6 +2893,10 @@ let LOJAS = [
   {nome:'Campinas',cod:'campinas',exposto:91,estoque:227,buracos:7,paradas:9,cores:6,upd:'16/04',sync:'warn'},
   {nome:'Gramado',cod:'gramado',exposto:84,estoque:201,buracos:4,paradas:5,cores:5,upd:'16/04',sync:'warn'}
 ];
+// Expõe LOJAS no window pra script blocks externos (_nomeLoja, dropdowns dinâmicos).
+// O _buildLojasFromVar atualiza in-place (LOJAS.length=0; LOJAS.push(...)) então
+// a referência window.LOJAS permanece válida após o sync Sisplan.
+window.LOJAS = LOJAS;
 
 /* Constrói LOJAS a partir do Sisplan (VAR_LOJAS + VAR_ESTOQUE_LOJA agregados).
    Retorna true se conseguiu reconstruir, false se Sisplan não disponível. */
