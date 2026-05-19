@@ -4149,7 +4149,9 @@ function _photoUrlsForRefCor(ref, cor){
   if(!ref) return [];
   const refPad6 = String(ref).padStart(6, '0');
   const refPad5 = String(ref).padStart(5, '0');
-  const base = 'https://photo.anselmi.ind.br/albums/Fotos/';
+  // Proxy do CF Pages contorna o anti-hotlinking do Zenphoto baseado em Referer.
+  // (servidor pega a imagem sem mandar Referer; ver functions/api/foto.js)
+  const base = '/api/foto?u=';
   const urls = [];
   if(cor){
     urls.push(base + ref + '_' + cor + '.jpg');
