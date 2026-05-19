@@ -11,6 +11,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
 <!-- ⚙ INTEGRAÇÃO SISPLAN · ved_varejo.js publicado pelo bot do anselmi-pcp -->
 <script src="../ved_varejo.js" onerror="console.warn('[vm] ved_varejo.js não encontrado · modo mock')"></script>
+<!-- ⚙ INTEGRAÇÃO PLM · ved_data.js (VED_IMG/VED_TIPO/VED_MARCA) — complemento ao banco_fotos -->
+<script src="../ved_data.js" onerror="console.warn('[vm] ved_data.js não encontrado · sem fallback PLM')"></script>
 <script src="./vm-loader.js" defer></script>
 <style>
 :root{
@@ -4195,7 +4197,18 @@ function _resolvePhoto(p, refFallback){
   if(window.FOTOS_INDEX && window.FOTOS_INDEX[ref]){
     return `<img src="${window.FOTOS_INDEX[ref]}" alt="${ref}" loading="lazy"/>`;
   }
-  // 5) Silhueta (fallback final)
+  // 5) VED_IMG (PLM via ved_data.js — ~2.760 refs; chave sem zero-pad)
+  //    Cobertura adicional sobre banco_fotos (refs cadastradas no PLM mas
+  //    ausentes do Zenphoto). image-resizer-2.colecao.moda redireca pra image.colecao.moda.
+  if(window.VED_IMG && ref){
+    const refUnpad = String(ref).replace(/^0+/, '') || '0';
+    const url = window.VED_IMG[refUnpad] || window.VED_IMG[String(ref)];
+    if(url){
+      const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
+      return `<img src="${url}" alt="${ref}" loading="lazy" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';"/><div style="display:none">${sil}</div>`;
+    }
+  }
+  // 6) Silhueta (fallback final)
   return p ? silhouette(p.tipo, p.corPrincipal) : '';
 }
 

@@ -48,6 +48,7 @@ jobs:
           path: _pcp
           sparse-checkout: |
             ved_varejo.js
+            ved_data.js
             data/cores_plm.json
             data/plantas
             data/drills
@@ -63,12 +64,24 @@ jobs:
         run: |
           set -euo pipefail
 
-          # ved_varejo.js no root
+          # ved_varejo.js no root (Sisplan dump pelo bot)
           if [ -f _pcp/ved_varejo.js ]; then
             cp _pcp/ved_varejo.js ./ved_varejo.js
             echo "✓ ved_varejo.js copiado ($(wc -c < ved_varejo.js) bytes)"
           else
             echo "⚠ ved_varejo.js não encontrado no anselmi-pcp"
+          fi
+
+          # ved_data.js no root (VED_IMG/VED_TIPO/VED_MARCA do PLM via sync_plm.py)
+          # Usado como complemento ao banco_fotos.json:
+          #   - VED_IMG fornece foto PLM (~2.760 refs) — fallback do banco_fotos
+          #   - VED_TIPO classifica peça (Blusa/Maxipull/etc) — mais confiável que heurística
+          #   - VED_MARCA (Anselmi/Ambi/Nori) — rotulação de marca
+          if [ -f _pcp/ved_data.js ]; then
+            cp _pcp/ved_data.js ./ved_data.js
+            echo "✓ ved_data.js copiado ($(wc -c < ved_data.js) bytes)"
+          else
+            echo "⚠ ved_data.js não encontrado no anselmi-pcp"
           fi
 
           mkdir -p data data/plantas data/drills
