@@ -4206,15 +4206,41 @@ function _getCartelaRefs(){
 
 function _resolvePhoto(p, refFallback){
   const ref = (p && p.ref) || refFallback;
-  // REGRA DA PATI: 1º Zenphoto (banco_fotos / FotoResolver via /api/foto proxy),
-  // só cai pro PLM (VED_IMG) se NÃO achar no Zenphoto. Zenphoto é a fonte oficial
-  // de foto do produto (studio); PLM é metadata, vem com cartelas misturadas
-  // mesmo após pickcover + blacklist.
+  // NOTA: A regra ideal seria Photos-first (Zenphoto = fonte oficial do studio),
+  // mas o origin do photo.anselmi.ind.br está com timeout/bloqueio pra requests
+  // do CF Worker (origin 522, requests demoram >15s pra 404). Enquanto isso não
+  // se resolver, usamos PLM-first com 2 filtros agressivos de cartela.
+  // Quando o Zenphoto voltar, inverter cascade (ver branch 0b → 0a).
   //
-  // 0a) FotoResolver (banco_fotos.json via Zenphoto, com cor específica → any color)
-  //     Cobertura: ~16k refs. URLs proxificadas pra /api/foto (foto-resolver.js
-  //     reescreve photo.anselmi.ind.br/Fotos/X → /api/foto?u=X). Onerror em
-  //     cadeia: cor exata 404 → any color → PLM fallback → silhueta.
+  // 0a) VED_IMG (PLM via image-resizer-2.colecao.moda) — fonte PRIMÁRIA.
+  //     Filtros de cartela:
+  //       (i) URL reusada em 2+ refs (foto vestida não repete entre refs)
+  //       (ii) ref está na blacklist CARTELAS_PLM (544 refs com aspect ratio
+  //            quadrado detectado offline via measure_plm.js + Playwright)
+  if (ref && window.VED_IMG) {
+    const refUnpad = String(ref).replace(/^0+/, '') || '0';
+    const urlPlm = window.VED_IMG[refUnpad] || window.VED_IMG[String(ref)];
+    const cartelas = _getCartelaUrls();
+    const refIsCartela = window.CARTELAS_PLM && (
+      window.CARTELAS_PLM.has(refUnpad) || window.CARTELAS_PLM.has(String(ref))
+    );
+    if (urlPlm && !cartelas.has(urlPlm) && !refIsCartela) {
+      const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
+      // Onerror: cai pra Zenphoto via proxy se PLM falhar, depois silhueta
+      const fallbackZen = (window.FotoResolver && p && p.corPrincipal)
+        ? (window.FotoResolver.getFotosByRefColor(String(ref), p.corPrincipal) || [])[0] ||
+          window.FotoResolver.getFotoAnyColor(String(ref))
+        : null;
+      const cadeia = fallbackZen
+        ? `this.dataset.t='1';this.src='${fallbackZen.replace(/'/g,"\\'")}';return;`
+        : `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
+      const finalChain = `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
+      const onerr = `if(this.dataset.t==='1'){${finalChain}return;}${cadeia}`;
+      return `<img src="${urlPlm}" alt="${ref}" loading="lazy" onerror="${onerr}"/><div style="display:none">${sil}</div>`;
+    }
+  }
+  // 0b) FotoResolver (Zenphoto via /api/foto proxy) — quando PLM não tem
+  //     OU PLM é cartela. Onerror: cor exata → any color → silhueta.
   if (ref && typeof window.FotoResolver === 'object' && window.FotoResolver) {
     let urlCor = null;
     if (p && p.corPrincipal) {
@@ -4225,38 +4251,12 @@ function _resolvePhoto(p, refFallback){
     const urlInicial = urlCor || urlAny;
     if (urlInicial) {
       const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
-      // Fallback PLM (com filtro de cartela) — só ativa se URL inicial 404
-      const refUnpad = String(ref).replace(/^0+/, '') || '0';
-      const urlPlm = window.VED_IMG ? (window.VED_IMG[refUnpad] || window.VED_IMG[String(ref)]) : null;
-      const cartelas = _getCartelaUrls();
-      const refIsCartela = window.CARTELAS_PLM && (
-        window.CARTELAS_PLM.has(refUnpad) || window.CARTELAS_PLM.has(String(ref))
-      );
-      const plmValido = urlPlm && !cartelas.has(urlPlm) && !refIsCartela ? urlPlm : null;
-      // Cadeia: urlInicial → (urlAny se diferente) → PLM → silhueta
-      const steps = [];
-      if (urlCor && urlAny && urlCor !== urlAny) steps.push(urlAny);
-      if (plmValido) steps.push(plmValido);
+      const cadeia = urlCor && urlAny && urlCor !== urlAny
+        ? `this.dataset.t='1';this.src='${urlAny.replace(/'/g,"\\'")}';return;`
+        : `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
       const finalChain = `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
-      const onerrChain = steps.map((u, i) =>
-        `if(this.dataset.t==='${i}'){this.dataset.t='${i+1}';this.src='${u.replace(/'/g,"\\'")}';return;}`
-      ).join('');
-      const onerr = `${onerrChain}${finalChain}`;
-      return `<img src="${urlInicial}" alt="${ref}" loading="lazy" data-t="0" onerror="${onerr}"/><div style="display:none">${sil}</div>`;
-    }
-  }
-  // 0b) PLM fallback puro — quando Zenphoto não tem nada pra essa ref
-  if (ref && window.VED_IMG) {
-    const refUnpad = String(ref).replace(/^0+/, '') || '0';
-    const urlPlm = window.VED_IMG[refUnpad] || window.VED_IMG[String(ref)];
-    const cartelas = _getCartelaUrls();
-    const refIsCartela = window.CARTELAS_PLM && (
-      window.CARTELAS_PLM.has(refUnpad) || window.CARTELAS_PLM.has(String(ref))
-    );
-    if (urlPlm && !cartelas.has(urlPlm) && !refIsCartela) {
-      const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
-      const onerr = `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
-      return `<img src="${urlPlm}" alt="${ref}" loading="lazy" onerror="${onerr}"/><div style="display:none">${sil}</div>`;
+      const onerr = `if(this.dataset.t==='1'){${finalChain}return;}${cadeia}`;
+      return `<img src="${urlInicial}" alt="${ref}" loading="lazy" onerror="${onerr}"/><div style="display:none">${sil}</div>`;
     }
   }
   // 1) Tenta foto específica da cor principal (ref+cor)
