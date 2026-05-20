@@ -4215,17 +4215,21 @@ function _resolvePhoto(p, refFallback){
   //     → /api/foto?u=X&v=2). Proxy contorna anti-hotlinking (server-side fetch
   //     sem Referer).
   if (ref && typeof window.FotoResolver === 'object' && window.FotoResolver) {
+    const fr = window.FotoResolver;
     let urlCor = null;
     if (p && p.corPrincipal) {
-      const arr = window.FotoResolver.getFotosByRefColor(String(ref), p.corPrincipal);
+      const arr = fr.getFotosByRefColor(String(ref), p.corPrincipal);
       if (arr && arr.length) urlCor = arr[0];
     }
-    const urlAny = window.FotoResolver.getFotoAnyColor(String(ref));
-    const urlInicial = urlCor || urlAny;
+    // Pega TODAS as URLs do banco_fotos pra essa ref (todas cores).
+    // Regra Pati: se cor exata não funciona, qualquer cor serve.
+    const todasUrls = (typeof fr.getAllFotos === 'function')
+      ? fr.getAllFotos(String(ref))
+      : (fr.getFotoAnyColor(String(ref)) ? [fr.getFotoAnyColor(String(ref))] : []);
+    const urlInicial = urlCor || todasUrls[0] || null;
     if (urlInicial) {
       const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
-      // Fallback PLM (com 2 filtros de cartela): URL reusada em 2+ refs +
-      // blacklist CARTELAS_PLM (544 refs com aspect ratio quadrado).
+      // Fallback PLM (com 2 filtros de cartela)
       const refUnpad = String(ref).replace(/^0+/, '') || '0';
       const urlPlm = window.VED_IMG ? (window.VED_IMG[refUnpad] || window.VED_IMG[String(ref)]) : null;
       const cartelas = _getCartelaUrls();
@@ -4233,9 +4237,12 @@ function _resolvePhoto(p, refFallback){
         window.CARTELAS_PLM.has(refUnpad) || window.CARTELAS_PLM.has(String(ref))
       );
       const plmValido = urlPlm && !cartelas.has(urlPlm) && !refIsCartela ? urlPlm : null;
-      // Cadeia onerror: urlInicial → (urlAny se diff) → PLM → silhueta
-      const steps = [];
-      if (urlCor && urlAny && urlCor !== urlAny) steps.push(urlAny);
+      // Cadeia onerror: urlInicial → TODAS as outras URLs do banco → PLM → silhueta
+      // Dedup: descarta URLs iguais à inicial.
+      const fallbacks = todasUrls.filter(u => u && u !== urlInicial);
+      // Limita pra não explodir HTML em refs com muitas cores (ex: 70 cores)
+      const cappedFallbacks = fallbacks.slice(0, 12);
+      const steps = [...cappedFallbacks];
       if (plmValido) steps.push(plmValido);
       const finalChain = `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
       const onerrChain = steps.map((u, i) =>
