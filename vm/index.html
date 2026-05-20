@@ -6076,10 +6076,27 @@ function _showRefSuggestions(i, query){
     const p = (typeof REF_INDEX !== 'undefined') ? REF_INDEX[ref] : null;
     const tipo = p?.tipo || '';
     const desc = p?.descricao || '';
-    // Thumb = pieceImage SEM corPrincipal pra pegar qualquer cor
-    const thumb = (typeof pieceImage === 'function')
-      ? pieceImage({ref, tipo}, ref)
+    // Thumb pra ID visual: usa o que tiver mais rápido — PLM (sem filtro
+    // de cartela, ela ainda identifica a peça) → Photos any color → silhueta.
+    // Não passa pelo pieceImage cascade do CD/Buracos (que evita cartela).
+    const refUnpad = String(ref).replace(/^0+/, '') || '0';
+    const urlPlm = (window.VED_IMG && (window.VED_IMG[refUnpad] || window.VED_IMG[String(ref)])) || '';
+    const urlZen = (window.FotoResolver && window.FotoResolver.getFotoAnyColor)
+      ? window.FotoResolver.getFotoAnyColor(String(ref))
       : '';
+    const sil = (typeof silhouette === 'function') ? silhouette(tipo, p?.corPrincipal) : '';
+    const urlInicial = urlPlm || urlZen;
+    let thumb;
+    if (urlInicial) {
+      const fallback = urlPlm && urlZen && urlPlm !== urlZen
+        ? `this.dataset.t='1';this.src='${urlZen.replace(/'/g,"\\'")}';return;`
+        : `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
+      const final = `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
+      const onerr = `if(this.dataset.t==='1'){${final}return;}${fallback}`;
+      thumb = `<img src="${urlInicial}" alt="${ref}" loading="lazy" onerror="${onerr}"/><div style="display:none">${sil}</div>`;
+    } else {
+      thumb = sil;
+    }
     return `<div class="ref-sugg-item" onmousedown="_pickRef(${i}, '${ref}')" style="display:flex;gap:10px;align-items:center;padding:6px 10px;cursor:pointer;border-bottom:1px solid var(--paper-2)" onmouseover="this.style.background='var(--paper-2)'" onmouseout="this.style.background='#fff'">
       <div style="width:32px;height:42px;flex-shrink:0;overflow:hidden;border-radius:2px;display:flex;align-items:center;justify-content:center;background:var(--paper-2)" class="ref-sugg-thumb">${thumb}</div>
       <div style="flex:1;min-width:0">
