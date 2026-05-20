@@ -4205,17 +4205,56 @@ function _getCartelaRefs(){
   return _CARTELA_REFS_CACHE;
 }
 
+/* Helper: resolve URL do R2 mirror pra (ref, cor). Tenta cor exata primeiro,
+   depois qualquer cor disponível. R2 = CDN Cloudflare, ~50ms world-wide. */
+function _r2UrlFor(ref, cor){
+  if (!window.FOTOS_R2_BY_REF || !ref) return null;
+  const ref6 = String(ref).padStart(6, '0');
+  const refs = window.FOTOS_R2_BY_REF[ref6] || window.FOTOS_R2_BY_REF[String(ref)];
+  if (!refs) return null;
+  if (cor) {
+    // Normaliza cor: '010' / '10' / '*10' → '10'; 'C25' → 'C25'
+    const c = String(cor).replace(/^\*/, '').replace(/^0+/, '') || '0';
+    const cVariantes = [String(cor).toUpperCase(), c, c.padStart(3, '0'), c.padStart(2, '0')];
+    for (const v of cVariantes) {
+      if (refs[v]) return refs[v];
+    }
+  }
+  // Any color
+  const cores = Object.keys(refs);
+  return cores.length ? refs[cores[0]] : null;
+}
+
 function _resolvePhoto(p, refFallback){
   const ref = (p && p.ref) || refFallback;
-  // PERFORMANCE: PLM CDN responde em ~200ms direto. Photos via /api/foto
-  // demora 50ms (hot) a 3s (cold timeout). Drill tem ~25 cabides × várias
-  // araras = centenas de imgs em paralelo — Photos-first travava a UI.
+  // CASCADE (após mirror R2 estar populado):
+  //   1. R2 (FOTOS_R2)  — CDN ~50ms, cobertura ~16k refs do banco_fotos
+  //   2. PLM (VED_IMG)  — fallback, com filtro de cartela
+  //   3. Photos via /api/foto proxy — último recurso (proxy do origin lento)
+  //   4. silhueta colorida
   //
-  // Cascade: PLM válido (não cartela) → Photos (cor exata → todas cores) →
-  //          silhueta. Mantém o filtro de cartela (URL reusada + blacklist
-  //          aspect-ratio) pra evitar paletinha.
-  //
-  // 0a) PLM (VED_IMG) primário — rápido + filtro cartela
+  // 0aa) R2 primário — fonte definitiva quando mirror está rodando
+  if (ref && window.FOTOS_R2_BY_REF) {
+    const urlR2Cor = _r2UrlFor(ref, p?.corPrincipal);
+    if (urlR2Cor) {
+      const sil = p ? silhouette(p.tipo, p.corPrincipal) : '';
+      // Fallback: PLM (não-cartela) → silhueta
+      const refUnpad = String(ref).replace(/^0+/, '') || '0';
+      const urlPlm = window.VED_IMG ? (window.VED_IMG[refUnpad] || window.VED_IMG[String(ref)]) : null;
+      const cartelas = _getCartelaUrls();
+      const refIsCartela = window.CARTELAS_PLM && (
+        window.CARTELAS_PLM.has(refUnpad) || window.CARTELAS_PLM.has(String(ref))
+      );
+      const plmFb = urlPlm && !cartelas.has(urlPlm) && !refIsCartela ? urlPlm : null;
+      const cadeia = plmFb
+        ? `this.dataset.t='1';this.src='${plmFb.replace(/'/g,"\\'")}';return;`
+        : `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
+      const finalChain = `this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';`;
+      const onerr = `if(this.dataset.t==='1'){${finalChain}return;}${cadeia}`;
+      return `<img src="${urlR2Cor}" alt="${ref}" loading="lazy" onerror="${onerr}"/><div style="display:none">${sil}</div>`;
+    }
+  }
+  // 0a) PLM (VED_IMG) — fallback se R2 não tem (refs novas, sync R2 atrasado)
   if (ref && window.VED_IMG) {
     const refUnpad = String(ref).replace(/^0+/, '') || '0';
     const urlPlm = window.VED_IMG[refUnpad] || window.VED_IMG[String(ref)];

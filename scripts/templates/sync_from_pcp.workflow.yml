@@ -49,6 +49,7 @@ jobs:
           sparse-checkout: |
             ved_varejo.js
             ved_data.js
+            fotos_r2.json
             data/cores_plm.json
             data/plantas
             data/drills
@@ -82,6 +83,17 @@ jobs:
             echo "✓ ved_data.js copiado ($(wc -c < ved_data.js) bytes)"
           else
             echo "⚠ ved_data.js não encontrado no anselmi-pcp"
+          fi
+
+          # fotos_r2.json — mirror das fotos do photo.anselmi no Cloudflare R2.
+          # Formato: {filename: url_publica_r2}. ex: "29856_E60.jpg" → R2 URL.
+          # Gerado pelo workflow mirror_fotos_r2.yml no anselmi-pcp (1×/dia).
+          # Usado como fonte PRIMÁRIA de foto (CDN rápido, sem hotlinking).
+          if [ -f _pcp/fotos_r2.json ]; then
+            cp _pcp/fotos_r2.json ./fotos_r2.json
+            echo "✓ fotos_r2.json copiado ($(wc -c < fotos_r2.json) bytes)"
+          else
+            echo "⚠ fotos_r2.json não encontrado — Photos via proxy continua de fallback"
           fi
 
           mkdir -p data data/plantas data/drills

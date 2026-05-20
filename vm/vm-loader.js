@@ -161,6 +161,31 @@
       }
     }).catch(err => console.warn('[vm-loader] GERENTES load falhou:', err.message));
 
+    // FOTOS_R2: mirror das fotos do photo.anselmi no Cloudflare R2.
+    // Formato: { "29856_E60.jpg": "https://pub-xxx.r2.dev/29856_E60.jpg", ... }
+    // Construímos 2 índices pro lookup rápido em _resolvePhoto:
+    //   window.FOTOS_R2_BY_FILE  — exact match por filename
+    //   window.FOTOS_R2_BY_REF   — { ref6: { cor: url } } pra cor exata
+    // Fonte primária de foto agora — substitui o /api/foto proxy (que dependia
+    // do origin lento + anti-hotlinking do Zenphoto).
+    loadJSON('../fotos_r2.json').then(data => {
+      if (!data || typeof data !== 'object') return;
+      window.FOTOS_R2_BY_FILE = data;
+      const byRef = {};
+      for (const fname in data) {
+        // Parse filename: 29856_E60.jpg → ref="29856" cor="E60"
+        const m = fname.match(/^(\d+)_([A-Za-z0-9]+)\.(jpg|jpeg|png|webp)$/i);
+        if (!m) continue;
+        const ref6 = m[1].padStart(6, '0');
+        const cor = m[2].toUpperCase();
+        if (!byRef[ref6]) byRef[ref6] = {};
+        byRef[ref6][cor] = data[fname];
+      }
+      window.FOTOS_R2_BY_REF = byRef;
+      console.info('[vm-loader] FOTOS_R2 ·', Object.keys(data).length, 'fotos /',
+                   Object.keys(byRef).length, 'refs no mirror R2');
+    }).catch(err => console.warn('[vm-loader] FOTOS_R2 load falhou:', err.message));
+
     // CARTELAS_PLM: lista de refs cuja foto no VED_IMG é cartela (paletinha)
     // detectada por aspect ratio quadrado (≠ 3:4 de peça vestida).
     // Gerado offline via measure_plm.js — Playwright mede naturalWidth/Height
