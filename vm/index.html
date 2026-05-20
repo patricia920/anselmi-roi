@@ -239,6 +239,7 @@ table.list td:first-child{padding-left:18px}
 .mosaic-photo{width:100%;aspect-ratio:3/4;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;border-bottom:1px solid var(--line)}
 .mosaic-photo svg,.mosaic-photo img{width:100%;height:100%;object-fit:contain}
 .cd-thumb svg,.cd-thumb img{width:100%;height:100%;object-fit:contain}
+.ref-sugg-thumb svg,.ref-sugg-thumb img{width:100%;height:100%;object-fit:contain}
 .mosaic-photo .photo-tag{position:absolute;top:8px;right:8px;background:rgba(26,23,20,.78);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:var(--r-sm);letter-spacing:.04em;backdrop-filter:blur(4px);text-transform:uppercase}
 .mosaic-photo .photo-tag.crit{background:var(--bordo)}
 .mosaic-photo .photo-tag.warn{background:var(--ambar)}
@@ -5985,19 +5986,16 @@ function closeAddModal(){
 
 function renderAddPieces(){
   // Lista completa: fotos.json (4807 refs) + REF_INDEX (Sisplan).
-  // Sem slice — o <datalist> aguenta milhares de opções e o browser filtra rápido.
-  const refsList = _allKnownRefs();
-  const datalist = `<datalist id="refs-datalist">${refsList.map(r => {
-    const p = REF_INDEX[r];
-    const label = p ? `${p.tipo || ''} · ${p.corPrincipal || ''}`.trim() : 'foto disponível';
-    return `<option value="${r}">${label}</option>`;
-  }).join('')}</datalist>`;
+  // Antes era <datalist> nativo (sem suporte a imagem). Agora é custom
+  // dropdown via _showRefSuggestions() — exibe thumb da peça (qualquer cor)
+  // + ref + tipo pra identificação visual rápida.
+  window._ALL_KNOWN_REFS = _allKnownRefs(); // cache pro autocomplete
   /* se 1 peça e está criando cabide novo, papel é "único"
      se está adicionando a cabide existente, mantém papel já escolhido (top/bottom/outer) */
   const modoExistente = _addCabidePos !== null;
   if(_addPieces.length === 1 && !modoExistente) _addPieces[0].papel = 'unico';
 
-  document.getElementById('add-pieces').innerHTML = datalist + _addPieces.map((piece, i) => {
+  document.getElementById('add-pieces').innerHTML = _addPieces.map((piece, i) => {
     const p = REF_INDEX[piece.ref];
     /* preview usa ref+cor selecionada (se existir) pra puxar foto certa */
     const previewObj = p ? Object.assign({}, p, piece.cor ? {corPrincipal: piece.cor} : {}) : null;
@@ -6024,15 +6022,16 @@ function renderAddPieces(){
     if(!corOptions) corOptions = '<option value="">— sem foto disponível —</option>';
     return `
       <div class="add-piece-row">
-        <div>
+        <div style="position:relative">
           <div class="lbl">REF ${i+1}</div>
           <div style="display:flex;gap:6px;align-items:stretch">
-            <input type="text" list="refs-datalist" placeholder="Ex: 28871" value="${piece.ref}" data-piece-i="${i}" oninput="updateAddPiece(${i}, 'ref', this.value)" style="flex:1"/>
+            <input type="text" placeholder="Ex: 28871" value="${piece.ref}" data-piece-i="${i}" autocomplete="off" oninput="updateAddPiece(${i}, 'ref', this.value); _showRefSuggestions(${i}, this.value)" onfocus="_showRefSuggestions(${i}, this.value)" onblur="setTimeout(()=>_hideRefSuggestions(${i}), 200)" style="flex:1"/>
             <button type="button" onclick="vmScannerStart(${i})" title="Ler código de barras com a câmera" style="padding:0 10px;background:var(--ink);color:#fff;border:none;border-radius:var(--r-sm);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;letter-spacing:.04em">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><rect x="3" y="6" width="2" height="12"/><rect x="7" y="6" width="1" height="12"/><rect x="10" y="6" width="3" height="12"/><rect x="15" y="6" width="1" height="12"/><rect x="18" y="6" width="2" height="12"/></svg>
               CÓDIGO
             </button>
           </div>
+          <div id="ref-sugg-${i}" class="ref-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;max-height:340px;overflow-y:auto;background:#fff;border:1px solid var(--line);border-radius:var(--r-sm);box-shadow:var(--shadow-md);z-index:10;margin-top:4px"></div>
         </div>
         <div>
           <div class="lbl">Cor${comEstoque.length ? ' ('+comEstoque.length+' c/ estoque)' : (cores.length ? ' ('+cores.length+')' : '')}</div>
@@ -6055,6 +6054,59 @@ function renderAddPieces(){
     `;
   }).join('');
 }
+
+/* Custom autocomplete pro input de REF: mostra thumb (qualquer cor) + ref + tipo
+   pra identificação visual rápida. Substitui o <datalist> nativo que não suporta
+   imagem. */
+function _showRefSuggestions(i, query){
+  const box = document.getElementById('ref-sugg-' + i);
+  if (!box) return;
+  const refs = window._ALL_KNOWN_REFS || [];
+  const q = (query || '').trim().toUpperCase();
+  let matched = refs;
+  if (q) {
+    matched = refs.filter(r => String(r).toUpperCase().includes(q));
+  }
+  matched = matched.slice(0, 40); // cap pra não bloquear UI
+  if (!matched.length) {
+    box.style.display = 'none';
+    return;
+  }
+  box.innerHTML = matched.map(ref => {
+    const p = (typeof REF_INDEX !== 'undefined') ? REF_INDEX[ref] : null;
+    const tipo = p?.tipo || '';
+    const desc = p?.descricao || '';
+    // Thumb = pieceImage SEM corPrincipal pra pegar qualquer cor
+    const thumb = (typeof pieceImage === 'function')
+      ? pieceImage({ref, tipo}, ref)
+      : '';
+    return `<div class="ref-sugg-item" onmousedown="_pickRef(${i}, '${ref}')" style="display:flex;gap:10px;align-items:center;padding:6px 10px;cursor:pointer;border-bottom:1px solid var(--paper-2)" onmouseover="this.style.background='var(--paper-2)'" onmouseout="this.style.background='#fff'">
+      <div style="width:32px;height:42px;flex-shrink:0;overflow:hidden;border-radius:2px;display:flex;align-items:center;justify-content:center;background:var(--paper-2)" class="ref-sugg-thumb">${thumb}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px">${ref}</div>
+        <div style="font-size:11px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${tipo}${desc ? ' · ' + desc : ''}</div>
+      </div>
+    </div>`;
+  }).join('');
+  box.style.display = 'block';
+}
+function _hideRefSuggestions(i){
+  const box = document.getElementById('ref-sugg-' + i);
+  if (box) box.style.display = 'none';
+}
+function _pickRef(i, ref){
+  const row = document.querySelectorAll('.add-piece-row')[i];
+  const input = row?.querySelector('input[type="text"]');
+  if (input) {
+    input.value = ref;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  _hideRefSuggestions(i);
+}
+window._showRefSuggestions = _showRefSuggestions;
+window._hideRefSuggestions = _hideRefSuggestions;
+window._pickRef = _pickRef;
+
 function updateAddPiece(i, field, val){
   /* cor pode ter espaços e não deve ser uppercase forçado */
   if(field === 'cor'){
