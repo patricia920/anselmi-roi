@@ -45,11 +45,11 @@ export async function onRequest(context) {
   // 2) Fetch upstream sem Referer (server-side, sem hotlink protection)
   // Debug mode: ?debug=1 retorna info sobre o upstream em vez da imagem
   const debug = url.searchParams.get('debug') === '1';
-  // Timeout 8s: balanço entre dar chance do origin responder (cold pode levar
-  // 6s pra entregar imagem real 200) e evitar <img> travado por 19s (timeout
-  // 522). Anteriormente 4s era curto demais — refs com foto real caíam pra
-  // silhueta prematuramente porque o origin ainda não tinha respondido.
-  const FETCH_TIMEOUT_MS = 8000;
+  // Timeout 3s: drill tem ~25 cabides × várias araras = centenas de imgs em
+  // paralelo. Browser limita ~6 conexões/host, então cada batch espera todas
+  // antes de prosseguir — timeout longo (8s) trava UI inteira. 3s é suficiente
+  // pra cache hot (50ms) e cold rápido; cold lento cai pra PLM/silhueta.
+  const FETCH_TIMEOUT_MS = 3000;
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
