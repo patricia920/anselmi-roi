@@ -1721,7 +1721,7 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
       <button class="mm-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>
         Estoque
-        <span class="mm-cnt" id="mm-cnt-estoque">2</span>
+        <span class="mm-cnt" id="mm-cnt-estoque">8</span>
         <span class="mm-chev">▾</span>
       </button>
       <div class="mm-pop">
@@ -1761,6 +1761,28 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
             <div class="mm-it-desc">Peças paradas sugeridas pra devolver</div>
           </div>
           <span class="mm-it-badge crit" id="badge-dev-total">—</span>
+        </a>
+        <div class="mm-pop-section-h">PCP · ROI</div>
+        <a class="mm-item" data-tab="ext-vv" onclick="switchTab('ext-vv')">
+          <svg class="mm-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h2l2.4 12.3a1 1 0 0 0 1 .7h9.2a1 1 0 0 0 1-.7L21 8H6"/></svg>
+          <div class="mm-it-body">
+            <div class="mm-it-name">Vendas Varejo</div>
+            <div class="mm-it-desc">Dashboard PCP de vendas por loja (anselmi-producao)</div>
+          </div>
+        </a>
+        <a class="mm-item" data-tab="ext-ve" onclick="switchTab('ext-ve')">
+          <svg class="mm-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10V4h16v6"/><path d="M2 10h20l-1.5 11a1 1 0 0 1-1 .9H4.5a1 1 0 0 1-1-.9z"/><path d="M8 14h8"/></svg>
+          <div class="mm-it-body">
+            <div class="mm-it-name">Estoque Varejo</div>
+            <div class="mm-it-desc">Posição de estoque das lojas Anselmi (anselmi-producao)</div>
+          </div>
+        </a>
+        <a class="mm-item" data-tab="ext-cdl" onclick="switchTab('ext-cdl')">
+          <svg class="mm-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h13l3 4v6H3z"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M16 11h3"/></svg>
+          <div class="mm-it-body">
+            <div class="mm-it-name">CD Lojas</div>
+            <div class="mm-it-desc">Estoque do CD distribuído por loja (anselmi-producao)</div>
+          </div>
         </a>
       </div>
     </div>
@@ -2761,6 +2783,36 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
       <div id="el-stats" style="font-family:'Inter',sans-serif;font-size:11px;color:var(--ink-3);letter-spacing:.06em">—</div>
     </div>
     <div id="el-page" style="padding:0 22px 22px;overflow-x:auto"></div>
+  </section>
+
+  <!-- 14b/14c/14d · ABAS EMBEDADAS DO anselmi-producao (PCP · ROI)
+       Lazy-load: o iframe só carrega quando o user clica na aba (data-src → src
+       via switchTab). Auth nativo do anselmi-producao (mesmo browser/cookie). -->
+  <section class="tab" data-tab="ext-vv">
+    <div class="page-intro">
+      <div class="crumb">14b · PCP · Vendas Varejo</div>
+      <h1>Vendas Varejo · dashboard PCP</h1>
+      <div class="sub">Embedded do <b>anselmi-producao.pages.dev</b>. Se pedir login, é a senha do PCP (diferente da senha VM). <a href="https://anselmi-producao.pages.dev/desktop#vv" target="_blank" rel="noopener" style="color:var(--bordo)">Abrir em nova aba ↗</a></div>
+    </div>
+    <iframe data-src="https://anselmi-producao.pages.dev/desktop#vv" class="ext-iframe" title="Vendas Varejo" style="width:100%;height:calc(100vh - 200px);border:0;background:#fff"></iframe>
+  </section>
+
+  <section class="tab" data-tab="ext-ve">
+    <div class="page-intro">
+      <div class="crumb">14c · PCP · Estoque Varejo</div>
+      <h1>Estoque Varejo · dashboard PCP</h1>
+      <div class="sub">Embedded do <b>anselmi-producao.pages.dev</b>. <a href="https://anselmi-producao.pages.dev/desktop#ve" target="_blank" rel="noopener" style="color:var(--bordo)">Abrir em nova aba ↗</a></div>
+    </div>
+    <iframe data-src="https://anselmi-producao.pages.dev/desktop#ve" class="ext-iframe" title="Estoque Varejo" style="width:100%;height:calc(100vh - 200px);border:0;background:#fff"></iframe>
+  </section>
+
+  <section class="tab" data-tab="ext-cdl">
+    <div class="page-intro">
+      <div class="crumb">14d · PCP · Estoque CD Lojas</div>
+      <h1>Estoque CD Lojas · dashboard PCP</h1>
+      <div class="sub">Embedded do <b>anselmi-producao.pages.dev</b>. <a href="https://anselmi-producao.pages.dev/desktop#cdl" target="_blank" rel="noopener" style="color:var(--bordo)">Abrir em nova aba ↗</a></div>
+    </div>
+    <iframe data-src="https://anselmi-producao.pages.dev/desktop#cdl" class="ext-iframe" title="CD Lojas" style="width:100%;height:calc(100vh - 200px);border:0;background:#fff"></iframe>
   </section>
 
   <!-- 16 VENDAS POR LOJA -->
@@ -4733,7 +4785,8 @@ const labels = {
   loja:'Drill por loja', looks:'Looks incompletos', otimizar:'Otimizar VM',
   mix:'Mix & Categoria', mixloja:'Mix por Loja', planta:'Planta da loja',
   ranking:'Ranking', exportar:'Exportar documento', avaliacao:'Avaliação do VM',
-  estoque:'Estoque Total', devolucao:'Devolução'
+  estoque:'Estoque Total', devolucao:'Devolução',
+  'ext-vv':'Vendas Varejo (PCP)', 'ext-ve':'Estoque Varejo (PCP)', 'ext-cdl':'CD Lojas (PCP)'
 };
 function switchTab(t){
   tabs.forEach(s=>s.classList.toggle('active', s.dataset.tab===t));
@@ -4747,6 +4800,13 @@ function switchTab(t){
     g.classList.remove('is-open');
   });
   if(lbl) lbl.textContent = labels[t] || '';
+  /* Lazy-load de iframes externos (anselmi-producao) — popula data-src → src
+     só quando user entra na aba, evita carregar todos no boot. */
+  const activeSection = document.querySelector(`section.tab[data-tab="${t}"]`);
+  if (activeSection) {
+    const iframe = activeSection.querySelector('iframe[data-src]:not([src])');
+    if (iframe) iframe.src = iframe.dataset.src;
+  }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function goTo(t){ switchTab(t); }
