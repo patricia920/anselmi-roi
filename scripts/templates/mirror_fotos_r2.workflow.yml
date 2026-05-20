@@ -1,0 +1,93 @@
+name: Mirror fotos to R2
+
+# Espelha todas as fotos do photo.anselmi.ind.br pro Cloudflare R2.
+# Fonte: data/banco_fotos.json do anselmi-roi (~42k URLs, regenerado a cada
+# sync 30min) — clonado read-only via ROI_PAT.
+#
+# Pré-requisitos (Secrets do anselmi-pcp):
+#   R2_ACCESS_KEY_ID
+#   R2_SECRET_ACCESS_KEY
+#   R2_ENDPOINT          (ex: https://abc123.r2.cloudflarestorage.com)
+#   R2_PUBLIC_BASE       (ex: https://pub-XXX.r2.dev — URL do Public bucket)
+#   ROI_PAT              fine-grained PAT com Contents:Read no anselmi-roi
+#                        (mesmo padrão do PCP_PAT mas direção contrária)
+
+on:
+  schedule:
+    - cron: '0 9 * * *'   # 6h BRT (UTC-3) — depois do auto_overrides diário
+  workflow_dispatch:       # botão manual no GitHub Actions
+    inputs:
+      full:
+        description: "Reupload TUDO (ignora cache R2)?"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write          # pra commitar fotos_r2.json + manifest
+
+concurrency:
+  group: mirror-fotos-r2
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60     # 42k URLs × ~300ms = ~15min worst case
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout anselmi-roi (só data/banco_fotos.json)
+        uses: actions/checkout@v4
+        with:
+          repository: patricia920/anselmi-roi
+          token: ${{ secrets.ROI_PAT }}
+          path: _roi
+          sparse-checkout: |
+            data/banco_fotos.json
+          sparse-checkout-cone-mode: false
+          fetch-depth: 1
+
+      - name: Copia banco_fotos.json pra working dir
+        run: |
+          mkdir -p data
+          if [ -f _roi/data/banco_fotos.json ]; then
+            cp _roi/data/banco_fotos.json data/banco_fotos.json
+            echo "✓ banco_fotos.json copiado ($(wc -c < data/banco_fotos.json) bytes)"
+          else
+            echo "⚠ banco_fotos.json não encontrado — mirror vai usar só fotos.json"
+          fi
+          rm -rf _roi
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: pip install --quiet boto3 requests
+
+      - name: Run mirror_fotos_r2.py
+        env:
+          R2_ACCESS_KEY_ID:     ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT:          ${{ secrets.R2_ENDPOINT }}
+          R2_PUBLIC_BASE:       ${{ secrets.R2_PUBLIC_BASE }}
+          R2_BUCKET:            anselmi-fotos-mirror
+        run: |
+          if [ "${{ github.event.inputs.full }}" = "true" ]; then
+            python3 mirror_fotos_r2.py --full
+          else
+            python3 mirror_fotos_r2.py
+          fi
+
+      - name: Commit fotos_r2.json + manifest
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add fotos_r2.json fotos_r2_manifest.json 2>/dev/null || true
+          if ! git diff --staged --quiet; then
+            git commit -m "auto: mirror fotos → R2 ($(TZ=America/Sao_Paulo date +'%Y-%m-%d %H:%M BRT'))"
+            git push
+          else
+            echo "Nada mudou em fotos_r2.json"
+          fi
