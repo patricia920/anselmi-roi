@@ -45,11 +45,14 @@ export async function onRequest(context) {
   // 2) Fetch upstream sem Referer (server-side, sem hotlink protection)
   // Debug mode: ?debug=1 retorna info sobre o upstream em vez da imagem
   const debug = url.searchParams.get('debug') === '1';
+  // Timeout curto (4s): o origin do Zenphoto às vezes leva 19s pra 522. Sem
+  // limite, o <img> ficava travado esperando, sem dar tempo pro onerror cascade
+  // cair pro PLM. Com AbortController de 4s, refs cold viram 504 rápido →
+  // onerror dispara → PLM (que carrega em ~200ms via CDN).
+  const FETCH_TIMEOUT_MS = 4000;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
-    // Sem cache-bust upstream: o origin do Zenphoto está dando timeout (522) pras
-    // requests do Worker. Sem cb=, o CDN dele serve do cache (mesmo STALE) e
-    // responde rápido — se for 404, o onerror do <img> cascade pro PLM.
-    // Cache-bust só piorava: timeout 522 demorava ~30s, prendendo o IMG.
     const r = await fetch(upstream, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -57,7 +60,9 @@ export async function onRequest(context) {
         'Accept-Language': 'pt-BR,pt;q=0.9,en;q=0.8',
       },
       redirect: 'follow',
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
 
     if (debug) {
       const head = {};
@@ -100,6 +105,13 @@ export async function onRequest(context) {
     await cache.put(cacheKey, out.clone());
     return out;
   } catch (e) {
-    return new Response('Upstream error: ' + String(e), { status: 502 });
+    clearTimeout(timeoutId);
+    // AbortError = timeout. Outros erros = network failure. Em ambos casos,
+    // retorna 504 rápido pra <img> disparar onerror logo.
+    const isAbort = e && (e.name === 'AbortError' || /aborted/i.test(String(e)));
+    return new Response(isAbort ? 'Upstream timeout' : 'Upstream error: ' + String(e), {
+      status: 504,
+      headers: { 'Cache-Control': 'no-store', 'X-Upstream-Status': isAbort ? 'timeout' : 'error' },
+    });
   }
 }
