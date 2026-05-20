@@ -1721,7 +1721,7 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
       <button class="mm-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>
         Estoque
-        <span class="mm-cnt" id="mm-cnt-estoque">8</span>
+        <span class="mm-cnt" id="mm-cnt-estoque">2</span>
         <span class="mm-chev">▾</span>
       </button>
       <div class="mm-pop">
@@ -1761,28 +1761,6 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
             <div class="mm-it-desc">Peças paradas sugeridas pra devolver</div>
           </div>
           <span class="mm-it-badge crit" id="badge-dev-total">—</span>
-        </a>
-        <div class="mm-pop-section-h">PCP · ROI</div>
-        <a class="mm-item" data-tab="ext-vv" onclick="switchTab('ext-vv')">
-          <svg class="mm-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h2l2.4 12.3a1 1 0 0 0 1 .7h9.2a1 1 0 0 0 1-.7L21 8H6"/></svg>
-          <div class="mm-it-body">
-            <div class="mm-it-name">Vendas Varejo</div>
-            <div class="mm-it-desc">Dashboard PCP de vendas por loja (anselmi-producao)</div>
-          </div>
-        </a>
-        <a class="mm-item" data-tab="ext-ve" onclick="switchTab('ext-ve')">
-          <svg class="mm-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10V4h16v6"/><path d="M2 10h20l-1.5 11a1 1 0 0 1-1 .9H4.5a1 1 0 0 1-1-.9z"/><path d="M8 14h8"/></svg>
-          <div class="mm-it-body">
-            <div class="mm-it-name">Estoque Varejo</div>
-            <div class="mm-it-desc">Posição de estoque das lojas Anselmi (anselmi-producao)</div>
-          </div>
-        </a>
-        <a class="mm-item" data-tab="ext-cdl" onclick="switchTab('ext-cdl')">
-          <svg class="mm-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h13l3 4v6H3z"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M16 11h3"/></svg>
-          <div class="mm-it-body">
-            <div class="mm-it-name">CD Lojas</div>
-            <div class="mm-it-desc">Estoque do CD distribuído por loja (anselmi-producao)</div>
-          </div>
         </a>
       </div>
     </div>
@@ -1855,6 +1833,38 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
           <div class="mm-it-body">
             <div class="mm-it-name">Avaliação do VM</div>
             <div class="mm-it-desc">Score por loja · erros e melhorias</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="mm-grp" data-mm="pcp">
+      <button class="mm-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 3v18"/></svg>
+        PCP
+        <span class="mm-cnt" id="mm-cnt-pcp">3</span>
+        <span class="mm-chev">▾</span>
+      </button>
+      <div class="mm-pop">
+        <a class="mm-item" data-tab="ext-vv" onclick="switchTab('ext-vv')">
+          <svg class="mm-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h2l2.4 12.3a1 1 0 0 0 1 .7h9.2a1 1 0 0 0 1-.7L21 8H6"/></svg>
+          <div class="mm-it-body">
+            <div class="mm-it-name">Vendas Varejo</div>
+            <div class="mm-it-desc">Dashboard PCP de vendas por loja</div>
+          </div>
+        </a>
+        <a class="mm-item" data-tab="ext-ve" onclick="switchTab('ext-ve')">
+          <svg class="mm-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10V4h16v6"/><path d="M2 10h20l-1.5 11a1 1 0 0 1-1 .9H4.5a1 1 0 0 1-1-.9z"/><path d="M8 14h8"/></svg>
+          <div class="mm-it-body">
+            <div class="mm-it-name">Estoque Varejo</div>
+            <div class="mm-it-desc">Posição de estoque das lojas Anselmi</div>
+          </div>
+        </a>
+        <a class="mm-item" data-tab="ext-cdl" onclick="switchTab('ext-cdl')">
+          <svg class="mm-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h13l3 4v6H3z"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M16 11h3"/></svg>
+          <div class="mm-it-body">
+            <div class="mm-it-name">CD Lojas</div>
+            <div class="mm-it-desc">Estoque do CD distribuído por loja</div>
           </div>
         </a>
       </div>
