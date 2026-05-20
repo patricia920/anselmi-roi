@@ -2796,33 +2796,36 @@ hr.thin{border:none;border-top:1px solid var(--paper-2);margin:22px 0}
   </section>
 
   <!-- 14b/14c/14d · ABAS EMBEDADAS DO anselmi-producao (PCP · ROI)
-       Lazy-load: o iframe só carrega quando o user clica na aba (data-src → src
-       via switchTab). Auth nativo do anselmi-producao (mesmo browser/cookie). -->
+       Lazy-load: o iframe só carrega quando o user clica na aba. SSO: a URL
+       passa por /api/auth/roi-bridge?token=... que valida HMAC e seta cookie
+       do PCP automaticamente (sem nova senha). Ver _ssoIframeUrl() abaixo.
+       data-pcp-hash = parte do hash original (#vv/#ve/#cdl) que o bridge passa
+       como next= preservando o destino. -->
   <section class="tab" data-tab="ext-vv">
     <div class="page-intro">
       <div class="crumb">14b · PCP · Vendas Varejo</div>
       <h1>Vendas Varejo · dashboard PCP</h1>
-      <div class="sub">Embedded do <b>anselmi-producao.pages.dev</b>. Se pedir login, é a senha do PCP (diferente da senha VM). <a href="https://anselmi-producao.pages.dev/desktop#vv" target="_blank" rel="noopener" style="color:var(--bordo)">Abrir em nova aba ↗</a></div>
+      <div class="sub">Dashboard PCP embedado via SSO. <a href="https://anselmi-producao.pages.dev/desktop#vv" target="_blank" rel="noopener" style="color:var(--bordo)">Abrir em nova aba ↗</a></div>
     </div>
-    <iframe data-src="https://anselmi-producao.pages.dev/desktop#vv" class="ext-iframe" title="Vendas Varejo" style="width:100%;height:calc(100vh - 200px);border:0;background:#fff"></iframe>
+    <iframe data-pcp-hash="vv" class="ext-iframe" title="Vendas Varejo" style="width:100%;height:calc(100vh - 200px);border:0;background:#fff"></iframe>
   </section>
 
   <section class="tab" data-tab="ext-ve">
     <div class="page-intro">
       <div class="crumb">14c · PCP · Estoque Varejo</div>
       <h1>Estoque Varejo · dashboard PCP</h1>
-      <div class="sub">Embedded do <b>anselmi-producao.pages.dev</b>. <a href="https://anselmi-producao.pages.dev/desktop#ve" target="_blank" rel="noopener" style="color:var(--bordo)">Abrir em nova aba ↗</a></div>
+      <div class="sub">Dashboard PCP embedado via SSO. <a href="https://anselmi-producao.pages.dev/desktop#ve" target="_blank" rel="noopener" style="color:var(--bordo)">Abrir em nova aba ↗</a></div>
     </div>
-    <iframe data-src="https://anselmi-producao.pages.dev/desktop#ve" class="ext-iframe" title="Estoque Varejo" style="width:100%;height:calc(100vh - 200px);border:0;background:#fff"></iframe>
+    <iframe data-pcp-hash="ve" class="ext-iframe" title="Estoque Varejo" style="width:100%;height:calc(100vh - 200px);border:0;background:#fff"></iframe>
   </section>
 
   <section class="tab" data-tab="ext-cdl">
     <div class="page-intro">
       <div class="crumb">14d · PCP · Estoque CD Lojas</div>
       <h1>Estoque CD Lojas · dashboard PCP</h1>
-      <div class="sub">Embedded do <b>anselmi-producao.pages.dev</b>. <a href="https://anselmi-producao.pages.dev/desktop#cdl" target="_blank" rel="noopener" style="color:var(--bordo)">Abrir em nova aba ↗</a></div>
+      <div class="sub">Dashboard PCP embedado via SSO. <a href="https://anselmi-producao.pages.dev/desktop#cdl" target="_blank" rel="noopener" style="color:var(--bordo)">Abrir em nova aba ↗</a></div>
     </div>
-    <iframe data-src="https://anselmi-producao.pages.dev/desktop#cdl" class="ext-iframe" title="CD Lojas" style="width:100%;height:calc(100vh - 200px);border:0;background:#fff"></iframe>
+    <iframe data-pcp-hash="cdl" class="ext-iframe" title="CD Lojas" style="width:100%;height:calc(100vh - 200px);border:0;background:#fff"></iframe>
   </section>
 
   <!-- 16 VENDAS POR LOJA -->
@@ -4798,6 +4801,33 @@ const labels = {
   estoque:'Estoque Total', devolucao:'Devolução',
   'ext-vv':'Vendas Varejo (PCP)', 'ext-ve':'Estoque Varejo (PCP)', 'ext-cdl':'CD Lojas (PCP)'
 };
+/* Cache do token SSO + helper pra montar URL do bridge anselmi-producao.
+   O token tem TTL 5min — buscamos só na 1ª abertura do iframe e reusamos. */
+let _PCP_SSO_TOKEN = null;
+let _PCP_SSO_EXPIRES = 0;
+async function _getSsoToken(){
+  const now = Math.floor(Date.now() / 1000);
+  if (_PCP_SSO_TOKEN && _PCP_SSO_EXPIRES > now + 30) return _PCP_SSO_TOKEN;
+  try {
+    const r = await fetch('/api/sso-token', { credentials: 'same-origin', cache: 'no-store' });
+    if (!r.ok) return null;
+    const data = await r.json();
+    _PCP_SSO_TOKEN = data.token;
+    _PCP_SSO_EXPIRES = data.expires_at;
+    return _PCP_SSO_TOKEN;
+  } catch { return null; }
+}
+async function _loadPcpIframe(iframe, hash){
+  const token = await _getSsoToken();
+  if (!token) {
+    // SSO não configurado — fallback pra URL direta (vai pedir login PCP no iframe)
+    iframe.src = `https://anselmi-producao.pages.dev/desktop#${hash}`;
+    return;
+  }
+  const next = encodeURIComponent(`/desktop#${hash}`);
+  iframe.src = `https://anselmi-producao.pages.dev/api/auth/roi-bridge?token=${encodeURIComponent(token)}&next=${next}`;
+}
+
 function switchTab(t){
   tabs.forEach(s=>s.classList.toggle('active', s.dataset.tab===t));
   /* atualiza standalone "Hoje" + items dentro dos dropdowns */
@@ -4810,12 +4840,20 @@ function switchTab(t){
     g.classList.remove('is-open');
   });
   if(lbl) lbl.textContent = labels[t] || '';
-  /* Lazy-load de iframes externos (anselmi-producao) — popula data-src → src
-     só quando user entra na aba, evita carregar todos no boot. */
+  /* Lazy-load de iframes externos (anselmi-producao) — popula src só quando
+     user entra na aba. Pra abas PCP (data-pcp-hash), busca token SSO em
+     /api/sso-token e monta URL com /api/auth/roi-bridge → seta cookie no
+     anselmi-producao automaticamente, sem digitar senha. */
   const activeSection = document.querySelector(`section.tab[data-tab="${t}"]`);
   if (activeSection) {
-    const iframe = activeSection.querySelector('iframe[data-src]:not([src])');
-    if (iframe) iframe.src = iframe.dataset.src;
+    const iframe = activeSection.querySelector('iframe:not([src])');
+    if (iframe) {
+      if (iframe.dataset.pcpHash) {
+        _loadPcpIframe(iframe, iframe.dataset.pcpHash);
+      } else if (iframe.dataset.src) {
+        iframe.src = iframe.dataset.src;
+      }
+    }
   }
   window.scrollTo({top:0,behavior:'smooth'});
 }
