@@ -45,11 +45,11 @@ export async function onRequest(context) {
   // 2) Fetch upstream sem Referer (server-side, sem hotlink protection)
   // Debug mode: ?debug=1 retorna info sobre o upstream em vez da imagem
   const debug = url.searchParams.get('debug') === '1';
-  // Timeout curto (4s): o origin do Zenphoto às vezes leva 19s pra 522. Sem
-  // limite, o <img> ficava travado esperando, sem dar tempo pro onerror cascade
-  // cair pro PLM. Com AbortController de 4s, refs cold viram 504 rápido →
-  // onerror dispara → PLM (que carrega em ~200ms via CDN).
-  const FETCH_TIMEOUT_MS = 4000;
+  // Timeout 8s: balanço entre dar chance do origin responder (cold pode levar
+  // 6s pra entregar imagem real 200) e evitar <img> travado por 19s (timeout
+  // 522). Anteriormente 4s era curto demais — refs com foto real caíam pra
+  // silhueta prematuramente porque o origin ainda não tinha respondido.
+  const FETCH_TIMEOUT_MS = 8000;
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
