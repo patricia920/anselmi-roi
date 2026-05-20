@@ -1,16 +1,16 @@
 name: Mirror fotos to R2
 
 # Espelha todas as fotos do photo.anselmi.ind.br pro Cloudflare R2.
-# Fonte: data/banco_fotos.json do anselmi-roi (~42k URLs, regenerado a cada
-# sync 30min) — clonado read-only via ROI_PAT.
+#
+# Fonte: data/banco_fotos.json gerado LOCAL via build_banco_fotos_v2.py
+# (lê os dumps Oracle/Sisplan que já estão no anselmi-pcp). ~42k URLs.
+# NÃO depende de PAT cross-repo — tudo no próprio anselmi-pcp.
 #
 # Pré-requisitos (Secrets do anselmi-pcp):
 #   R2_ACCESS_KEY_ID
 #   R2_SECRET_ACCESS_KEY
 #   R2_ENDPOINT          (ex: https://abc123.r2.cloudflarestorage.com)
 #   R2_PUBLIC_BASE       (ex: https://pub-XXX.r2.dev — URL do Public bucket)
-#   ROI_PAT              fine-grained PAT com Contents:Read no anselmi-roi
-#                        (mesmo padrão do PCP_PAT mas direção contrária)
 
 on:
   schedule:
@@ -36,28 +36,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Checkout anselmi-roi (só data/banco_fotos.json)
-        uses: actions/checkout@v4
-        with:
-          repository: patricia920/anselmi-roi
-          token: ${{ secrets.ROI_PAT }}
-          path: _roi
-          sparse-checkout: |
-            data/banco_fotos.json
-          sparse-checkout-cone-mode: false
-          fetch-depth: 1
-
-      - name: Copia banco_fotos.json pra working dir
-        run: |
-          mkdir -p data
-          if [ -f _roi/data/banco_fotos.json ]; then
-            cp _roi/data/banco_fotos.json data/banco_fotos.json
-            echo "✓ banco_fotos.json copiado ($(wc -c < data/banco_fotos.json) bytes)"
-          else
-            echo "⚠ banco_fotos.json não encontrado — mirror vai usar só fotos.json"
-          fi
-          rm -rf _roi
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -65,6 +43,22 @@ jobs:
 
       - name: Install deps
         run: pip install --quiet boto3 requests
+
+      - name: Gera banco_fotos.json (a partir dos dumps Oracle/Sisplan locais)
+        run: |
+          set -e
+          if [ ! -f scripts/build_banco_fotos_v2.py ]; then
+            echo "❌ scripts/build_banco_fotos_v2.py não encontrado"
+            exit 1
+          fi
+          python3 scripts/build_banco_fotos_v2.py
+          if [ -f data/banco_fotos.json ]; then
+            REFS=$(python3 -c "import json; print(len(json.load(open('data/banco_fotos.json')).get('fotos', {})))")
+            echo "✓ banco_fotos.json gerado · $REFS refs"
+          else
+            echo "❌ banco_fotos.json não foi gerado"
+            exit 1
+          fi
 
       - name: Run mirror_fotos_r2.py
         env:
