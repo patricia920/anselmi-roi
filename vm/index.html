@@ -6317,7 +6317,7 @@ async function vmSaveDrillState(){
     // 2. Cloudflare Pages Function (KV) — best-effort
     try {
       const r = await fetch('/api/vm-state?store=' + encodeURIComponent(state.storeKey), {
-        method: 'PUT',
+        method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify(state)
       });
