@@ -159,8 +159,11 @@ test.describe('VM smoke', () => {
     const fotos = banco.fotos || banco;
     const primeiraRef = Object.keys(fotos)[0];
     const primeiraCor = Object.keys(fotos[primeiraRef])[0];
-    const primeiraUrl = fotos[primeiraRef][primeiraCor][0];
+    let primeiraUrl = fotos[primeiraRef][primeiraCor][0];
     expect(primeiraUrl).toMatch(/photo\.anselmi\.ind\.br/);
+    // v2026-05-21: URLs em banco_fotos.json apontam pra pagina HTML do Zenphoto
+    // (/Fotos/X.jpg => text/html). A imagem real eh em /cache/Fotos/X_595.jpg.
+    primeiraUrl = primeiraUrl.replace('/Fotos/', '/cache/Fotos/').replace(/(\.(?:jpe?g|png|webp))$/i, '_595$1');
     const imgRes = await page.request.get(primeiraUrl);
     expect(imgRes.status()).toBe(200);
     expect(imgRes.headers()['content-type']).toContain('image');
