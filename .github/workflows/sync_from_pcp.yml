@@ -4,21 +4,21 @@ name: sync_from_pcp
 # Roda a cada 30 min e on-demand. Pega:
 #   • ved_varejo.js (root) — Sisplan publicado pelo bot
 #   • data/cores_plm.json — metadata de cor (hex/nome) usada pelo vm-loader
-#   • data/plantas/*      — JPG/PNG/SVG das plantas de loja
-#   • data/drills/*       — JSONs de drill por loja
+#   • data/plantas/* — JPG/PNG/SVG das plantas de loja
+#   • data/drills/* — JSONs de drill por loja
 #
 # Fotos NÃO vêm daqui: o vm-loader usa lib/foto-resolver.js + data/banco_fotos.json
 # (que já vive no anselmi-roi, apontando pra photo.anselmi.ind.br).
 #
 # Pré-requisitos (uma vez):
 #   • Settings → Secrets → Actions do anselmi-roi:
-#       PCP_PAT  =  fine-grained PAT com Read access a Contents do anselmi-pcp
+#       PCP_PAT  = fine-grained PAT com Read access a Contents do anselmi-pcp
 #
 # Commit é feito por github-actions[bot] e dispara Cloudflare Pages deploy.
 
 on:
   schedule:
-    - cron: '*/30 * * * *'   # a cada 30 min
+    - cron: '*/30 * * * *'  # a cada 30 min
   workflow_dispatch:          # botão manual
   push:
     paths:
@@ -203,19 +203,20 @@ jobs:
       - name: Commit + push
         if: steps.diff.outputs.changed == 'true'
         run: |
-          git config user.name  "github-actions[bot]"
+          git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ved_varejo.js data/cores_plm.json data/plantas data/drills data/oracle data/sisplan data/banco_fotos.json data/banco_fotos_pendencias.csv 2>/dev/null || true
           git commit -m "chore(sync): atualiza arquivos de anselmi-pcp"
-          # Retry com pull --rebase pra evitar race condition com outros pushes
-          # (issue: sync_from_pcp run #110 falhou com '! [rejected] main -> main')
+          # Retry com pull --rebase --autostash pra evitar race condition + unstaged changes
+          # (fix run #116: rebase falhava com "cannot pull with rebase: You have unstaged changes"
+          # quando o step "Validar URLs" deixava arquivos modificados fora do git add seletivo)
           for i in 1 2 3 4 5; do
             if git push origin main 2>/dev/null; then
               echo "OK Push na tentativa $i"
               exit 0
             fi
-            echo "Tentativa $i: push rejeitado, pull --rebase..."
-            git pull --rebase origin main || { git rebase --abort 2>/dev/null; }
+            echo "Tentativa $i: push rejeitado, pull --rebase --autostash..."
+            git pull --rebase --autostash origin main || { git rebase --abort 2>/dev/null; }
             sleep $((RANDOM % 5 + 2))
           done
           echo "Push falhou apos 5 tentativas"
