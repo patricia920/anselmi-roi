@@ -1,8 +1,13 @@
 {
-  "synced_at": "2026-05-22T21:49:33-03:00",
+  "synced_at": "2026-05-23T00:38:43-03:00",
+  "synced_at_utc": "2026-05-23T03:38:43Z",
+  "run_id": "26322487244",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/26322487244",
+  "source": "Query Oracle (vw_giro_estoque → data/oracle/*.json)",
   "view": "vw_giro_estoque",
   "schema": "desenv",
   "row_count": 27416,
+  "rows_fetched": 27416,
   "columns": [
     "cd_item",
     "cor",
@@ -12,7 +17,7 @@
     "qt_atual",
     "cta"
   ],
-  "elapsed_ms": 333,
+  "elapsed_ms": 293,
   "limit_applied": null,
   "rows": [
     {
