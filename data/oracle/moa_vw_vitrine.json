@@ -1,8 +1,13 @@
 {
-  "synced_at": "2026-05-22T19:18:18-03:00",
+  "synced_at": "2026-05-23T07:46:55-03:00",
+  "synced_at_utc": "2026-05-23T10:46:55Z",
+  "run_id": "26330694491",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/26330694491",
+  "source": "Query Oracle (moa_vw_vitrine → data/oracle/*.json)",
   "view": "moa_vw_vitrine",
   "schema": "desenv",
   "row_count": 99092,
+  "rows_fetched": 99092,
   "columns": [
     "cd_item",
     "descricao",
@@ -12,7 +17,7 @@
     "ean",
     "url"
   ],
-  "elapsed_ms": 574,
+  "elapsed_ms": 889,
   "limit_applied": null,
   "rows": [
     {
