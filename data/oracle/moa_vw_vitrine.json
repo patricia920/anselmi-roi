@@ -1,13 +1,13 @@
 {
-  "synced_at": "2026-05-24T19:12:12-03:00",
-  "synced_at_utc": "2026-05-24T22:12:12Z",
-  "run_id": "26374159260",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/26374159260",
+  "synced_at": "2026-05-25T09:49:28-03:00",
+  "synced_at_utc": "2026-05-25T12:49:28Z",
+  "run_id": "26401181929",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/26401181929",
   "source": "Query Oracle (moa_vw_vitrine → data/oracle/*.json)",
   "view": "moa_vw_vitrine",
   "schema": "desenv",
-  "row_count": 99092,
-  "rows_fetched": 99092,
+  "row_count": 99096,
+  "rows_fetched": 99096,
   "columns": [
     "cd_item",
     "descricao",
@@ -17,7 +17,7 @@
     "ean",
     "url"
   ],
-  "elapsed_ms": 504,
+  "elapsed_ms": 585,
   "limit_applied": null,
   "rows": [
     {
@@ -891658,6 +891658,42 @@
       "nome_cor": "E99 - AZUL",
       "ean": "7892258084283",
       "url": "45910_E99.jpg"
+    },
+    {
+      "cd_item": "020230",
+      "descricao": "CALÇA FEM",
+      "cor": "998",
+      "tam": "G",
+      "nome_cor": "998 - 998",
+      "ean": "7892258161953",
+      "url": "20230_998.jpg"
+    },
+    {
+      "cd_item": "020043",
+      "descricao": "BLUSA FEM",
+      "cor": "998",
+      "tam": "U",
+      "nome_cor": "998 - 998",
+      "ean": "7892258162073",
+      "url": "20043_998.jpg"
+    },
+    {
+      "cd_item": "020179",
+      "descricao": "SHORT FEM",
+      "cor": "998",
+      "tam": "M",
+      "nome_cor": "998 - 998",
+      "ean": "7892258162165",
+      "url": "20179_998.jpg"
+    },
+    {
+      "cd_item": "020230",
+      "descricao": "CALÇA FEM",
+      "cor": "998",
+      "tam": "M",
+      "nome_cor": "998 - 998",
+      "ean": "7892258162455",
+      "url": "20230_998.jpg"
     },
     {
       "cd_item": "019993",
