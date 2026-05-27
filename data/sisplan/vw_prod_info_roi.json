@@ -1,12 +1,12 @@
 {
-  "synced_at": "2026-05-27T12:08:34-03:00",
-  "synced_at_utc": "2026-05-27T15:08:34Z",
-  "run_id": "26519693676",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/26519693676",
+  "synced_at": "2026-05-27T14:39:03-03:00",
+  "synced_at_utc": "2026-05-27T17:39:03Z",
+  "run_id": "26527964093",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/26527964093",
   "source": "Sync Sisplan (7 views ROI → data/sisplan/*.json)",
   "view": "vw_prod_info_roi",
-  "row_count": 13110,
-  "rows_fetched": 13110,
+  "row_count": 13117,
+  "rows_fetched": 13117,
   "filter": null,
   "rows": [
     {
@@ -45884,7 +45884,7 @@
       "rootproductid": "017005",
       "color": "001",
       "size": "U",
-      "description": "Capa Feminina",
+      "description": "CAPA FEM",
       "classification1": "MONUMENTAL",
       "calssification2": "ANSELMI",
       "classification3": "CASUAL"
@@ -45894,7 +45894,17 @@
       "rootproductid": "017005",
       "color": "P06",
       "size": "U",
-      "description": "Capa Feminina",
+      "description": "CAPA FEM",
+      "classification1": "MONUMENTAL",
+      "calssification2": "ANSELMI",
+      "classification3": "CASUAL"
+    },
+    {
+      "productid": "017005P41U",
+      "rootproductid": "017005",
+      "color": "P41",
+      "size": "U",
+      "description": "CAPA FEM",
       "classification1": "MONUMENTAL",
       "calssification2": "ANSELMI",
       "classification3": "CASUAL"
@@ -45904,7 +45914,7 @@
       "rootproductid": "017005",
       "color": "P53",
       "size": "U",
-      "description": "Capa Feminina",
+      "description": "CAPA FEM",
       "classification1": "MONUMENTAL",
       "calssification2": "ANSELMI",
       "classification3": "CASUAL"
@@ -49300,6 +49310,36 @@
       "classification3": "CASUAL"
     },
     {
+      "productid": "017416A98P",
+      "rootproductid": "017416",
+      "color": "A98",
+      "size": "P",
+      "description": "BLUSA FEM",
+      "classification1": "MONUMENTAL",
+      "calssification2": "ANSELMI",
+      "classification3": "CASUAL"
+    },
+    {
+      "productid": "017416A98M",
+      "rootproductid": "017416",
+      "color": "A98",
+      "size": "M",
+      "description": "BLUSA FEM",
+      "classification1": "MONUMENTAL",
+      "calssification2": "ANSELMI",
+      "classification3": "CASUAL"
+    },
+    {
+      "productid": "017416A98G",
+      "rootproductid": "017416",
+      "color": "A98",
+      "size": "G",
+      "description": "BLUSA FEM",
+      "classification1": "MONUMENTAL",
+      "calssification2": "ANSELMI",
+      "classification3": "CASUAL"
+    },
+    {
       "productid": "017416B79P",
       "rootproductid": "017416",
       "color": "B79",
@@ -49913,6 +49953,36 @@
       "productid": "017638353G",
       "rootproductid": "017638",
       "color": "353",
+      "size": "G",
+      "description": "BLUSA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "CASUAL"
+    },
+    {
+      "productid": "017638A98P",
+      "rootproductid": "017638",
+      "color": "A98",
+      "size": "P",
+      "description": "BLUSA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "CASUAL"
+    },
+    {
+      "productid": "017638A98M",
+      "rootproductid": "017638",
+      "color": "A98",
+      "size": "M",
+      "description": "BLUSA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "CASUAL"
+    },
+    {
+      "productid": "017638A98G",
+      "rootproductid": "017638",
+      "color": "A98",
       "size": "G",
       "description": "BLUSA FEM",
       "classification1": "RECLASSIFICADOS",
