@@ -1,12 +1,12 @@
 {
-  "synced_at": "2026-05-25T22:32:11-03:00",
-  "synced_at_utc": "2026-05-26T01:32:11Z",
-  "run_id": "26427197771",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/26427197771",
+  "synced_at": "2026-05-26T17:23:20-03:00",
+  "synced_at_utc": "2026-05-26T20:23:20Z",
+  "run_id": "26472826020",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/26472826020",
   "source": "Sync Sisplan (7 views ROI → data/sisplan/*.json)",
   "view": "vw_prod_info_roi",
-  "row_count": 12994,
-  "rows_fetched": 12994,
+  "row_count": 13001,
+  "rows_fetched": 13001,
   "filter": null,
   "rows": [
     {
@@ -5670,6 +5670,16 @@
       "classification3": "CASUAL"
     },
     {
+      "productid": "010123C25U",
+      "rootproductid": "010123",
+      "color": "C25",
+      "size": "U",
+      "description": "BLUSA FEM",
+      "classification1": "PROMOÇÃO",
+      "calssification2": "ANSELMI",
+      "classification3": "CASUAL"
+    },
+    {
       "productid": "010135010U",
       "rootproductid": "010135",
       "color": "010",
@@ -8020,10 +8030,30 @@
       "classification3": "GERAL"
     },
     {
-      "productid": "01063800",
+      "productid": "0106380P",
       "rootproductid": "010638",
       "color": "0",
-      "size": "0",
+      "size": "P",
+      "description": "CALÇA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "PROMOÇÃO"
+    },
+    {
+      "productid": "0106380M",
+      "rootproductid": "010638",
+      "color": "0",
+      "size": "M",
+      "description": "CALÇA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "PROMOÇÃO"
+    },
+    {
+      "productid": "0106380G",
+      "rootproductid": "010638",
+      "color": "0",
+      "size": "G",
       "description": "CALÇA FEM",
       "classification1": "GERAL",
       "calssification2": "ANSELMI",
@@ -31378,6 +31408,16 @@
       "classification1": "SKI",
       "calssification2": "ANSELMI",
       "classification3": "ESPORTIVO"
+    },
+    {
+      "productid": "014321P04U",
+      "rootproductid": "014321",
+      "color": "P04",
+      "size": "U",
+      "description": "014321 CASACO FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "PROMOÇÃO"
     },
     {
       "productid": "0143220U",
@@ -57098,6 +57138,36 @@
       "classification1": "GERAL",
       "calssification2": "ANSELMI",
       "classification3": "GERAL"
+    },
+    {
+      "productid": "019125353P",
+      "rootproductid": "019125",
+      "color": "353",
+      "size": "P",
+      "description": "019125 CASACO FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "019125353M",
+      "rootproductid": "019125",
+      "color": "353",
+      "size": "M",
+      "description": "019125 CASACO FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "019125353G",
+      "rootproductid": "019125",
+      "color": "353",
+      "size": "G",
+      "description": "019125 CASACO FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "FALHADOS"
     },
     {
       "productid": "019126010P",
