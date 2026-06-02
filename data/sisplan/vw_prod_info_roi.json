@@ -1,12 +1,12 @@
 {
-  "synced_at": "2026-06-02T12:12:16-03:00",
-  "synced_at_utc": "2026-06-02T15:12:16Z",
-  "run_id": "26829099157",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/26829099157",
+  "synced_at": "2026-06-02T19:19:58-03:00",
+  "synced_at_utc": "2026-06-02T22:19:58Z",
+  "run_id": "26851323432",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/26851323432",
   "source": "Sync Sisplan (7 views ROI → data/sisplan/*.json)",
   "view": "vw_prod_info_roi",
-  "row_count": 13145,
-  "rows_fetched": 13145,
+  "row_count": 13159,
+  "rows_fetched": 13159,
   "filter": null,
   "rows": [
     {
@@ -35265,7 +35265,7 @@
       "color": "0",
       "size": "P",
       "description": "CASACO FEM",
-      "classification1": "GERAL",
+      "classification1": "BÁSICA",
       "calssification2": "ANSELMI",
       "classification3": "CASUAL"
     },
@@ -35275,7 +35275,7 @@
       "color": "0",
       "size": "M",
       "description": "CASACO FEM",
-      "classification1": "GERAL",
+      "classification1": "BÁSICA",
       "calssification2": "ANSELMI",
       "classification3": "CASUAL"
     },
@@ -35285,7 +35285,37 @@
       "color": "0",
       "size": "G",
       "description": "CASACO FEM",
-      "classification1": "GERAL",
+      "classification1": "BÁSICA",
+      "calssification2": "ANSELMI",
+      "classification3": "CASUAL"
+    },
+    {
+      "productid": "015181780P",
+      "rootproductid": "015181",
+      "color": "780",
+      "size": "P",
+      "description": "CASACO FEM",
+      "classification1": "BÁSICA",
+      "calssification2": "ANSELMI",
+      "classification3": "CASUAL"
+    },
+    {
+      "productid": "015181780M",
+      "rootproductid": "015181",
+      "color": "780",
+      "size": "M",
+      "description": "CASACO FEM",
+      "classification1": "BÁSICA",
+      "calssification2": "ANSELMI",
+      "classification3": "CASUAL"
+    },
+    {
+      "productid": "015181780G",
+      "rootproductid": "015181",
+      "color": "780",
+      "size": "G",
+      "description": "CASACO FEM",
+      "classification1": "BÁSICA",
       "calssification2": "ANSELMI",
       "classification3": "CASUAL"
     },
@@ -43140,6 +43170,36 @@
       "classification3": "CASUAL"
     },
     {
+      "productid": "016218M06P",
+      "rootproductid": "016218",
+      "color": "M06",
+      "size": "P",
+      "description": "CALÇA FEM",
+      "classification1": "GERAL",
+      "calssification2": "NORI",
+      "classification3": "CASUAL"
+    },
+    {
+      "productid": "016218M06M",
+      "rootproductid": "016218",
+      "color": "M06",
+      "size": "M",
+      "description": "CALÇA FEM",
+      "classification1": "GERAL",
+      "calssification2": "NORI",
+      "classification3": "CASUAL"
+    },
+    {
+      "productid": "016218M06G",
+      "rootproductid": "016218",
+      "color": "M06",
+      "size": "G",
+      "description": "CALÇA FEM",
+      "classification1": "GERAL",
+      "calssification2": "NORI",
+      "classification3": "CASUAL"
+    },
+    {
       "productid": "016218P07P",
       "rootproductid": "016218",
       "color": "P07",
@@ -49180,6 +49240,16 @@
       "classification3": "CASUAL"
     },
     {
+      "productid": "017363P41U",
+      "rootproductid": "017363",
+      "color": "P41",
+      "size": "U",
+      "description": "MANTA FEM",
+      "classification1": "GERAL",
+      "calssification2": "NORI",
+      "classification3": "CASUAL"
+    },
+    {
       "productid": "017363P43U",
       "rootproductid": "017363",
       "color": "P43",
@@ -52933,6 +53003,36 @@
       "productid": "018720C25G",
       "rootproductid": "018720",
       "color": "C25",
+      "size": "G",
+      "description": "BLUSA FEM",
+      "classification1": "BÁSICA",
+      "calssification2": "ANSELMI",
+      "classification3": "CASUAL"
+    },
+    {
+      "productid": "018720C84P",
+      "rootproductid": "018720",
+      "color": "C84",
+      "size": "P",
+      "description": "BLUSA FEM",
+      "classification1": "BÁSICA",
+      "calssification2": "ANSELMI",
+      "classification3": "CASUAL"
+    },
+    {
+      "productid": "018720C84M",
+      "rootproductid": "018720",
+      "color": "C84",
+      "size": "M",
+      "description": "BLUSA FEM",
+      "classification1": "BÁSICA",
+      "calssification2": "ANSELMI",
+      "classification3": "CASUAL"
+    },
+    {
+      "productid": "018720C84G",
+      "rootproductid": "018720",
+      "color": "C84",
       "size": "G",
       "description": "BLUSA FEM",
       "classification1": "BÁSICA",
@@ -117843,6 +117943,46 @@
       "productid": "046705010G",
       "rootproductid": "046705",
       "color": "010",
+      "size": "G",
+      "description": "VESTIDO FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "046705324U",
+      "rootproductid": "046705",
+      "color": "324",
+      "size": "U",
+      "description": "VESTIDO FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "046705324P",
+      "rootproductid": "046705",
+      "color": "324",
+      "size": "P",
+      "description": "VESTIDO FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "046705324M",
+      "rootproductid": "046705",
+      "color": "324",
+      "size": "M",
+      "description": "VESTIDO FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "046705324G",
+      "rootproductid": "046705",
+      "color": "324",
       "size": "G",
       "description": "VESTIDO FEM",
       "classification1": "GERAL",
