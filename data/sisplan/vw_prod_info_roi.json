@@ -1,12 +1,12 @@
 {
-  "synced_at": "2026-06-11T23:00:45-03:00",
-  "synced_at_utc": "2026-06-12T02:00:45Z",
-  "run_id": "27389634907",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/27389634907",
+  "synced_at": "2026-06-12T16:32:06-03:00",
+  "synced_at_utc": "2026-06-12T19:32:06Z",
+  "run_id": "27438324983",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/27438324983",
   "source": "Sync Sisplan (7 views ROI → data/sisplan/*.json)",
   "view": "vw_prod_info_roi",
-  "row_count": 13363,
-  "rows_fetched": 13363,
+  "row_count": 13417,
+  "rows_fetched": 13417,
   "filter": null,
   "rows": [
     {
@@ -788,6 +788,26 @@
       "classification1": "RECLASSIFICADOS",
       "calssification2": "OUTLET ANSELMI",
       "classification3": "OUTLET"
+    },
+    {
+      "productid": "000101000001ST",
+      "rootproductid": "0001010",
+      "color": "00001",
+      "size": "ST",
+      "description": "TAMANCO FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "0001010001ST",
+      "rootproductid": "0001010",
+      "color": "001",
+      "size": "ST",
+      "description": "TAMANCO FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
     },
     {
       "productid": "000103IND01ST",
@@ -3210,6 +3230,16 @@
       "classification3": "FALHADOS"
     },
     {
+      "productid": "000702001ST",
+      "rootproductid": "000702",
+      "color": "001",
+      "size": "ST",
+      "description": "BLUSA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
       "productid": "000703001ST",
       "rootproductid": "000703",
       "color": "001",
@@ -4690,6 +4720,16 @@
       "classification3": "GERAL"
     },
     {
+      "productid": "001010001ST",
+      "rootproductid": "001010",
+      "color": "001",
+      "size": "ST",
+      "description": "TAMANCO FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
       "productid": "001011IND01ST",
       "rootproductid": "001011",
       "color": "IND01",
@@ -5448,6 +5488,46 @@
       "classification1": "TRICOT",
       "calssification2": "ANSELMI",
       "classification3": "PROMOÇÃO"
+    },
+    {
+      "productid": "010030B01U",
+      "rootproductid": "010030",
+      "color": "B01",
+      "size": "U",
+      "description": "BLUSA FEM",
+      "classification1": "PONTO ESCAMAS",
+      "calssification2": "ANSELMI",
+      "classification3": "FASHION"
+    },
+    {
+      "productid": "010030B01P",
+      "rootproductid": "010030",
+      "color": "B01",
+      "size": "P",
+      "description": "BLUSA FEM",
+      "classification1": "PONTO ESCAMAS",
+      "calssification2": "ANSELMI",
+      "classification3": "FASHION"
+    },
+    {
+      "productid": "010030B01M",
+      "rootproductid": "010030",
+      "color": "B01",
+      "size": "M",
+      "description": "BLUSA FEM",
+      "classification1": "PONTO ESCAMAS",
+      "calssification2": "ANSELMI",
+      "classification3": "FASHION"
+    },
+    {
+      "productid": "010030B01G",
+      "rootproductid": "010030",
+      "color": "B01",
+      "size": "G",
+      "description": "BLUSA FEM",
+      "classification1": "PONTO ESCAMAS",
+      "calssification2": "ANSELMI",
+      "classification3": "FASHION"
     },
     {
       "productid": "010030B79U",
@@ -14250,6 +14330,36 @@
       "classification3": "FASHION"
     },
     {
+      "productid": "011751B79P",
+      "rootproductid": "011751",
+      "color": "B79",
+      "size": "P",
+      "description": "REGATA FEM",
+      "classification1": "UCHA MEIRELLES",
+      "calssification2": "ANSELMI",
+      "classification3": "FASHION"
+    },
+    {
+      "productid": "011751B79M",
+      "rootproductid": "011751",
+      "color": "B79",
+      "size": "M",
+      "description": "REGATA FEM",
+      "classification1": "UCHA MEIRELLES",
+      "calssification2": "ANSELMI",
+      "classification3": "FASHION"
+    },
+    {
+      "productid": "011751B79G",
+      "rootproductid": "011751",
+      "color": "B79",
+      "size": "G",
+      "description": "REGATA FEM",
+      "classification1": "UCHA MEIRELLES",
+      "calssification2": "ANSELMI",
+      "classification3": "FASHION"
+    },
+    {
       "productid": "011751D25P",
       "rootproductid": "011751",
       "color": "D25",
@@ -21780,6 +21890,36 @@
       "classification3": "PROMOÇÃO"
     },
     {
+      "productid": "012650324P",
+      "rootproductid": "012650",
+      "color": "324",
+      "size": "P",
+      "description": "CASACO FEM",
+      "classification1": "UCHA MEIRELLES",
+      "calssification2": "ANSELMI",
+      "classification3": "PROMOÇÃO"
+    },
+    {
+      "productid": "012650324M",
+      "rootproductid": "012650",
+      "color": "324",
+      "size": "M",
+      "description": "CASACO FEM",
+      "classification1": "UCHA MEIRELLES",
+      "calssification2": "ANSELMI",
+      "classification3": "PROMOÇÃO"
+    },
+    {
+      "productid": "012650324G",
+      "rootproductid": "012650",
+      "color": "324",
+      "size": "G",
+      "description": "CASACO FEM",
+      "classification1": "UCHA MEIRELLES",
+      "calssification2": "ANSELMI",
+      "classification3": "PROMOÇÃO"
+    },
+    {
       "productid": "012650353P",
       "rootproductid": "012650",
       "color": "353",
@@ -23785,9 +23925,9 @@
       "color": "001",
       "size": "U",
       "description": "CASACO FEM",
-      "classification1": "GERAL",
+      "classification1": "CASUAL",
       "calssification2": "ANSELMI",
-      "classification3": "GERAL"
+      "classification3": "ESSENCIAL"
     },
     {
       "productid": "012876353U",
@@ -23795,9 +23935,9 @@
       "color": "353",
       "size": "U",
       "description": "CASACO FEM",
-      "classification1": "GERAL",
+      "classification1": "CASUAL",
       "calssification2": "ANSELMI",
-      "classification3": "GERAL"
+      "classification3": "ESSENCIAL"
     },
     {
       "productid": "012876B79U",
@@ -23805,9 +23945,9 @@
       "color": "B79",
       "size": "U",
       "description": "CASACO FEM",
-      "classification1": "GERAL",
+      "classification1": "CASUAL",
       "calssification2": "ANSELMI",
-      "classification3": "GERAL"
+      "classification3": "ESSENCIAL"
     },
     {
       "productid": "012878353P",
@@ -36780,6 +36920,16 @@
       "classification3": "PROMOÇÃO"
     },
     {
+      "productid": "015307010U",
+      "rootproductid": "015307",
+      "color": "010",
+      "size": "U",
+      "description": "VESTIDO FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
       "productid": "015307E61U",
       "rootproductid": "015307",
       "color": "E61",
@@ -42510,6 +42660,16 @@
       "classification3": "ESSENCIAL"
     },
     {
+      "productid": "015926010GG",
+      "rootproductid": "015926",
+      "color": "010",
+      "size": "GG",
+      "description": "BLUSA FEM",
+      "classification1": "PROMOÇÃO",
+      "calssification2": "ANSELMI",
+      "classification3": "ESSENCIAL"
+    },
+    {
       "productid": "01593200533",
       "rootproductid": "015932",
       "color": "005",
@@ -46395,9 +46555,9 @@
       "color": "353",
       "size": "P",
       "description": "Blusa Feminina",
-      "classification1": "GERAL",
+      "classification1": "BÁSICA",
       "calssification2": "ANSELMI",
-      "classification3": "GERAL"
+      "classification3": "CASUAL"
     },
     {
       "productid": "016995353M",
@@ -46405,9 +46565,9 @@
       "color": "353",
       "size": "M",
       "description": "Blusa Feminina",
-      "classification1": "GERAL",
+      "classification1": "BÁSICA",
       "calssification2": "ANSELMI",
-      "classification3": "GERAL"
+      "classification3": "CASUAL"
     },
     {
       "productid": "016995353G",
@@ -46415,9 +46575,9 @@
       "color": "353",
       "size": "G",
       "description": "Blusa Feminina",
-      "classification1": "GERAL",
+      "classification1": "BÁSICA",
       "calssification2": "ANSELMI",
-      "classification3": "GERAL"
+      "classification3": "CASUAL"
     },
     {
       "productid": "017005001U",
@@ -61970,6 +62130,36 @@
       "classification3": "FASHION"
     },
     {
+      "productid": "019268010P",
+      "rootproductid": "019268",
+      "color": "010",
+      "size": "P",
+      "description": "Casaco Feminino",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "019268010M",
+      "rootproductid": "019268",
+      "color": "010",
+      "size": "M",
+      "description": "Casaco Feminino",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "019268010G",
+      "rootproductid": "019268",
+      "color": "010",
+      "size": "G",
+      "description": "Casaco Feminino",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
       "productid": "019270C25U",
       "rootproductid": "019270",
       "color": "C25",
@@ -71048,6 +71238,16 @@
       "classification1": "BÁSICA",
       "calssification2": "ANSELMI",
       "classification3": "CASUAL"
+    },
+    {
+      "productid": "020282C25U",
+      "rootproductid": "020282",
+      "color": "C25",
+      "size": "U",
+      "description": "REGATA FEM",
+      "classification1": "BÁSICA",
+      "calssification2": "ANSELMI",
+      "classification3": "ESSENCIAL"
     },
     {
       "productid": "0202840U",
@@ -93780,6 +93980,66 @@
       "classification3": "ESSENCIAL"
     },
     {
+      "productid": "029856C32PP",
+      "rootproductid": "029856",
+      "color": "C32",
+      "size": "PP",
+      "description": "BLUSA FEM",
+      "classification1": "BÁSICA",
+      "calssification2": "ANSELMI",
+      "classification3": "ESSENCIAL"
+    },
+    {
+      "productid": "029856C32P",
+      "rootproductid": "029856",
+      "color": "C32",
+      "size": "P",
+      "description": "BLUSA FEM",
+      "classification1": "BÁSICA",
+      "calssification2": "ANSELMI",
+      "classification3": "ESSENCIAL"
+    },
+    {
+      "productid": "029856C32M",
+      "rootproductid": "029856",
+      "color": "C32",
+      "size": "M",
+      "description": "BLUSA FEM",
+      "classification1": "BÁSICA",
+      "calssification2": "ANSELMI",
+      "classification3": "ESSENCIAL"
+    },
+    {
+      "productid": "029856C32G",
+      "rootproductid": "029856",
+      "color": "C32",
+      "size": "G",
+      "description": "BLUSA FEM",
+      "classification1": "BÁSICA",
+      "calssification2": "ANSELMI",
+      "classification3": "ESSENCIAL"
+    },
+    {
+      "productid": "029856C32GG",
+      "rootproductid": "029856",
+      "color": "C32",
+      "size": "GG",
+      "description": "BLUSA FEM",
+      "classification1": "BÁSICA",
+      "calssification2": "ANSELMI",
+      "classification3": "ESSENCIAL"
+    },
+    {
+      "productid": "029856C32XG",
+      "rootproductid": "029856",
+      "color": "C32",
+      "size": "XG",
+      "description": "BLUSA FEM",
+      "classification1": "BÁSICA",
+      "calssification2": "ANSELMI",
+      "classification3": "ESSENCIAL"
+    },
+    {
       "productid": "029856C59PP",
       "rootproductid": "029856",
       "color": "C59",
@@ -111220,6 +111480,126 @@
       "classification3": "GERAL"
     },
     {
+      "productid": "04623300433",
+      "rootproductid": "046233",
+      "color": "004",
+      "size": "33",
+      "description": "BOTA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "04623300434",
+      "rootproductid": "046233",
+      "color": "004",
+      "size": "34",
+      "description": "BOTA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "04623300435",
+      "rootproductid": "046233",
+      "color": "004",
+      "size": "35",
+      "description": "BOTA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "04623300436",
+      "rootproductid": "046233",
+      "color": "004",
+      "size": "36",
+      "description": "BOTA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "04623300437",
+      "rootproductid": "046233",
+      "color": "004",
+      "size": "37",
+      "description": "BOTA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "04623300438",
+      "rootproductid": "046233",
+      "color": "004",
+      "size": "38",
+      "description": "BOTA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "04623300439",
+      "rootproductid": "046233",
+      "color": "004",
+      "size": "39",
+      "description": "BOTA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "04623300440",
+      "rootproductid": "046233",
+      "color": "004",
+      "size": "40",
+      "description": "BOTA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "04623300441",
+      "rootproductid": "046233",
+      "color": "004",
+      "size": "41",
+      "description": "BOTA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "04623300442",
+      "rootproductid": "046233",
+      "color": "004",
+      "size": "42",
+      "description": "BOTA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "04623300443",
+      "rootproductid": "046233",
+      "color": "004",
+      "size": "43",
+      "description": "BOTA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "04623300444",
+      "rootproductid": "046233",
+      "color": "004",
+      "size": "44",
+      "description": "BOTA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
       "productid": "04623300533",
       "rootproductid": "046233",
       "color": "005",
@@ -123958,6 +124338,166 @@
       "classification1": "GERAL",
       "calssification2": "ANSELMI",
       "classification3": "GERAL"
+    },
+    {
+      "productid": "04687800133",
+      "rootproductid": "046878",
+      "color": "001",
+      "size": "33",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687800134",
+      "rootproductid": "046878",
+      "color": "001",
+      "size": "34",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687800135",
+      "rootproductid": "046878",
+      "color": "001",
+      "size": "35",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687800136",
+      "rootproductid": "046878",
+      "color": "001",
+      "size": "36",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687800137",
+      "rootproductid": "046878",
+      "color": "001",
+      "size": "37",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687800138",
+      "rootproductid": "046878",
+      "color": "001",
+      "size": "38",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687800139",
+      "rootproductid": "046878",
+      "color": "001",
+      "size": "39",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687800140",
+      "rootproductid": "046878",
+      "color": "001",
+      "size": "40",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687900133",
+      "rootproductid": "046879",
+      "color": "001",
+      "size": "33",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687900134",
+      "rootproductid": "046879",
+      "color": "001",
+      "size": "34",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687900135",
+      "rootproductid": "046879",
+      "color": "001",
+      "size": "35",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687900136",
+      "rootproductid": "046879",
+      "color": "001",
+      "size": "36",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687900137",
+      "rootproductid": "046879",
+      "color": "001",
+      "size": "37",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687900138",
+      "rootproductid": "046879",
+      "color": "001",
+      "size": "38",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687900139",
+      "rootproductid": "046879",
+      "color": "001",
+      "size": "39",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
+    },
+    {
+      "productid": "04687900140",
+      "rootproductid": "046879",
+      "color": "001",
+      "size": "40",
+      "description": "BOTA FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
     },
     {
       "productid": "046880010U",
