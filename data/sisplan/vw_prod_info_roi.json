@@ -1,12 +1,12 @@
 {
-  "synced_at": "2026-06-16T12:49:10-03:00",
-  "synced_at_utc": "2026-06-16T15:49:10Z",
-  "run_id": "27630004987",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/27630004987",
+  "synced_at": "2026-06-16T17:26:28-03:00",
+  "synced_at_utc": "2026-06-16T20:26:28Z",
+  "run_id": "27645886725",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/27645886725",
   "source": "Sync Sisplan (7 views ROI → data/sisplan/*.json)",
   "view": "vw_prod_info_roi",
-  "row_count": 13474,
-  "rows_fetched": 13474,
+  "row_count": 13480,
+  "rows_fetched": 13480,
   "filter": null,
   "rows": [
     {
@@ -588,6 +588,16 @@
       "classification1": "RECLASSIFICADOS",
       "calssification2": "OUTLET ANSELMI",
       "classification3": "OUTLET"
+    },
+    {
+      "productid": "000071001ST",
+      "rootproductid": "000071",
+      "color": "001",
+      "size": "ST",
+      "description": "CASACO DE MALHA",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
     },
     {
       "productid": "000073IND01U",
@@ -2828,6 +2838,16 @@
       "classification1": "GERAL",
       "calssification2": "ANSELMI",
       "classification3": "GERAL"
+    },
+    {
+      "productid": "000578001ST",
+      "rootproductid": "000578",
+      "color": "001",
+      "size": "ST",
+      "description": "MACACÃO FEM",
+      "classification1": "RECLASSIFICADOS",
+      "calssification2": "OUTLET ANSELMI",
+      "classification3": "FALHADOS"
     },
     {
       "productid": "000582001ST",
@@ -7403,6 +7423,16 @@
       "productid": "010323E60U",
       "rootproductid": "010323",
       "color": "E60",
+      "size": "U",
+      "description": "BLUSA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "GERAL"
+    },
+    {
+      "productid": "010323E76U",
+      "rootproductid": "010323",
+      "color": "E76",
       "size": "U",
       "description": "BLUSA FEM",
       "classification1": "GERAL",
@@ -45946,6 +45976,36 @@
       "size": "G",
       "description": "CASACO FEM",
       "classification1": "PONTO ONDAS",
+      "calssification2": "ANSELMI",
+      "classification3": "FASHION"
+    },
+    {
+      "productid": "016807C25P",
+      "rootproductid": "016807",
+      "color": "C25",
+      "size": "P",
+      "description": "BLUSA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "FASHION"
+    },
+    {
+      "productid": "016807C25M",
+      "rootproductid": "016807",
+      "color": "C25",
+      "size": "M",
+      "description": "BLUSA FEM",
+      "classification1": "GERAL",
+      "calssification2": "ANSELMI",
+      "classification3": "FASHION"
+    },
+    {
+      "productid": "016807C25G",
+      "rootproductid": "016807",
+      "color": "C25",
+      "size": "G",
+      "description": "BLUSA FEM",
+      "classification1": "GERAL",
       "calssification2": "ANSELMI",
       "classification3": "FASHION"
     },
