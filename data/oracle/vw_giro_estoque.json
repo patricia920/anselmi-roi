@@ -1,8 +1,8 @@
 {
-  "synced_at": "2026-06-20T13:49:05-03:00",
-  "synced_at_utc": "2026-06-20T16:49:05Z",
-  "run_id": "27877610632",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/27877610632",
+  "synced_at": "2026-06-20T21:21:08-03:00",
+  "synced_at_utc": "2026-06-21T00:21:08Z",
+  "run_id": "27888283132",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/27888283132",
   "source": "Query Oracle (vw_giro_estoque → data/oracle/*.json)",
   "view": "vw_giro_estoque",
   "schema": "desenv",
@@ -17,7 +17,7 @@
     "qt_atual",
     "cta"
   ],
-  "elapsed_ms": 394,
+  "elapsed_ms": 353,
   "limit_applied": null,
   "rows": [
     {
@@ -105632,7 +105632,7 @@
       "nome_cor": "CRU",
       "tam": "G ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 31.0,
+      "qt_atual": 19.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -188693,7 +188693,7 @@
       "nome_cor": "MARINHO",
       "tam": "G ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 3.0,
+      "qt_atual": 2.0,
       "cta": "GERAL MATRIZ"
     },
     {
