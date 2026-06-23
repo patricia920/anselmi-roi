@@ -1,8 +1,8 @@
 {
-  "synced_at": "2026-06-23T02:14:00-03:00",
-  "synced_at_utc": "2026-06-23T05:14:00Z",
-  "run_id": "28003867509",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/28003867509",
+  "synced_at": "2026-06-23T07:03:09-03:00",
+  "synced_at_utc": "2026-06-23T10:03:09Z",
+  "run_id": "28018228728",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/28018228728",
   "source": "Query Oracle (vw_giro_estoque → data/oracle/*.json)",
   "view": "vw_giro_estoque",
   "schema": "desenv",
@@ -17,7 +17,7 @@
     "qt_atual",
     "cta"
   ],
-  "elapsed_ms": 313,
+  "elapsed_ms": 308,
   "limit_applied": null,
   "rows": [
     {
@@ -24180,6 +24180,15 @@
       "cd_item": "046575",
       "cor": "*08",
       "nome_cor": "COR OITO",
+      "tam": "39",
+      "dt_saldo": "2026-06-01T00:00:00",
+      "qt_atual": -1.0,
+      "cta": "CD_950"
+    },
+    {
+      "cd_item": "046575",
+      "cor": "*08",
+      "nome_cor": "COR OITO",
       "tam": "38",
       "dt_saldo": "2026-06-01T00:00:00",
       "qt_atual": 58.0,
@@ -24247,15 +24256,6 @@
       "dt_saldo": "2026-06-01T00:00:00",
       "qt_atual": -2.0,
       "cta": "AMBI"
-    },
-    {
-      "cd_item": "046575",
-      "cor": "*08",
-      "nome_cor": "COR OITO",
-      "tam": "37",
-      "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "CD_950"
     },
     {
       "cd_item": "046575",
@@ -63305,7 +63305,7 @@
       "nome_cor": "COR UM",
       "tam": "G ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 33.0,
+      "qt_atual": 31.0,
       "cta": "CD_950"
     },
     {
@@ -63368,7 +63368,7 @@
       "nome_cor": "COR UM",
       "tam": "P ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 27.0,
+      "qt_atual": 26.0,
       "cta": "CD_950"
     },
     {
@@ -70820,7 +70820,7 @@
       "nome_cor": "COR UM",
       "tam": "U ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 57.0,
+      "qt_atual": 55.0,
       "cta": "CD_950"
     },
     {
@@ -107738,7 +107738,7 @@
       "nome_cor": "CRU",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 102.0,
+      "qt_atual": 99.0,
       "cta": "CD_950"
     },
     {
@@ -107765,7 +107765,7 @@
       "nome_cor": "CRU",
       "tam": "P ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 51.0,
+      "qt_atual": 48.0,
       "cta": "CD_950"
     },
     {
@@ -107792,7 +107792,7 @@
       "nome_cor": "CRU",
       "tam": "PP",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 63.0,
+      "qt_atual": 59.0,
       "cta": "CD_950"
     },
     {
@@ -183698,7 +183698,7 @@
       "nome_cor": "MARINHO",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 40.0,
+      "qt_atual": 21.0,
       "cta": "CD_903"
     },
     {
@@ -183707,7 +183707,7 @@
       "nome_cor": "MARINHO",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 9.0,
+      "qt_atual": 28.0,
       "cta": "CD_950"
     },
     {
