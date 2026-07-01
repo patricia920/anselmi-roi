@@ -1,13 +1,13 @@
 {
-  "synced_at": "2026-06-30T17:20:58-03:00",
-  "synced_at_utc": "2026-06-30T20:20:58Z",
-  "run_id": "28473303714",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/28473303714",
+  "synced_at": "2026-06-30T21:20:41-03:00",
+  "synced_at_utc": "2026-07-01T00:20:41Z",
+  "run_id": "28484628597",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/28484628597",
   "source": "Query Oracle (vw_giro_estoque → data/oracle/*.json)",
   "view": "vw_giro_estoque",
   "schema": "desenv",
-  "row_count": 28166,
-  "rows_fetched": 28166,
+  "row_count": 28165,
+  "rows_fetched": 28165,
   "columns": [
     "cd_item",
     "cor",
@@ -17,7 +17,7 @@
     "qt_atual",
     "cta"
   ],
-  "elapsed_ms": 351,
+  "elapsed_ms": 353,
   "limit_applied": null,
   "rows": [
     {
@@ -2906,7 +2906,7 @@
       "nome_cor": "COR DOIS",
       "tam": "38",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 7.0,
+      "qt_atual": 6.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -9575,7 +9575,7 @@
       "nome_cor": "COR DOIS",
       "tam": "G ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 11.0,
+      "qt_atual": 10.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -54368,7 +54368,7 @@
       "nome_cor": "PRETO",
       "tam": "U ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 15.0,
+      "qt_atual": 14.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -54971,7 +54971,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 24.0,
+      "qt_atual": 21.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -58940,7 +58940,7 @@
       "nome_cor": "PRETO",
       "tam": "36",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 4.0,
+      "qt_atual": 3.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -60497,15 +60497,6 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "ATACADO ONLINE"
-    },
-    {
-      "cd_item": "012948",
-      "cor": "P39",
-      "nome_cor": "PRETO",
-      "tam": "P ",
-      "dt_saldo": "2026-06-01T00:00:00",
       "qt_atual": -3.0,
       "cta": "CD_903"
     },
@@ -60794,7 +60785,7 @@
       "nome_cor": "PRETO",
       "tam": "G ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 2.0,
+      "qt_atual": 1.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -79820,7 +79811,7 @@
       "nome_cor": "COR UM",
       "tam": "35",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 11.0,
+      "qt_atual": 10.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -89972,7 +89963,7 @@
       "nome_cor": "COR UM",
       "tam": "42",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 2.0,
+      "qt_atual": 1.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -96866,7 +96857,7 @@
       "nome_cor": "BRANCO",
       "tam": "GG",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 18.0,
+      "qt_atual": 17.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -100277,7 +100268,7 @@
       "nome_cor": "CRU",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 10.0,
+      "qt_atual": 9.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -104723,7 +104714,7 @@
       "nome_cor": "CRU",
       "tam": "G ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 20.0,
+      "qt_atual": 19.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -104768,7 +104759,7 @@
       "nome_cor": "CRU",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 19.0,
+      "qt_atual": 18.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -106280,7 +106271,7 @@
       "nome_cor": "CRU",
       "tam": "P ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 9.0,
+      "qt_atual": 8.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -119159,7 +119150,7 @@
       "nome_cor": "CHOCOLATE",
       "tam": "U ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 4.0,
+      "qt_atual": 3.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -122372,7 +122363,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 10.0,
+      "qt_atual": 9.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -127583,7 +127574,7 @@
       "nome_cor": "PRETO",
       "tam": "U ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 5.0,
+      "qt_atual": 3.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -127907,7 +127898,7 @@
       "nome_cor": "PRETO",
       "tam": "U ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 61.0,
+      "qt_atual": 59.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -129536,7 +129527,7 @@
       "nome_cor": "PRETO",
       "tam": "U ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 7.0,
+      "qt_atual": 6.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -141263,7 +141254,7 @@
       "nome_cor": "PRETO",
       "tam": "GG",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 10.0,
+      "qt_atual": 9.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -141515,7 +141506,7 @@
       "nome_cor": "PRETO",
       "tam": "G ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 18.0,
+      "qt_atual": 17.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -141560,7 +141551,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 18.0,
+      "qt_atual": 16.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -141632,7 +141623,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 6.0,
+      "qt_atual": 5.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -154547,7 +154538,7 @@
       "nome_cor": "AZUL PORCELANA",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 15.0,
+      "qt_atual": 14.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -158714,7 +158705,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "G ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 25.0,
+      "qt_atual": 24.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -158732,7 +158723,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 37.0,
+      "qt_atual": 35.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -162836,7 +162827,7 @@
       "nome_cor": "MARINHO",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 5.0,
+      "qt_atual": 4.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -163124,7 +163115,7 @@
       "nome_cor": "CINZA",
       "tam": "U ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 21.0,
+      "qt_atual": 20.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -188414,7 +188405,7 @@
       "nome_cor": "MARINHO",
       "tam": "U ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 29.0,
+      "qt_atual": 28.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -213515,7 +213506,7 @@
       "nome_cor": "BEGE",
       "tam": "P ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 8.0,
+      "qt_atual": 7.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -213713,7 +213704,7 @@
       "nome_cor": "BEGE",
       "tam": "G ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 2.0,
+      "qt_atual": 1.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -225332,7 +225323,7 @@
       "nome_cor": "DAMASCO",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 18.0,
+      "qt_atual": 17.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -226196,7 +226187,7 @@
       "nome_cor": "CHERRY",
       "tam": "G ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 4.0,
+      "qt_atual": 3.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -232640,7 +232631,7 @@
       "nome_cor": "BRANCO",
       "tam": "G ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 14.0,
+      "qt_atual": 13.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -234791,7 +234782,7 @@
       "nome_cor": "CAMURÇA",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 20.0,
+      "qt_atual": 19.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -235484,7 +235475,7 @@
       "nome_cor": "CAMURÇA",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 17.0,
+      "qt_atual": 16.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -235745,7 +235736,7 @@
       "nome_cor": "VERDE FLORESTA",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 20.0,
+      "qt_atual": 19.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -244376,7 +244367,7 @@
       "nome_cor": "CAMELO",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 6.0,
+      "qt_atual": 5.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -248156,7 +248147,7 @@
       "nome_cor": "FIGO",
       "tam": "P ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 2.0,
+      "qt_atual": 1.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -250712,7 +250703,7 @@
       "nome_cor": "AZUL",
       "tam": "M ",
       "dt_saldo": "2026-06-01T00:00:00",
-      "qt_atual": 5.0,
+      "qt_atual": 4.0,
       "cta": "ATACADO ONLINE"
     },
     {
