@@ -1,13 +1,13 @@
 {
-  "synced_at": "2026-07-08T17:36:54-03:00",
-  "synced_at_utc": "2026-07-08T20:36:54Z",
-  "run_id": "28973942903",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/28973942903",
+  "synced_at": "2026-07-08T19:16:18-03:00",
+  "synced_at_utc": "2026-07-08T22:16:18Z",
+  "run_id": "28979543269",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/28979543269",
   "source": "Query Oracle (vw_giro_estoque → data/oracle/*.json)",
   "view": "vw_giro_estoque",
   "schema": "desenv",
-  "row_count": 28384,
-  "rows_fetched": 28384,
+  "row_count": 28382,
+  "rows_fetched": 28382,
   "columns": [
     "cd_item",
     "cor",
@@ -17,7 +17,7 @@
     "qt_atual",
     "cta"
   ],
-  "elapsed_ms": 324,
+  "elapsed_ms": 306,
   "limit_applied": null,
   "rows": [
     {
@@ -27795,15 +27795,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "029856",
-      "cor": "158",
-      "nome_cor": "PANACOTA",
-      "tam": "PP",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "047576",
       "cor": "158",
       "nome_cor": "PANACOTA",
@@ -39932,7 +39923,7 @@
       "nome_cor": "CHICLE",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 33.0,
+      "qt_atual": 16.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -39941,7 +39932,7 @@
       "nome_cor": "CHICLE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 40.0,
+      "qt_atual": 17.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -39950,7 +39941,7 @@
       "nome_cor": "CHICLE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 64.0,
+      "qt_atual": 40.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -39959,7 +39950,7 @@
       "nome_cor": "CHICLE",
       "tam": "PP",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 39.0,
+      "qt_atual": 17.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -228113,16 +228104,7 @@
       "nome_cor": "MOSTARDA",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 19.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "029856",
-      "cor": "E93",
-      "nome_cor": "MOSTARDA",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 17.0,
+      "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -228131,7 +228113,7 @@
       "nome_cor": "MOSTARDA",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 13.0,
+      "qt_atual": 5.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -228140,7 +228122,7 @@
       "nome_cor": "MOSTARDA",
       "tam": "PP",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 15.0,
+      "qt_atual": 5.0,
       "cta": "GERAL MATRIZ"
     },
     {
