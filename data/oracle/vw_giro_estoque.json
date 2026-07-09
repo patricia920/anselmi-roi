@@ -1,8 +1,8 @@
 {
-  "synced_at": "2026-07-08T19:16:18-03:00",
-  "synced_at_utc": "2026-07-08T22:16:18Z",
-  "run_id": "28979543269",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/28979543269",
+  "synced_at": "2026-07-08T21:34:31-03:00",
+  "synced_at_utc": "2026-07-09T00:34:31Z",
+  "run_id": "28984937514",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/28984937514",
   "source": "Query Oracle (vw_giro_estoque → data/oracle/*.json)",
   "view": "vw_giro_estoque",
   "schema": "desenv",
@@ -17,7 +17,7 @@
     "qt_atual",
     "cta"
   ],
-  "elapsed_ms": 306,
+  "elapsed_ms": 535,
   "limit_applied": null,
   "rows": [
     {
@@ -63377,7 +63377,7 @@
       "nome_cor": "COR UM",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 34.0,
+      "qt_atual": 30.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -63692,7 +63692,7 @@
       "nome_cor": "COR UM",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 6.0,
+      "qt_atual": 3.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -71090,7 +71090,7 @@
       "nome_cor": "COR UM",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -44.0,
+      "qt_atual": -45.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -196055,7 +196055,7 @@
       "nome_cor": "MILITAR",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 95.0,
+      "qt_atual": 96.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -207485,7 +207485,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 20.0,
+      "qt_atual": 19.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -228387,15 +228387,6 @@
       "cta": "ATACADO ONLINE"
     },
     {
-      "cd_item": "014558",
-      "cor": "E94",
-      "nome_cor": "CHERRY",
-      "tam": "U ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "CD_903"
-    },
-    {
       "cd_item": "047281",
       "cor": "E94",
       "nome_cor": "CHERRY",
@@ -248208,6 +248199,15 @@
       "cd_item": "015797",
       "cor": "E42",
       "nome_cor": "FIGO",
+      "tam": "G ",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": -5.0,
+      "cta": "CD_903"
+    },
+    {
+      "cd_item": "015797",
+      "cor": "E42",
+      "nome_cor": "FIGO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 20.0,
@@ -248237,7 +248237,7 @@
       "nome_cor": "FIGO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 5.0,
+      "qt_atual": -7.0,
       "cta": "CD_903"
     },
     {
@@ -248273,7 +248273,7 @@
       "nome_cor": "FIGO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -1.0,
+      "qt_atual": -23.0,
       "cta": "CD_903"
     },
     {
