@@ -1,13 +1,13 @@
 {
-  "synced_at": "2026-07-09T16:51:25-03:00",
-  "synced_at_utc": "2026-07-09T19:51:25Z",
-  "run_id": "29045796511",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/29045796511",
+  "synced_at": "2026-07-09T17:50:57-03:00",
+  "synced_at_utc": "2026-07-09T20:50:57Z",
+  "run_id": "29049304506",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/29049304506",
   "source": "Query Oracle (vw_giro_estoque → data/oracle/*.json)",
   "view": "vw_giro_estoque",
   "schema": "desenv",
-  "row_count": 28423,
-  "rows_fetched": 28423,
+  "row_count": 28421,
+  "rows_fetched": 28421,
   "columns": [
     "cd_item",
     "cor",
@@ -17,7 +17,7 @@
     "qt_atual",
     "cta"
   ],
-  "elapsed_ms": 453,
+  "elapsed_ms": 340,
   "limit_applied": null,
   "rows": [
     {
@@ -54602,7 +54602,7 @@
       "nome_cor": "PRETO",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 3.0,
+      "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -54620,7 +54620,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 5.0,
+      "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -97748,7 +97748,7 @@
       "nome_cor": "CRU",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 15.0,
+      "qt_atual": 10.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -97784,7 +97784,7 @@
       "nome_cor": "CRU",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 37.0,
+      "qt_atual": 27.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -97811,7 +97811,7 @@
       "nome_cor": "CRU",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 50.0,
+      "qt_atual": 40.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -122012,15 +122012,6 @@
       "nome_cor": "CERÚLEO",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 10.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "014833",
-      "cor": "E92",
-      "nome_cor": "CERÚLEO",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 22.0,
       "cta": "CD_903"
     },
@@ -122048,7 +122039,7 @@
       "nome_cor": "CERÚLEO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 24.0,
+      "qt_atual": 16.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -123317,7 +123308,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 23.0,
+      "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -123344,7 +123335,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 34.0,
+      "qt_atual": 19.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -144935,7 +144926,7 @@
       "nome_cor": "MARROM",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 5.0,
+      "qt_atual": 2.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -144946,15 +144937,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 35.0,
       "cta": "CD_903"
-    },
-    {
-      "cd_item": "011138",
-      "cor": "B79",
-      "nome_cor": "MARROM",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 5.0,
-      "cta": "GERAL MATRIZ"
     },
     {
       "cd_item": "011138",
@@ -162692,7 +162674,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 8.0,
+      "qt_atual": 3.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -194903,7 +194885,7 @@
       "nome_cor": "MILITAR",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 53.0,
+      "qt_atual": 43.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -210797,7 +210779,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 29.0,
+      "qt_atual": 28.0,
       "cta": "GERAL MATRIZ"
     },
     {
