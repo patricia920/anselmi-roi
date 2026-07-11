@@ -1,13 +1,13 @@
 {
-  "synced_at": "2026-07-11T07:38:30-03:00",
-  "synced_at_utc": "2026-07-11T10:38:30Z",
-  "run_id": "29149660263",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/29149660263",
+  "synced_at": "2026-07-11T08:33:46-03:00",
+  "synced_at_utc": "2026-07-11T11:33:46Z",
+  "run_id": "29151167267",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/29151167267",
   "source": "Query Oracle (vw_giro_estoque → data/oracle/*.json)",
   "view": "vw_giro_estoque",
   "schema": "desenv",
-  "row_count": 28444,
-  "rows_fetched": 28444,
+  "row_count": 28443,
+  "rows_fetched": 28443,
   "columns": [
     "cd_item",
     "cor",
@@ -17,7 +17,7 @@
     "qt_atual",
     "cta"
   ],
-  "elapsed_ms": 349,
+  "elapsed_ms": 308,
   "limit_applied": null,
   "rows": [
     {
@@ -38222,7 +38222,7 @@
       "nome_cor": "MATCHA",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 294.0,
+      "qt_atual": 274.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -114407,7 +114407,7 @@
       "nome_cor": "AZUL CELESTE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 8.0,
+      "qt_atual": 7.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -116126,7 +116126,7 @@
       "nome_cor": "CANELA",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 126.0,
+      "qt_atual": 103.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -155771,7 +155771,7 @@
       "nome_cor": "AZUL PORCELANA",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 42.0,
+      "qt_atual": 41.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -155789,7 +155789,7 @@
       "nome_cor": "AZUL PORCELANA",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 16.0,
+      "qt_atual": 6.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -155807,7 +155807,7 @@
       "nome_cor": "AZUL PORCELANA",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 14.0,
+      "qt_atual": 2.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -164663,16 +164663,7 @@
       "nome_cor": "AVELÃ",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 5.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015297",
-      "cor": "E76",
-      "nome_cor": "AVELÃ",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 11.0,
+      "qt_atual": 2.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -224180,7 +224171,7 @@
       "nome_cor": "VERMELHO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 16.0,
+      "qt_atual": 14.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -244556,7 +244547,7 @@
       "nome_cor": "VERDE AGUA",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 7.0,
+      "qt_atual": 3.0,
       "cta": "GERAL MATRIZ"
     },
     {
