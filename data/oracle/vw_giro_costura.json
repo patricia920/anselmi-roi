@@ -1,8 +1,8 @@
 {
-  "synced_at": "2026-07-20T13:56:18-03:00",
-  "synced_at_utc": "2026-07-20T16:56:18Z",
-  "run_id": "29761672238",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/29761672238",
+  "synced_at": "2026-07-20T15:10:20-03:00",
+  "synced_at_utc": "2026-07-20T18:10:20Z",
+  "run_id": "29766583263",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/29766583263",
   "source": "Query Oracle (vw_giro_costura → data/oracle/*.json)",
   "view": "vw_giro_costura",
   "schema": "desenv",
@@ -37,7 +37,7 @@
     "colecao",
     "ds_maquina"
   ],
-  "elapsed_ms": 3863,
+  "elapsed_ms": 3254,
   "limit_applied": null,
   "rows": [
     {
@@ -9466,8 +9466,8 @@
       "ds_maquina": "STOLL 3.5.2 N"
     },
     {
-      "nr_liberacao": 218632,
-      "nr_ordem": 1922340,
+      "nr_liberacao": 218631,
+      "nr_ordem": 1922338,
       "dt_emissao": "2026-06-30T00:00:00",
       "cd_item": "020262",
       "cd_mascara_reduzida": 5,
@@ -9495,8 +9495,8 @@
       "ds_maquina": "STOLL 3.5.2 N"
     },
     {
-      "nr_liberacao": 218631,
-      "nr_ordem": 1922338,
+      "nr_liberacao": 218632,
+      "nr_ordem": 1922340,
       "dt_emissao": "2026-06-30T00:00:00",
       "cd_item": "020262",
       "cd_mascara_reduzida": 5,
@@ -54248,7 +54248,7 @@
       "cd_item": "019728",
       "cd_mascara_reduzida": 5,
       "tipo": "ORD",
-      "qt_falta": 38,
+      "qt_falta": 39,
       "local": "2-COS",
       "corte": " ",
       "cor": "P09",
