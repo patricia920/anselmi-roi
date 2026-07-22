@@ -1,13 +1,13 @@
 {
-  "synced_at": "2026-07-22T06:07:31-03:00",
-  "synced_at_utc": "2026-07-22T09:07:31Z",
-  "run_id": "29906693120",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/29906693120",
+  "synced_at": "2026-07-22T07:03:37-03:00",
+  "synced_at_utc": "2026-07-22T10:03:37Z",
+  "run_id": "29910419507",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/29910419507",
   "source": "Query Oracle (vw_giro_estoque → data/oracle/*.json)",
   "view": "vw_giro_estoque",
   "schema": "desenv",
-  "row_count": 28796,
-  "rows_fetched": 28796,
+  "row_count": 28797,
+  "rows_fetched": 28797,
   "columns": [
     "cd_item",
     "cor",
@@ -17,7 +17,7 @@
     "qt_atual",
     "cta"
   ],
-  "elapsed_ms": 330,
+  "elapsed_ms": 325,
   "limit_applied": null,
   "rows": [
     {
@@ -132155,7 +132155,7 @@
       "nome_cor": "PRETO",
       "tam": "39",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -6.0,
+      "qt_atual": 24.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -165077,7 +165077,7 @@
       "nome_cor": "MARINHO",
       "tam": "39",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -4.0,
+      "qt_atual": 26.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -250515,6 +250515,15 @@
       "tam": "36",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": -1.0,
+      "cta": "GERAL MATRIZ"
+    },
+    {
+      "cd_item": "020009",
+      "cor": "P09",
+      "nome_cor": "CAMELO",
+      "tam": "35",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": 6.0,
       "cta": "GERAL MATRIZ"
     },
     {
