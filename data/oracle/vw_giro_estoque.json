@@ -1,13 +1,13 @@
 {
-  "synced_at": "2026-07-24T08:52:26-03:00",
-  "synced_at_utc": "2026-07-24T11:52:26Z",
-  "run_id": "30090873919",
-  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/30090873919",
+  "synced_at": "2026-07-24T09:44:55-03:00",
+  "synced_at_utc": "2026-07-24T12:44:55Z",
+  "run_id": "30094197188",
+  "run_url": "https://github.com/patricia920/anselmi-pcp/actions/runs/30094197188",
   "source": "Query Oracle (vw_giro_estoque → data/oracle/*.json)",
   "view": "vw_giro_estoque",
   "schema": "desenv",
-  "row_count": 28414,
-  "rows_fetched": 28414,
+  "row_count": 28308,
+  "rows_fetched": 28308,
   "columns": [
     "cd_item",
     "cor",
@@ -17,7 +17,7 @@
     "qt_atual",
     "cta"
   ],
-  "elapsed_ms": 330,
+  "elapsed_ms": 292,
   "limit_applied": null,
   "rows": [
     {
@@ -3174,15 +3174,6 @@
       "cd_item": "015194",
       "cor": "*02",
       "nome_cor": "COR DOIS",
-      "tam": "39",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -3.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015194",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
       "tam": "37",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": -6.0,
@@ -3228,46 +3219,10 @@
       "cd_item": "015191",
       "cor": "*02",
       "nome_cor": "COR DOIS",
-      "tam": "39",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015191",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "37",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -5.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015191",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "36",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015191",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
       "tam": "36",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
       "cta": "OUTLET"
-    },
-    {
-      "cd_item": "015191",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "35",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
     },
     {
       "cd_item": "019087",
@@ -3301,42 +3256,6 @@
       "cor": "*02",
       "nome_cor": "COR DOIS",
       "tam": "40",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015190",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "37",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015190",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "36",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -3.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015433",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015433",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 2.0,
       "cta": "GERAL MATRIZ"
@@ -4624,15 +4543,6 @@
       "cor": "*02",
       "nome_cor": "COR DOIS",
       "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015464",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "GG",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
@@ -5964,15 +5874,6 @@
       "cd_item": "015420",
       "cor": "*02",
       "nome_cor": "COR DOIS",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015420",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 10.0,
@@ -6156,33 +6057,6 @@
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": -3.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015454",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015453",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015453",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 10.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -7504,24 +7378,6 @@
       "cor": "*02",
       "nome_cor": "COR DOIS",
       "tam": "U ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015475",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015475",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 2.0,
       "cta": "GERAL MATRIZ"
@@ -8976,24 +8832,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "014860",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "014860",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "027259",
       "cor": "*02",
       "nome_cor": "COR DOIS",
@@ -9009,15 +8847,6 @@
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "014648",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -11.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -9628,15 +9457,6 @@
       "cor": "*02",
       "nome_cor": "COR DOIS",
       "tam": "XG",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "014730",
-      "cor": "*02",
-      "nome_cor": "COR DOIS",
-      "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
@@ -11116,15 +10936,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 14.0,
       "cta": "ATACADO ONLINE"
-    },
-    {
-      "cd_item": "046011",
-      "cor": "*03",
-      "nome_cor": "COR TRES",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "CD_950"
     },
     {
       "cd_item": "046011",
@@ -13152,15 +12963,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "015633",
-      "cor": "*03",
-      "nome_cor": "COR TRES",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "019042",
       "cor": "*03",
       "nome_cor": "COR TRES",
@@ -14067,33 +13869,6 @@
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015459",
-      "cor": "*03",
-      "nome_cor": "COR TRES",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 26.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015459",
-      "cor": "*03",
-      "nome_cor": "COR TRES",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015458",
-      "cor": "*03",
-      "nome_cor": "COR TRES",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -8.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -15200,7 +14975,7 @@
       "nome_cor": "COR TRES",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 233.0,
+      "qt_atual": 232.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -15211,33 +14986,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 12.0,
       "cta": "ATACADO ONLINE"
-    },
-    {
-      "cd_item": "014787",
-      "cor": "*03",
-      "nome_cor": "COR TRES",
-      "tam": "GG",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "014787",
-      "cor": "*03",
-      "nome_cor": "COR TRES",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "014787",
-      "cor": "*03",
-      "nome_cor": "COR TRES",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
     },
     {
       "cd_item": "027259",
@@ -15336,15 +15084,6 @@
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": -1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "014938",
-      "cor": "*03",
-      "nome_cor": "COR TRES",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -16647,15 +16386,6 @@
       "cd_item": "046233",
       "cor": "*04",
       "nome_cor": "COR QUATRO",
-      "tam": "38",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "CD_950"
-    },
-    {
-      "cd_item": "046233",
-      "cor": "*04",
-      "nome_cor": "COR QUATRO",
       "tam": "37",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 2.0,
@@ -17145,15 +16875,6 @@
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015454",
-      "cor": "*04",
-      "nome_cor": "COR QUATRO",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -17891,7 +17612,7 @@
       "nome_cor": "COR QUATRO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -19.0,
+      "qt_atual": -20.0,
       "cta": "AMBI"
     },
     {
@@ -18332,7 +18053,7 @@
       "nome_cor": "COR QUATRO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 12.0,
+      "qt_atual": 11.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -18531,15 +18252,6 @@
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 9.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015431",
-      "cor": "*05",
-      "nome_cor": "COR CINCO",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -19808,7 +19520,7 @@
       "nome_cor": "COR CINCO",
       "tam": "35",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 35.0,
+      "qt_atual": 33.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -19828,6 +19540,15 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
       "cta": "AMBI"
+    },
+    {
+      "cd_item": "045973",
+      "cor": "*05",
+      "nome_cor": "COR CINCO",
+      "tam": "35",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": 1.0,
+      "cta": "CD_950"
     },
     {
       "cd_item": "045973",
@@ -20321,7 +20042,7 @@
       "nome_cor": "COR CINCO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 347.0,
+      "qt_atual": 346.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -20689,15 +20410,6 @@
       "cor": "*05",
       "nome_cor": "COR CINCO",
       "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "014730",
-      "cor": "*05",
-      "nome_cor": "COR CINCO",
-      "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 2.0,
       "cta": "GERAL MATRIZ"
@@ -22085,7 +21797,7 @@
       "nome_cor": "COR SEIS",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 313.0,
+      "qt_atual": 312.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -23475,15 +23187,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "014648",
-      "cor": "*07",
-      "nome_cor": "COR SETE",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "027110",
       "cor": "*07",
       "nome_cor": "COR SETE",
@@ -23508,15 +23211,6 @@
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "014730",
-      "cor": "*07",
-      "nome_cor": "COR SETE",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -26859,15 +26553,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "028871",
-      "cor": "147",
-      "nome_cor": "AZUL",
-      "tam": "PP",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "CD_950"
-    },
-    {
       "cd_item": "029856",
       "cor": "147",
       "nome_cor": "AZUL",
@@ -29712,15 +29397,6 @@
       "cta": "OUTLET"
     },
     {
-      "cd_item": "015457",
-      "cor": "999",
-      "nome_cor": "COR 999",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "019415",
       "cor": "999",
       "nome_cor": "COR 999",
@@ -32349,15 +32025,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "014648",
-      "cor": "999",
-      "nome_cor": "COR 999",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 12.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "016776",
       "cor": "999",
       "nome_cor": "COR 999",
@@ -33146,7 +32813,7 @@
       "nome_cor": "CRU (SO LAVAR)",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 4.0,
+      "qt_atual": 5.0,
       "cta": "AMBI"
     },
     {
@@ -34343,7 +34010,7 @@
       "nome_cor": "MATCHA",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 164.0,
+      "qt_atual": 163.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -34532,7 +34199,7 @@
       "nome_cor": "MATCHA",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 6.0,
+      "qt_atual": 7.0,
       "cta": "AMBI"
     },
     {
@@ -36089,7 +35756,7 @@
       "nome_cor": "MATCHA",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 12.0,
+      "qt_atual": 13.0,
       "cta": "AMBI"
     },
     {
@@ -37479,15 +37146,6 @@
       "cta": "AMBI"
     },
     {
-      "cd_item": "018945",
-      "cor": "324",
-      "nome_cor": "MATCHA",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -2.0,
-      "cta": "AMBI"
-    },
-    {
       "cd_item": "018793",
       "cor": "324",
       "nome_cor": "MATCHA",
@@ -37785,15 +37443,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "029877",
-      "cor": "324",
-      "nome_cor": "MATCHA",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "CD_950"
-    },
-    {
       "cd_item": "015666",
       "cor": "324",
       "nome_cor": "MATCHA",
@@ -38028,24 +37677,6 @@
       "cta": "OUTLET"
     },
     {
-      "cd_item": "015412",
-      "cor": "486",
-      "nome_cor": "AZUL",
-      "tam": "44",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015412",
-      "cor": "486",
-      "nome_cor": "AZUL",
-      "tam": "42",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "015411",
       "cor": "486",
       "nome_cor": "AZUL",
@@ -38053,15 +37684,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 4.0,
       "cta": "OUTLET"
-    },
-    {
-      "cd_item": "015411",
-      "cor": "486",
-      "nome_cor": "AZUL",
-      "tam": "36",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
     },
     {
       "cd_item": "032432",
@@ -39729,15 +39351,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "014837",
-      "cor": "A77",
-      "nome_cor": "MARROM",
-      "tam": "36",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "013981",
       "cor": "A77",
       "nome_cor": "MARROM",
@@ -40409,7 +40022,7 @@
       "nome_cor": "CAMELO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 47.0,
+      "qt_atual": 45.0,
       "cta": "CD_950"
     },
     {
@@ -40510,15 +40123,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 9.0,
       "cta": "CD_903"
-    },
-    {
-      "cd_item": "046993",
-      "cor": "D57",
-      "nome_cor": "CAMELO",
-      "tam": "U ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "CD_950"
     },
     {
       "cd_item": "046354",
@@ -41858,7 +41462,7 @@
       "nome_cor": "CAMELO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 54.0,
+      "qt_atual": 53.0,
       "cta": "CD_950"
     },
     {
@@ -44954,7 +44558,7 @@
       "nome_cor": "CAMELO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 29.0,
+      "qt_atual": 28.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -44972,7 +44576,7 @@
       "nome_cor": "CAMELO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 22.0,
+      "qt_atual": 21.0,
       "cta": "CD_950"
     },
     {
@@ -46448,7 +46052,7 @@
       "nome_cor": "AZUL CLASSIC",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 8.0,
+      "qt_atual": 7.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -48018,15 +47622,6 @@
       "cta": "CD_903"
     },
     {
-      "cd_item": "018793",
-      "cor": "E56",
-      "nome_cor": "AZUL CLASSIC",
-      "tam": "GG",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "AMBI"
-    },
-    {
       "cd_item": "019563",
       "cor": "E56",
       "nome_cor": "AZUL CLASSIC",
@@ -48698,7 +48293,7 @@
       "nome_cor": "AZUL CLASSIC",
       "tam": "PP",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 67.0,
+      "qt_atual": 64.0,
       "cta": "CD_950"
     },
     {
@@ -54125,7 +53720,7 @@
       "nome_cor": "PRETO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 234.0,
+      "qt_atual": 232.0,
       "cta": "CD_903"
     },
     {
@@ -54134,7 +53729,7 @@
       "nome_cor": "PRETO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
+      "qt_atual": 4.0,
       "cta": "CD_950"
     },
     {
@@ -54350,7 +53945,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 166.0,
+      "qt_atual": 165.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -54368,7 +53963,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 147.0,
+      "qt_atual": 146.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -56312,7 +55907,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 333.0,
+      "qt_atual": 331.0,
       "cta": "CD_950"
     },
     {
@@ -57950,7 +57545,7 @@
       "nome_cor": "PRETO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 66.0,
+      "qt_atual": 65.0,
       "cta": "CD_950"
     },
     {
@@ -58004,7 +57599,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 5.0,
+      "qt_atual": 4.0,
       "cta": "AMBI"
     },
     {
@@ -60704,7 +60299,7 @@
       "nome_cor": "CRU (PELE)",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
+      "qt_atual": 3.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -61776,15 +61371,6 @@
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 38.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015473",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 7.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -64151,7 +63737,7 @@
       "nome_cor": "COR UM",
       "tam": "35",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 41.0,
+      "qt_atual": 40.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -68147,15 +67733,6 @@
       "nome_cor": "COR UM",
       "tam": "36",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015191",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "36",
-      "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 2.0,
       "cta": "OUTLET"
     },
@@ -68417,15 +67994,6 @@
       "nome_cor": "COR UM",
       "tam": "37",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015191",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "37",
-      "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 3.0,
       "cta": "OUTLET"
     },
@@ -68565,42 +68133,6 @@
       "cta": "OUTLET"
     },
     {
-      "cd_item": "015191",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "35",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015190",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "37",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -4.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015190",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "36",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015190",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "35",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "011116",
       "cor": "*01",
       "nome_cor": "COR UM",
@@ -68644,15 +68176,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
       "cta": "OUTLET"
-    },
-    {
-      "cd_item": "015433",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 4.0,
-      "cta": "GERAL MATRIZ"
     },
     {
       "cd_item": "046812",
@@ -69450,24 +68973,6 @@
       "cd_item": "015416",
       "cor": "*01",
       "nome_cor": "COR UM",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 11.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015416",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015416",
-      "cor": "*01",
-      "nome_cor": "COR UM",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
@@ -69651,15 +69156,6 @@
       "tam": "38",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 3.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015408",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "U ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 4.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -71886,15 +71382,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "015622",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "029113",
       "cor": "*01",
       "nome_cor": "COR UM",
@@ -73224,15 +72711,6 @@
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": -1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015465",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -76818,24 +76296,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "015438",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "36",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015438",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "34",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "033640",
       "cor": "*01",
       "nome_cor": "COR UM",
@@ -77093,7 +76553,7 @@
       "nome_cor": "COR UM",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 33.0,
+      "qt_atual": 32.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -77113,15 +76573,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "046011",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "CD_950"
     },
     {
       "cd_item": "046011",
@@ -78560,7 +78011,7 @@
       "nome_cor": "COR UM",
       "tam": "37",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 5.0,
+      "qt_atual": 4.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -78632,7 +78083,7 @@
       "nome_cor": "COR UM",
       "tam": "35",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -1.0,
+      "qt_atual": -2.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -79473,15 +78924,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "015472",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 10.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "018842",
       "cor": "*01",
       "nome_cor": "COR UM",
@@ -79684,33 +79126,6 @@
       "cor": "*01",
       "nome_cor": "COR UM",
       "tam": "34",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015419",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015420",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015420",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
@@ -82441,24 +81856,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
       "cta": "OUTLET"
-    },
-    {
-      "cd_item": "015459",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015458",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
     },
     {
       "cd_item": "047320",
@@ -86466,24 +85863,6 @@
       "cta": "OUTLET"
     },
     {
-      "cd_item": "014974",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "014974",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "033513",
       "cor": "*01",
       "nome_cor": "COR UM",
@@ -86499,24 +85878,6 @@
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "014807",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "014807",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -87330,15 +86691,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "014754",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "U ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "033538",
       "cor": "*01",
       "nome_cor": "COR UM",
@@ -87969,15 +87321,6 @@
       "cta": "OUTLET"
     },
     {
-      "cd_item": "014787",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "027110",
       "cor": "*01",
       "nome_cor": "COR UM",
@@ -88568,7 +87911,7 @@
       "nome_cor": "COR UM",
       "tam": "46",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -14.0,
+      "qt_atual": -15.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -88586,7 +87929,7 @@
       "nome_cor": "COR UM",
       "tam": "44",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -24.0,
+      "qt_atual": -25.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -88604,7 +87947,7 @@
       "nome_cor": "COR UM",
       "tam": "42",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -8.0,
+      "qt_atual": -9.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -88640,7 +87983,7 @@
       "nome_cor": "COR UM",
       "tam": "38",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 185.0,
+      "qt_atual": 184.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -89292,24 +88635,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "014651",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "34",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 15.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "014650",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "34",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 9.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "016935",
       "cor": "*01",
       "nome_cor": "COR UM",
@@ -89632,15 +88957,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 31.0,
       "cta": "OUTLET"
-    },
-    {
-      "cd_item": "014973",
-      "cor": "*01",
-      "nome_cor": "COR UM",
-      "tam": "U ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
     },
     {
       "cd_item": "018376",
@@ -90917,7 +90233,7 @@
       "nome_cor": "COR UM",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 47.0,
+      "qt_atual": 45.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -93720,24 +93036,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "015436",
-      "cor": "*11",
-      "nome_cor": "BRANCO",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015411",
-      "cor": "*11",
-      "nome_cor": "BRANCO",
-      "tam": "44",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "047728",
       "cor": "*11",
       "nome_cor": "BRANCO",
@@ -95984,7 +95282,7 @@
       "nome_cor": "CRU",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 211.0,
+      "qt_atual": 210.0,
       "cta": "CD_950"
     },
     {
@@ -96074,7 +95372,7 @@
       "nome_cor": "CRU",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 146.0,
+      "qt_atual": 145.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -96263,7 +95561,7 @@
       "nome_cor": "CRU",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 3.0,
+      "qt_atual": 4.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -96353,7 +95651,7 @@
       "nome_cor": "CRU",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 4.0,
+      "qt_atual": 3.0,
       "cta": "CD_903"
     },
     {
@@ -96371,7 +95669,7 @@
       "nome_cor": "CRU",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 96.0,
+      "qt_atual": 94.0,
       "cta": "CD_950"
     },
     {
@@ -96389,7 +95687,7 @@
       "nome_cor": "CRU",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 91.0,
+      "qt_atual": 90.0,
       "cta": "CD_950"
     },
     {
@@ -96551,7 +95849,7 @@
       "nome_cor": "CRU",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 18.0,
+      "qt_atual": 17.0,
       "cta": "CD_950"
     },
     {
@@ -96785,7 +96083,7 @@
       "nome_cor": "CRU",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
+      "qt_atual": 103.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -99818,7 +99116,7 @@
       "nome_cor": "CRU",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 334.0,
+      "qt_atual": 333.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -99845,7 +99143,7 @@
       "nome_cor": "CRU",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 254.0,
+      "qt_atual": 253.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -100196,7 +99494,7 @@
       "nome_cor": "CRU",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 174.0,
+      "qt_atual": 172.0,
       "cta": "CD_950"
     },
     {
@@ -100988,7 +100286,7 @@
       "nome_cor": "CRU",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 5.0,
+      "qt_atual": 3.0,
       "cta": "CD_950"
     },
     {
@@ -101240,7 +100538,7 @@
       "nome_cor": "CRU",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 9.0,
+      "qt_atual": 8.0,
       "cta": "CD_950"
     },
     {
@@ -101474,7 +100772,7 @@
       "nome_cor": "CRU",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 20.0,
+      "qt_atual": 51.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -101510,7 +100808,7 @@
       "nome_cor": "CRU",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 42.0,
+      "qt_atual": 97.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -101807,7 +101105,7 @@
       "nome_cor": "CRU",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 58.0,
+      "qt_atual": 54.0,
       "cta": "CD_950"
     },
     {
@@ -102023,7 +101321,7 @@
       "nome_cor": "CRU",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -92.0,
+      "qt_atual": -93.0,
       "cta": "AMBI"
     },
     {
@@ -103310,15 +102608,6 @@
       "nome_cor": "CRU",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "AMBI"
-    },
-    {
-      "cd_item": "019511",
-      "cor": "353",
-      "nome_cor": "CRU",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 35.0,
       "cta": "OUTLET"
     },
@@ -104057,7 +103346,7 @@
       "nome_cor": "CRU",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 26.0,
+      "qt_atual": 25.0,
       "cta": "CD_950"
     },
     {
@@ -104228,7 +103517,7 @@
       "nome_cor": "CRU",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 36.0,
+      "qt_atual": 34.0,
       "cta": "CD_950"
     },
     {
@@ -104822,7 +104111,7 @@
       "nome_cor": "CRU",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 23.0,
+      "qt_atual": 22.0,
       "cta": "CD_950"
     },
     {
@@ -104957,7 +104246,7 @@
       "nome_cor": "CRU",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 13.0,
+      "qt_atual": 11.0,
       "cta": "CD_950"
     },
     {
@@ -104975,7 +104264,7 @@
       "nome_cor": "CRU",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 56.0,
+      "qt_atual": 51.0,
       "cta": "CD_950"
     },
     {
@@ -104993,7 +104282,7 @@
       "nome_cor": "CRU",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 67.0,
+      "qt_atual": 62.0,
       "cta": "CD_950"
     },
     {
@@ -107180,7 +106469,7 @@
       "nome_cor": "CRU",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 30.0,
+      "qt_atual": 26.0,
       "cta": "CD_950"
     },
     {
@@ -107423,7 +106712,7 @@
       "nome_cor": "CRU",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 47.0,
+      "qt_atual": 46.0,
       "cta": "CD_950"
     },
     {
@@ -108098,7 +107387,7 @@
       "nome_cor": "CRU",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 51.0,
+      "qt_atual": 50.0,
       "cta": "CD_950"
     },
     {
@@ -108224,7 +107513,7 @@
       "nome_cor": "CRU",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 55.0,
+      "qt_atual": 54.0,
       "cta": "CD_950"
     },
     {
@@ -108269,7 +107558,7 @@
       "nome_cor": "CRU",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 167.0,
+      "qt_atual": 166.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -108296,7 +107585,7 @@
       "nome_cor": "CRU",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -27.0,
+      "qt_atual": -28.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -108377,7 +107666,7 @@
       "nome_cor": "CRU",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 71.0,
+      "qt_atual": 72.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -108485,7 +107774,7 @@
       "nome_cor": "CRU",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 97.0,
+      "qt_atual": 96.0,
       "cta": "CD_950"
     },
     {
@@ -109035,7 +108324,7 @@
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 30.0,
-      "cta": "CD_903"
+      "cta": "CD_950"
     },
     {
       "cd_item": "020186",
@@ -110253,24 +109542,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "015462",
-      "cor": "B16",
-      "nome_cor": "ROSA CLARO",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015411",
-      "cor": "B16",
-      "nome_cor": "ROSA CLARO",
-      "tam": "44",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "026505",
       "cor": "B16",
       "nome_cor": "ROSA CLARO",
@@ -110611,15 +109882,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
       "cta": "OUTLET"
-    },
-    {
-      "cd_item": "015463",
-      "cor": "B16",
-      "nome_cor": "ROSA CLARO",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
     },
     {
       "cd_item": "016420",
@@ -112065,10 +111327,28 @@
       "cd_item": "018869",
       "cor": "C32",
       "nome_cor": "AZUL CELESTE",
+      "tam": "G ",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": 40.0,
+      "cta": "AMBI"
+    },
+    {
+      "cd_item": "018869",
+      "cor": "C32",
+      "nome_cor": "AZUL CELESTE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
+    },
+    {
+      "cd_item": "018869",
+      "cor": "C32",
+      "nome_cor": "AZUL CELESTE",
+      "tam": "P ",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": 41.0,
+      "cta": "AMBI"
     },
     {
       "cd_item": "010130",
@@ -113221,6 +112501,15 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": -2.0,
       "cta": "GERAL MATRIZ"
+    },
+    {
+      "cd_item": "018869",
+      "cor": "C32",
+      "nome_cor": "AZUL CELESTE",
+      "tam": "M ",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": 50.0,
+      "cta": "AMBI"
     },
     {
       "cd_item": "046864",
@@ -114474,15 +113763,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "015466",
-      "cor": "C58",
-      "nome_cor": "CAMELO",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "015446",
       "cor": "C58",
       "nome_cor": "CAMELO",
@@ -114492,57 +113772,12 @@
       "cta": "OUTLET"
     },
     {
-      "cd_item": "015436",
-      "cor": "C58",
-      "nome_cor": "CAMELO",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015412",
-      "cor": "C58",
-      "nome_cor": "CAMELO",
-      "tam": "40",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015411",
-      "cor": "C58",
-      "nome_cor": "CAMELO",
-      "tam": "40",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015411",
-      "cor": "C58",
-      "nome_cor": "CAMELO",
-      "tam": "34",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "015449",
       "cor": "C58",
       "nome_cor": "CAMELO",
       "tam": "PP",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": -2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015466",
-      "cor": "C58",
-      "nome_cor": "CAMELO",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -118511,7 +117746,7 @@
       "nome_cor": "CHOCOLATE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 52.0,
+      "qt_atual": 45.0,
       "cta": "CD_950"
     },
     {
@@ -119474,7 +118709,7 @@
       "nome_cor": "CHOCOLATE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
+      "qt_atual": 152.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -120392,7 +119627,7 @@
       "nome_cor": "CHOCOLATE",
       "tam": "36",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -4.0,
+      "qt_atual": -5.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -121094,7 +120329,7 @@
       "nome_cor": "CERÚLEO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 21.0,
+      "qt_atual": 123.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -121121,7 +120356,7 @@
       "nome_cor": "CERÚLEO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
+      "qt_atual": 150.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -122237,7 +121472,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 4.0,
+      "qt_atual": 3.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -122399,7 +121634,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 22.0,
+      "qt_atual": 18.0,
       "cta": "CD_950"
     },
     {
@@ -122507,7 +121742,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 66.0,
+      "qt_atual": 64.0,
       "cta": "CD_950"
     },
     {
@@ -122543,7 +121778,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 160.0,
+      "qt_atual": 158.0,
       "cta": "CD_950"
     },
     {
@@ -122745,15 +121980,6 @@
       "cta": "ATACADO ONLINE"
     },
     {
-      "cd_item": "017550",
-      "cor": "*10",
-      "nome_cor": "PRETO",
-      "tam": "U ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "CD_950"
-    },
-    {
       "cd_item": "017432",
       "cor": "*10",
       "nome_cor": "PRETO",
@@ -122777,7 +122003,7 @@
       "nome_cor": "PRETO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 18.0,
+      "qt_atual": 41.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -122786,7 +122012,7 @@
       "nome_cor": "PRETO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 40.0,
+      "qt_atual": 140.0,
       "cta": "CD_903"
     },
     {
@@ -123857,7 +123083,7 @@
       "nome_cor": "PRETO",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 31.0,
+      "qt_atual": 30.0,
       "cta": "CD_950"
     },
     {
@@ -125090,7 +124316,7 @@
       "nome_cor": "PRETO",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 87.0,
+      "qt_atual": 85.0,
       "cta": "AMBI"
     },
     {
@@ -125117,7 +124343,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 33.0,
+      "qt_atual": 31.0,
       "cta": "AMBI"
     },
     {
@@ -126530,7 +125756,7 @@
       "nome_cor": "PRETO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 23.0,
+      "qt_atual": 21.0,
       "cta": "CD_950"
     },
     {
@@ -126890,7 +126116,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 50.0,
+      "qt_atual": 48.0,
       "cta": "CD_950"
     },
     {
@@ -127277,7 +126503,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 15.0,
+      "qt_atual": 14.0,
       "cta": "CD_950"
     },
     {
@@ -127295,7 +126521,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 10.0,
+      "qt_atual": 8.0,
       "cta": "CD_950"
     },
     {
@@ -127440,15 +126666,6 @@
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015448",
-      "cor": "*10",
-      "nome_cor": "PRETO",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -1.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -127700,7 +126917,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 348.0,
+      "qt_atual": 347.0,
       "cta": "CD_950"
     },
     {
@@ -128123,7 +127340,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 11.0,
+      "qt_atual": 10.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -128196,24 +127413,6 @@
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015447",
-      "cor": "*10",
-      "nome_cor": "PRETO",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015447",
-      "cor": "*10",
-      "nome_cor": "PRETO",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -128356,24 +127555,6 @@
       "cor": "*10",
       "nome_cor": "PRETO",
       "tam": "U ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015436",
-      "cor": "*10",
-      "nome_cor": "PRETO",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015435",
-      "cor": "*10",
-      "nome_cor": "PRETO",
-      "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
@@ -129194,7 +128375,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 172.0,
+      "qt_atual": 168.0,
       "cta": "CD_950"
     },
     {
@@ -129968,7 +129149,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 47.0,
+      "qt_atual": 46.0,
       "cta": "CD_950"
     },
     {
@@ -131039,7 +130220,7 @@
       "nome_cor": "PRETO",
       "tam": "PP",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 7.0,
+      "qt_atual": 6.0,
       "cta": "CD_950"
     },
     {
@@ -132951,6 +132132,15 @@
       "cta": "GERAL MATRIZ"
     },
     {
+      "cd_item": "019454",
+      "cor": "*10",
+      "nome_cor": "PRETO",
+      "tam": "U ",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": -1.0,
+      "cta": "AMBI"
+    },
+    {
       "cd_item": "019453",
       "cor": "*10",
       "nome_cor": "PRETO",
@@ -133946,7 +133136,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 53.0,
+      "qt_atual": 52.0,
       "cta": "CD_950"
     },
     {
@@ -135026,7 +134216,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 83.0,
+      "qt_atual": 80.0,
       "cta": "CD_950"
     },
     {
@@ -137060,7 +136250,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 106.0,
+      "qt_atual": 103.0,
       "cta": "CD_950"
     },
     {
@@ -137276,7 +136466,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 31.0,
+      "qt_atual": 30.0,
       "cta": "CD_950"
     },
     {
@@ -137537,7 +136727,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 50.0,
+      "qt_atual": 49.0,
       "cta": "CD_950"
     },
     {
@@ -138455,7 +137645,7 @@
       "nome_cor": "PRETO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 28.0,
+      "qt_atual": 27.0,
       "cta": "CD_950"
     },
     {
@@ -139085,7 +138275,7 @@
       "nome_cor": "PRETO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 88.0,
+      "qt_atual": 87.0,
       "cta": "CD_950"
     },
     {
@@ -139103,7 +138293,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 84.0,
+      "qt_atual": 83.0,
       "cta": "CD_950"
     },
     {
@@ -139265,7 +138455,7 @@
       "nome_cor": "PRETO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 78.0,
+      "qt_atual": 77.0,
       "cta": "CD_950"
     },
     {
@@ -142131,15 +141321,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "015413",
-      "cor": "719",
-      "nome_cor": "CRU",
-      "tam": "44",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "015411",
       "cor": "719",
       "nome_cor": "CRU",
@@ -143873,7 +143054,7 @@
       "nome_cor": "MARROM",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 46.0,
+      "qt_atual": 45.0,
       "cta": "CD_950"
     },
     {
@@ -144152,7 +143333,7 @@
       "nome_cor": "MARROM",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 10.0,
+      "qt_atual": 9.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -144170,7 +143351,7 @@
       "nome_cor": "MARROM",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 3.0,
+      "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -145223,7 +144404,7 @@
       "nome_cor": "MARROM",
       "tam": "PP",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 110.0,
+      "qt_atual": 109.0,
       "cta": "CD_950"
     },
     {
@@ -145331,7 +144512,7 @@
       "nome_cor": "MARROM",
       "tam": "PP",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 44.0,
+      "qt_atual": 43.0,
       "cta": "CD_950"
     },
     {
@@ -145367,7 +144548,7 @@
       "nome_cor": "MARROM",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 27.0,
+      "qt_atual": 25.0,
       "cta": "CD_950"
     },
     {
@@ -146591,7 +145772,7 @@
       "nome_cor": "MARROM",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 206.0,
+      "qt_atual": 204.0,
       "cta": "CD_950"
     },
     {
@@ -147014,7 +146195,7 @@
       "nome_cor": "MARROM",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 18.0,
+      "qt_atual": 16.0,
       "cta": "CD_950"
     },
     {
@@ -147095,7 +146276,7 @@
       "nome_cor": "MARROM",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 7.0,
+      "qt_atual": 6.0,
       "cta": "AMBI"
     },
     {
@@ -147104,7 +146285,7 @@
       "nome_cor": "MARROM",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 37.0,
+      "qt_atual": 35.0,
       "cta": "AMBI"
     },
     {
@@ -147671,7 +146852,7 @@
       "nome_cor": "MARROM",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 17.0,
+      "qt_atual": 15.0,
       "cta": "CD_950"
     },
     {
@@ -148310,7 +147491,7 @@
       "nome_cor": "MARROM",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 90.0,
+      "qt_atual": 89.0,
       "cta": "CD_950"
     },
     {
@@ -151379,7 +150560,7 @@
       "nome_cor": "MARROM",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 124.0,
+      "qt_atual": 123.0,
       "cta": "CD_950"
     },
     {
@@ -151559,7 +150740,7 @@
       "nome_cor": "MARROM",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 118.0,
+      "qt_atual": 115.0,
       "cta": "CD_950"
     },
     {
@@ -151613,7 +150794,25 @@
       "nome_cor": "MARROM",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 10.0,
+      "qt_atual": 27.0,
+      "cta": "GERAL MATRIZ"
+    },
+    {
+      "cd_item": "010030",
+      "cor": "B79",
+      "nome_cor": "MARROM",
+      "tam": "M ",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": 64.0,
+      "cta": "CD_903"
+    },
+    {
+      "cd_item": "010030",
+      "cor": "B79",
+      "nome_cor": "MARROM",
+      "tam": "P ",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": 27.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -151622,16 +150821,7 @@
       "nome_cor": "MARROM",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 15.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "010030",
-      "cor": "B79",
-      "nome_cor": "MARROM",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -3.0,
+      "qt_atual": 47.0,
       "cta": "CD_903"
     },
     {
@@ -152234,7 +151424,7 @@
       "nome_cor": "MARROM",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 19.0,
+      "qt_atual": 18.0,
       "cta": "CD_950"
     },
     {
@@ -152342,7 +151532,7 @@
       "nome_cor": "MARROM",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 49.0,
+      "qt_atual": 48.0,
       "cta": "CD_950"
     },
     {
@@ -157094,7 +156284,7 @@
       "nome_cor": "ROSA",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 39.0,
+      "qt_atual": 38.0,
       "cta": "CD_950"
     },
     {
@@ -157184,7 +156374,7 @@
       "nome_cor": "ROSA",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 57.0,
+      "qt_atual": 54.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -157609,15 +156799,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 8.0,
       "cta": "CD_903"
-    },
-    {
-      "cd_item": "029877",
-      "cor": "E60",
-      "nome_cor": "ROSA",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "CD_950"
     },
     {
       "cd_item": "046890",
@@ -158174,7 +157355,7 @@
       "nome_cor": "ROSA",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 4.0,
+      "qt_atual": 3.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -158543,7 +157724,7 @@
       "nome_cor": "ROSA",
       "tam": "PP",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 34.0,
+      "qt_atual": 33.0,
       "cta": "CD_950"
     },
     {
@@ -158885,7 +158066,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 18.0,
+      "qt_atual": 17.0,
       "cta": "CD_950"
     },
     {
@@ -158912,7 +158093,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 7.0,
+      "qt_atual": 4.0,
       "cta": "CD_950"
     },
     {
@@ -159155,7 +158336,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 8.0,
+      "qt_atual": 5.0,
       "cta": "CD_903"
     },
     {
@@ -159164,7 +158345,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 24.0,
+      "qt_atual": 27.0,
       "cta": "CD_950"
     },
     {
@@ -159173,8 +158354,17 @@
       "nome_cor": "OFF WHITE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 33.0,
+      "qt_atual": 21.0,
       "cta": "CD_903"
+    },
+    {
+      "cd_item": "020219",
+      "cor": "P34",
+      "nome_cor": "OFF WHITE",
+      "tam": "P ",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": 12.0,
+      "cta": "CD_950"
     },
     {
       "cd_item": "020084",
@@ -159344,7 +158534,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 16.0,
+      "qt_atual": 14.0,
       "cta": "CD_950"
     },
     {
@@ -160820,7 +160010,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 31.0,
+      "qt_atual": 32.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -161130,15 +160320,6 @@
       "cta": "AMBI"
     },
     {
-      "cd_item": "019556",
-      "cor": "P34",
-      "nome_cor": "OFF WHITE",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "AMBI"
-    },
-    {
       "cd_item": "019252",
       "cor": "P34",
       "nome_cor": "OFF WHITE",
@@ -161382,15 +160563,6 @@
       "cta": "CD_903"
     },
     {
-      "cd_item": "015702",
-      "cor": "P34",
-      "nome_cor": "OFF WHITE",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "CD_950"
-    },
-    {
       "cd_item": "015540",
       "cor": "P34",
       "nome_cor": "OFF WHITE",
@@ -161630,7 +160802,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 15.0,
+      "qt_atual": 16.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -161801,7 +160973,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 72.0,
+      "qt_atual": 71.0,
       "cta": "CD_950"
     },
     {
@@ -164080,15 +163252,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": -1.0,
       "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015297",
-      "cor": "E76",
-      "nome_cor": "AVELÃ",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "CD_950"
     },
     {
       "cd_item": "046823",
@@ -167705,7 +166868,7 @@
       "nome_cor": "CAJUEIRO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 170.0,
+      "qt_atual": 168.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -171737,7 +170900,7 @@
       "nome_cor": "OLIVA",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 136.0,
+      "qt_atual": 135.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -171782,7 +170945,7 @@
       "nome_cor": "OLIVA",
       "tam": "PP",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 96.0,
+      "qt_atual": 95.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -172853,7 +172016,7 @@
       "nome_cor": "JEANS",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 530.0,
+      "qt_atual": 528.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -172925,7 +172088,7 @@
       "nome_cor": "JEANS",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 151.0,
+      "qt_atual": 152.0,
       "cta": "AMBI"
     },
     {
@@ -173177,7 +172340,16 @@
       "nome_cor": "BAUNILHA",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 33.0,
+      "qt_atual": -1.0,
+      "cta": "CD_903"
+    },
+    {
+      "cd_item": "020220",
+      "cor": "F01",
+      "nome_cor": "BAUNILHA",
+      "tam": "G ",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": 34.0,
       "cta": "CD_950"
     },
     {
@@ -179211,15 +178383,6 @@
       "cta": "OUTLET"
     },
     {
-      "cd_item": "015462",
-      "cor": "A67",
-      "nome_cor": "MARINHO",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "046058",
       "cor": "A67",
       "nome_cor": "MARINHO",
@@ -181268,7 +180431,7 @@
       "nome_cor": "SALMON",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
+      "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -181646,7 +180809,7 @@
       "nome_cor": "SALMON",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
+      "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -182321,7 +181484,7 @@
       "nome_cor": "ALGODÃO DOCE",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 21.0,
+      "qt_atual": 20.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -183486,6 +182649,33 @@
       "cta": "GERAL MATRIZ"
     },
     {
+      "cd_item": "047933",
+      "cor": "E96",
+      "nome_cor": "CURCUMA",
+      "tam": "G ",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": 22.0,
+      "cta": "GERAL MATRIZ"
+    },
+    {
+      "cd_item": "047933",
+      "cor": "E96",
+      "nome_cor": "CURCUMA",
+      "tam": "M ",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": 33.0,
+      "cta": "GERAL MATRIZ"
+    },
+    {
+      "cd_item": "047933",
+      "cor": "E96",
+      "nome_cor": "CURCUMA",
+      "tam": "P ",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": 34.0,
+      "cta": "GERAL MATRIZ"
+    },
+    {
       "cd_item": "047934",
       "cor": "E96",
       "nome_cor": "CURCUMA",
@@ -184292,7 +183482,7 @@
       "nome_cor": "ROSA PÓ",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 11.0,
+      "qt_atual": 10.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -184364,7 +183554,7 @@
       "nome_cor": "ROSA PÓ",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 23.0,
+      "qt_atual": 22.0,
       "cta": "CD_950"
     },
     {
@@ -184472,7 +183662,7 @@
       "nome_cor": "ROSA PÓ",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
+      "qt_atual": 1.0,
       "cta": "CD_950"
     },
     {
@@ -185086,33 +184276,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 4.0,
       "cta": "OUTLET"
-    },
-    {
-      "cd_item": "015434",
-      "cor": "991",
-      "nome_cor": "ALGA",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015412",
-      "cor": "991",
-      "nome_cor": "ALGA",
-      "tam": "42",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015411",
-      "cor": "991",
-      "nome_cor": "ALGA",
-      "tam": "44",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
     },
     {
       "cd_item": "033517",
@@ -185948,7 +185111,7 @@
       "nome_cor": "MARINHO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 27.0,
+      "qt_atual": 25.0,
       "cta": "CD_950"
     },
     {
@@ -186173,7 +185336,7 @@
       "nome_cor": "MARINHO",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 10.0,
+      "qt_atual": 40.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -186191,7 +185354,7 @@
       "nome_cor": "MARINHO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 10.0,
+      "qt_atual": 71.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -186209,7 +185372,7 @@
       "nome_cor": "MARINHO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 10.0,
+      "qt_atual": 72.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -186398,7 +185561,7 @@
       "nome_cor": "MARINHO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 5.0,
+      "qt_atual": 4.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -186767,7 +185930,7 @@
       "nome_cor": "MARINHO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 93.0,
+      "qt_atual": 92.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -187136,7 +186299,7 @@
       "nome_cor": "MARINHO",
       "tam": "PP",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 42.0,
+      "qt_atual": 40.0,
       "cta": "CD_950"
     },
     {
@@ -187361,7 +186524,7 @@
       "nome_cor": "MARINHO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 61.0,
+      "qt_atual": 60.0,
       "cta": "CD_950"
     },
     {
@@ -188693,7 +187856,7 @@
       "nome_cor": "MARINHO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 141.0,
+      "qt_atual": 138.0,
       "cta": "CD_950"
     },
     {
@@ -189062,7 +188225,7 @@
       "nome_cor": "MARINHO",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 96.0,
+      "qt_atual": 113.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -189089,7 +188252,7 @@
       "nome_cor": "MARINHO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 76.0,
+      "qt_atual": 117.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -189125,7 +188288,7 @@
       "nome_cor": "MARINHO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 73.0,
+      "qt_atual": 110.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -189206,7 +188369,7 @@
       "nome_cor": "MARINHO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 30.0,
+      "qt_atual": 29.0,
       "cta": "CD_950"
     },
     {
@@ -189260,7 +188423,7 @@
       "nome_cor": "MARINHO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 25.0,
+      "qt_atual": 22.0,
       "cta": "CD_950"
     },
     {
@@ -189521,7 +188684,7 @@
       "nome_cor": "MARINHO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 55.0,
+      "qt_atual": 54.0,
       "cta": "AMBI"
     },
     {
@@ -189683,7 +188846,7 @@
       "nome_cor": "MARINHO",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 5.0,
+      "qt_atual": 4.0,
       "cta": "AMBI"
     },
     {
@@ -189800,7 +188963,7 @@
       "nome_cor": "MARINHO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 14.0,
+      "qt_atual": 13.0,
       "cta": "AMBI"
     },
     {
@@ -190540,15 +189703,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 31.0,
       "cta": "CD_903"
-    },
-    {
-      "cd_item": "016190",
-      "cor": "A98",
-      "nome_cor": "MARINHO",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 4.0,
-      "cta": "CD_950"
     },
     {
       "cd_item": "047709",
@@ -191744,7 +190898,7 @@
       "nome_cor": "MARINHO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 26.0,
+      "qt_atual": 25.0,
       "cta": "CD_950"
     },
     {
@@ -192995,7 +192149,7 @@
       "nome_cor": "MILITAR",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 77.0,
+      "qt_atual": 76.0,
       "cta": "CD_950"
     },
     {
@@ -193031,7 +192185,7 @@
       "nome_cor": "MILITAR",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 15.0,
+      "qt_atual": 14.0,
       "cta": "CD_950"
     },
     {
@@ -193157,7 +192311,7 @@
       "nome_cor": "MILITAR",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 13.0,
+      "qt_atual": 9.0,
       "cta": "CD_903"
     },
     {
@@ -193166,7 +192320,7 @@
       "nome_cor": "MILITAR",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 15.0,
+      "qt_atual": 19.0,
       "cta": "CD_950"
     },
     {
@@ -193238,7 +192392,7 @@
       "nome_cor": "MILITAR",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 36.0,
+      "qt_atual": 35.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -193724,7 +192878,7 @@
       "nome_cor": "MILITAR",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 7.0,
+      "qt_atual": 6.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -193733,7 +192887,7 @@
       "nome_cor": "MILITAR",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 12.0,
+      "qt_atual": 11.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -193805,7 +192959,7 @@
       "nome_cor": "MILITAR",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 21.0,
+      "qt_atual": 17.0,
       "cta": "CD_950"
     },
     {
@@ -193832,7 +192986,7 @@
       "nome_cor": "MILITAR",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 133.0,
+      "qt_atual": 130.0,
       "cta": "CD_950"
     },
     {
@@ -194084,7 +193238,7 @@
       "nome_cor": "MILITAR",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 124.0,
+      "qt_atual": 122.0,
       "cta": "CD_950"
     },
     {
@@ -194471,7 +193625,7 @@
       "nome_cor": "MILITAR",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 21.0,
+      "qt_atual": 20.0,
       "cta": "CD_903"
     },
     {
@@ -194624,7 +193778,7 @@
       "nome_cor": "MILITAR",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 20.0,
+      "qt_atual": 19.0,
       "cta": "CD_950"
     },
     {
@@ -195137,7 +194291,7 @@
       "nome_cor": "MILITAR",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 194.0,
+      "qt_atual": 192.0,
       "cta": "CD_950"
     },
     {
@@ -196329,15 +195483,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "014837",
-      "cor": "B03",
-      "nome_cor": "VERMELHO",
-      "tam": "48",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "018021",
       "cor": "B04",
       "nome_cor": "FERRUGEM",
@@ -196838,7 +195983,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 20.0,
+      "qt_atual": 16.0,
       "cta": "CD_950"
     },
     {
@@ -197180,7 +196325,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 79.0,
+      "qt_atual": 77.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -197189,7 +196334,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 61.0,
+      "qt_atual": 59.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -197306,7 +196451,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 16.0,
+      "qt_atual": 15.0,
       "cta": "CD_903"
     },
     {
@@ -197315,7 +196460,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 8.0,
+      "qt_atual": 9.0,
       "cta": "CD_950"
     },
     {
@@ -197396,7 +196541,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 113.0,
+      "qt_atual": 111.0,
       "cta": "CD_950"
     },
     {
@@ -197432,7 +196577,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 39.0,
+      "qt_atual": 38.0,
       "cta": "CD_950"
     },
     {
@@ -197450,7 +196595,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 46.0,
+      "qt_atual": -64.0,
       "cta": "CD_903"
     },
     {
@@ -197468,7 +196613,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 92.0,
+      "qt_atual": 202.0,
       "cta": "CD_950"
     },
     {
@@ -197628,15 +196773,6 @@
       "cd_item": "015182",
       "cor": "C25",
       "nome_cor": "OFF WHITE",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "CD_950"
-    },
-    {
-      "cd_item": "015182",
-      "cor": "C25",
-      "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 3.0,
@@ -197666,7 +196802,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 4.0,
+      "qt_atual": 3.0,
       "cta": "CD_950"
     },
     {
@@ -198404,7 +197540,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 66.0,
+      "qt_atual": 56.0,
       "cta": "CD_950"
     },
     {
@@ -198431,7 +197567,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 104.0,
+      "qt_atual": 101.0,
       "cta": "CD_950"
     },
     {
@@ -198548,7 +197684,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 22.0,
+      "qt_atual": 20.0,
       "cta": "CD_950"
     },
     {
@@ -198575,7 +197711,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 26.0,
+      "qt_atual": 24.0,
       "cta": "CD_950"
     },
     {
@@ -198701,7 +197837,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
+      "qt_atual": 1.0,
       "cta": "CD_950"
     },
     {
@@ -200177,7 +199313,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 22.0,
+      "qt_atual": 21.0,
       "cta": "CD_950"
     },
     {
@@ -201005,7 +200141,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 226.0,
+      "qt_atual": 225.0,
       "cta": "CD_950"
     },
     {
@@ -201266,7 +200402,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 65.0,
+      "qt_atual": 64.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -201806,7 +200942,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 114.0,
+      "qt_atual": 113.0,
       "cta": "CD_950"
     },
     {
@@ -201869,7 +201005,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 20.0,
+      "qt_atual": 18.0,
       "cta": "CD_950"
     },
     {
@@ -201941,7 +201077,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 57.0,
+      "qt_atual": 56.0,
       "cta": "CD_950"
     },
     {
@@ -202057,15 +201193,6 @@
       "cor": "C25",
       "nome_cor": "OFF WHITE",
       "tam": "U ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015466",
-      "cor": "C25",
-      "nome_cor": "OFF WHITE",
-      "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
@@ -202285,24 +201412,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 2.0,
       "cta": "AMBI"
-    },
-    {
-      "cd_item": "015448",
-      "cor": "C25",
-      "nome_cor": "OFF WHITE",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015448",
-      "cor": "C25",
-      "nome_cor": "OFF WHITE",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
     },
     {
       "cd_item": "046058",
@@ -203588,7 +202697,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 88.0,
+      "qt_atual": 85.0,
       "cta": "CD_950"
     },
     {
@@ -203759,7 +202868,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 10.0,
+      "qt_atual": 9.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -204065,7 +203174,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 7.0,
+      "qt_atual": 6.0,
       "cta": "CD_950"
     },
     {
@@ -204209,7 +203318,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 55.0,
+      "qt_atual": 52.0,
       "cta": "CD_950"
     },
     {
@@ -204236,7 +203345,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 16.0,
+      "qt_atual": 14.0,
       "cta": "CD_950"
     },
     {
@@ -205397,7 +204506,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -3.0,
+      "qt_atual": -4.0,
       "cta": "AMBI"
     },
     {
@@ -205802,7 +204911,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 5.0,
+      "qt_atual": 4.0,
       "cta": "AMBI"
     },
     {
@@ -205892,7 +205001,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 19.0,
+      "qt_atual": 16.0,
       "cta": "CD_950"
     },
     {
@@ -206909,7 +206018,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 56.0,
+      "qt_atual": 54.0,
       "cta": "CD_950"
     },
     {
@@ -208925,7 +208034,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 40.0,
+      "qt_atual": 39.0,
       "cta": "CD_950"
     },
     {
@@ -209393,7 +208502,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 45.0,
+      "qt_atual": 44.0,
       "cta": "CD_950"
     },
     {
@@ -210032,7 +209141,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 57.0,
+      "qt_atual": 56.0,
       "cta": "CD_950"
     },
     {
@@ -210905,7 +210014,7 @@
       "nome_cor": "OFF WHITE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 10.0,
+      "qt_atual": 9.0,
       "cta": "CD_950"
     },
     {
@@ -211126,42 +210235,6 @@
     },
     {
       "cd_item": "015481",
-      "cor": "C55",
-      "nome_cor": "MARINHO",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015470",
-      "cor": "C55",
-      "nome_cor": "MARINHO",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015445",
-      "cor": "C55",
-      "nome_cor": "MARINHO",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015445",
-      "cor": "C55",
-      "nome_cor": "MARINHO",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015434",
       "cor": "C55",
       "nome_cor": "MARINHO",
       "tam": "P ",
@@ -214955,7 +214028,7 @@
       "nome_cor": "BEGE",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 8.0,
+      "qt_atual": 7.0,
       "cta": "AMBI"
     },
     {
@@ -216368,7 +215441,7 @@
       "nome_cor": "PASSIONE",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 17.0,
+      "qt_atual": 16.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -217961,7 +217034,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 12.0,
+      "qt_atual": 11.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -218366,7 +217439,7 @@
       "nome_cor": "PRETO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 10.0,
+      "qt_atual": 9.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -224720,7 +223793,7 @@
       "nome_cor": "FOLHA",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 110.0,
+      "qt_atual": 109.0,
       "cta": "CD_950"
     },
     {
@@ -226412,7 +225485,7 @@
       "nome_cor": "RATO",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 4.0,
+      "qt_atual": 3.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -226441,15 +225514,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 6.0,
       "cta": "ATACADO ONLINE"
-    },
-    {
-      "cd_item": "047564",
-      "cor": "P59",
-      "nome_cor": "RATO",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "GERAL MATRIZ"
     },
     {
       "cd_item": "047564",
@@ -227726,7 +226790,7 @@
       "nome_cor": "CHERRY",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
+      "qt_atual": 1.0,
       "cta": "CD_950"
     },
     {
@@ -230952,15 +230016,6 @@
       "cta": "GERAL MATRIZ"
     },
     {
-      "cd_item": "015466",
-      "cor": "B99",
-      "nome_cor": "CAMELO",
-      "tam": "M ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
       "cd_item": "024846",
       "cor": "B99",
       "nome_cor": "CAMELO",
@@ -232167,6 +231222,24 @@
       "cta": "GERAL MATRIZ"
     },
     {
+      "cd_item": "020213",
+      "cor": "P06",
+      "nome_cor": "CINZA",
+      "tam": "U ",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": 5.0,
+      "cta": "GERAL MATRIZ"
+    },
+    {
+      "cd_item": "020213",
+      "cor": "P06",
+      "nome_cor": "CINZA",
+      "tam": "U ",
+      "dt_saldo": "2026-07-01T00:00:00",
+      "qt_atual": 35.0,
+      "cta": "CD_903"
+    },
+    {
       "cd_item": "047815",
       "cor": "P06",
       "nome_cor": "CINZA",
@@ -232568,7 +231641,7 @@
       "nome_cor": "CINZA",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 31.0,
+      "qt_atual": 30.0,
       "cta": "CD_950"
     },
     {
@@ -232640,7 +231713,7 @@
       "nome_cor": "CINZA",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 23.0,
+      "qt_atual": 19.0,
       "cta": "CD_950"
     },
     {
@@ -232919,7 +231992,7 @@
       "nome_cor": "CINZA",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 32.0,
+      "qt_atual": 33.0,
       "cta": "AMBI"
     },
     {
@@ -233189,7 +232262,7 @@
       "nome_cor": "CINZA",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 12.0,
+      "qt_atual": 10.0,
       "cta": "CD_950"
     },
     {
@@ -233405,7 +232478,7 @@
       "nome_cor": "BRANCO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 29.0,
+      "qt_atual": 28.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -235979,7 +235052,7 @@
       "nome_cor": "CAMURÇA",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 235.0,
+      "qt_atual": 234.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -236150,7 +235223,7 @@
       "nome_cor": "CAMURÇA",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 72.0,
+      "qt_atual": 71.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -236969,7 +236042,7 @@
       "nome_cor": "CAMURÇA",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 20.0,
+      "qt_atual": 19.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -237536,7 +236609,7 @@
       "nome_cor": "MARROM",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 111.0,
+      "qt_atual": 121.0,
       "cta": "AMBI"
     },
     {
@@ -237977,7 +237050,7 @@
       "nome_cor": "MARROM",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 139.0,
+      "qt_atual": 143.0,
       "cta": "AMBI"
     },
     {
@@ -238499,7 +237572,7 @@
       "nome_cor": "CASTOR",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 116.0,
+      "qt_atual": 115.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -238661,7 +237734,7 @@
       "nome_cor": "CASTOR",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -105.0,
+      "qt_atual": -106.0,
       "cta": "AMBI"
     },
     {
@@ -238967,7 +238040,7 @@
       "nome_cor": "CASTOR",
       "tam": "PP",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 40.0,
+      "qt_atual": 39.0,
       "cta": "CD_950"
     },
     {
@@ -239075,7 +238148,7 @@
       "nome_cor": "CASTOR",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 7.0,
+      "qt_atual": 6.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -239624,7 +238697,7 @@
       "nome_cor": "CASTOR",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 71.0,
+      "qt_atual": 66.0,
       "cta": "CD_950"
     },
     {
@@ -240884,7 +239957,7 @@
       "nome_cor": "CASTOR",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 66.0,
+      "qt_atual": 65.0,
       "cta": "CD_950"
     },
     {
@@ -241550,7 +240623,7 @@
       "nome_cor": "CASTOR",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 19.0,
+      "qt_atual": 18.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -241748,7 +240821,7 @@
       "nome_cor": "CASTOR",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 82.0,
+      "qt_atual": 81.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -242450,7 +241523,7 @@
       "nome_cor": "BOMBOM",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 5.0,
+      "qt_atual": 4.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -243323,7 +242396,7 @@
       "nome_cor": "BOMBOM",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 15.0,
+      "qt_atual": 14.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -243955,15 +243028,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "046754",
-      "cor": "E10",
-      "nome_cor": "VERDE AGUA",
-      "tam": "P ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 1.0,
-      "cta": "CD_950"
     },
     {
       "cd_item": "015697",
@@ -244896,15 +243960,6 @@
       "cd_item": "015007",
       "cor": "E32",
       "nome_cor": "ROSA",
-      "tam": "G ",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 2.0,
-      "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015007",
-      "cor": "E32",
-      "nome_cor": "ROSA",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 2.0,
@@ -245159,7 +244214,7 @@
       "nome_cor": "CAMELO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 63.0,
+      "qt_atual": 57.0,
       "cta": "CD_950"
     },
     {
@@ -245501,7 +244556,7 @@
       "nome_cor": "CAMELO",
       "tam": "35",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 20.0,
+      "qt_atual": 19.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -245861,7 +244916,7 @@
       "nome_cor": "CAMELO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 4.0,
+      "qt_atual": 3.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -246212,7 +245267,7 @@
       "nome_cor": "CAMELO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -10.0,
+      "qt_atual": -11.0,
       "cta": "AMBI"
     },
     {
@@ -246428,7 +245483,7 @@
       "nome_cor": "CAMELO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 25.0,
+      "qt_atual": 24.0,
       "cta": "ATACADO ONLINE"
     },
     {
@@ -246761,7 +245816,7 @@
       "nome_cor": "CAMELO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 4.0,
+      "qt_atual": 3.0,
       "cta": "AMBI"
     },
     {
@@ -246977,7 +246032,7 @@
       "nome_cor": "CAMELO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 28.0,
+      "qt_atual": 27.0,
       "cta": "CD_950"
     },
     {
@@ -247292,7 +246347,7 @@
       "nome_cor": "CAMELO",
       "tam": "36",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -4.0,
+      "qt_atual": -5.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -248048,7 +247103,7 @@
       "nome_cor": "FIGO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 48.0,
+      "qt_atual": 47.0,
       "cta": "CD_950"
     },
     {
@@ -248111,7 +247166,7 @@
       "nome_cor": "FIGO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 15.0,
+      "qt_atual": 14.0,
       "cta": "CD_950"
     },
     {
@@ -248354,7 +247409,7 @@
       "nome_cor": "FIGO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -1.0,
+      "qt_atual": -2.0,
       "cta": "GERAL MATRIZ"
     },
     {
@@ -248876,7 +247931,7 @@
       "nome_cor": "FIGO",
       "tam": "U ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 62.0,
+      "qt_atual": 61.0,
       "cta": "CD_950"
     },
     {
@@ -248948,7 +248003,7 @@
       "nome_cor": "FIGO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 57.0,
+      "qt_atual": 55.0,
       "cta": "CD_950"
     },
     {
@@ -249272,7 +248327,7 @@
       "nome_cor": "FIGO",
       "tam": "PP",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 55.0,
+      "qt_atual": 54.0,
       "cta": "CD_950"
     },
     {
@@ -249787,15 +248842,6 @@
       "dt_saldo": "2026-07-01T00:00:00",
       "qt_atual": 1.0,
       "cta": "GERAL MATRIZ"
-    },
-    {
-      "cd_item": "015917",
-      "cor": "E42",
-      "nome_cor": "FIGO",
-      "tam": "GG",
-      "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": -1.0,
-      "cta": "AMBI"
     },
     {
       "cd_item": "046120",
@@ -250838,7 +249884,7 @@
       "nome_cor": "FIGO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 18.0,
+      "qt_atual": 16.0,
       "cta": "CD_950"
     },
     {
@@ -250856,7 +249902,7 @@
       "nome_cor": "FIGO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 22.0,
+      "qt_atual": 21.0,
       "cta": "CD_903"
     },
     {
@@ -251081,7 +250127,7 @@
       "nome_cor": "FIGO",
       "tam": "M ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 48.0,
+      "qt_atual": 42.0,
       "cta": "CD_950"
     },
     {
@@ -251108,7 +250154,7 @@
       "nome_cor": "FIGO",
       "tam": "P ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 168.0,
+      "qt_atual": 165.0,
       "cta": "CD_950"
     },
     {
@@ -251225,7 +250271,7 @@
       "nome_cor": "FIGO",
       "tam": "G ",
       "dt_saldo": "2026-07-01T00:00:00",
-      "qt_atual": 68.0,
+      "qt_atual": 67.0,
       "cta": "CD_950"
     },
     {
