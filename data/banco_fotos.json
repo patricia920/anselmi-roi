@@ -1,12 +1,12 @@
 {
   "_meta": {
     "fonte": "moa_vw_vitrine (Sisplan via Oracle, sincronizado do anselmi-pcp)",
-    "gerado_em": "2026-07-24T11:10:39Z",
+    "gerado_em": "2026-07-24T12:01:27Z",
     "algoritmo": "cor_arquivo (MOA_VW_VITRINE) → color_sisplan via JOIN — V3 permissivo (TIER 1-6: direto, normalizado, oracle, indireto, so-oracle, orfa)",
     "estatisticas": {
-      "match_orfa": 48054,
+      "match_orfa": 48513,
       "match_via_oracle": 594,
-      "match_so_oracle": 20277,
+      "match_so_oracle": 19818,
       "match_normalizado": 2737,
       "match_cor_indireta": 15995,
       "match_sisplan_direto": 8256
@@ -14,10 +14,10 @@
     "fotos_processadas": 95913,
     "refs_no_banco": 16617,
     "pares_ref_color_sisplan": 41493,
-    "limpeza_404_em": "2026-07-24T11:47:12Z",
-    "urls_404_removidas": 39741,
-    "refs_zeradas": 15529,
-    "cores_zeradas": 39735
+    "limpeza_404_em": "2026-07-24T12:38:54Z",
+    "urls_404_removidas": 39722,
+    "refs_zeradas": 15501,
+    "cores_zeradas": 39716
   },
   "fotos": {
     "014279": {
@@ -1155,6 +1155,9 @@
       "005": [
         "https://photo.anselmi.ind.br/Fotos/46763_05.jpg"
       ],
+      "P39": [
+        "https://photo.anselmi.ind.br/Fotos/46763_p39.jpg"
+      ],
       "*02": [
         "https://photo.anselmi.ind.br/Fotos/46763_02.jpg"
       ],
@@ -1177,20 +1180,11 @@
       "158": [
         "https://photo.anselmi.ind.br/Fotos/29877_158.jpg"
       ],
-      "324": [
-        "https://photo.anselmi.ind.br/Fotos/29877_324.jpg"
-      ],
       "353": [
         "https://photo.anselmi.ind.br/Fotos/29877_353.jpg"
       ],
       "566": [
         "https://photo.anselmi.ind.br/Fotos/29877_566.jpg"
-      ],
-      "E20": [
-        "https://photo.anselmi.ind.br/Fotos/29877_e20.jpg"
-      ],
-      "C84": [
-        "https://photo.anselmi.ind.br/Fotos/29877_c84.jpg"
       ]
     },
     "046024": {
@@ -1267,9 +1261,6 @@
     "046542": {
       "010": [
         "https://photo.anselmi.ind.br/Fotos/46542_10.jpg"
-      ],
-      "A98": [
-        "https://photo.anselmi.ind.br/Fotos/46542_a98.jpg"
       ]
     },
     "015450": {
@@ -1330,6 +1321,21 @@
         "https://photo.anselmi.ind.br/Fotos/46045_03.jpg"
       ]
     },
+    "015640": {
+      "B16": [
+        "https://photo.anselmi.ind.br/Fotos/15640_b16.jpg"
+      ]
+    },
+    "015632": {
+      "B82": [
+        "https://photo.anselmi.ind.br/Fotos/15632_b82.jpg"
+      ]
+    },
+    "029629": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/29629_01.jpg"
+      ]
+    },
     "046670": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/46670_01.jpg"
@@ -1359,6 +1365,16 @@
     "046192": {
       "010": [
         "https://photo.anselmi.ind.br/Fotos/46192_10.jpg"
+      ]
+    },
+    "046175": {
+      "A93": [
+        "https://photo.anselmi.ind.br/Fotos/46175_a93.jpg"
+      ]
+    },
+    "015835": {
+      "005": [
+        "https://photo.anselmi.ind.br/Fotos/15835_05.jpg"
       ]
     },
     "046082": {
@@ -1562,11 +1578,6 @@
         "https://photo.anselmi.ind.br/Fotos/47350_03.jpg"
       ]
     },
-    "046944": {
-      "A67": [
-        "https://photo.anselmi.ind.br/Fotos/46944_a67.jpg"
-      ]
-    },
     "019419": {
       "353": [
         "https://photo.anselmi.ind.br/Fotos/19419_353.jpg"
@@ -1575,6 +1586,11 @@
     "019509": {
       "353": [
         "https://photo.anselmi.ind.br/Fotos/19509_353.jpg"
+      ]
+    },
+    "019481": {
+      "999": [
+        "https://photo.anselmi.ind.br/Fotos/19481_999.jpg"
       ]
     },
     "019483": {
@@ -1592,9 +1608,22 @@
         "https://photo.anselmi.ind.br/Fotos/19415_324.jpg"
       ]
     },
+    "019487": {
+      "C25": [
+        "https://photo.anselmi.ind.br/Fotos/19487_c25.jpg"
+      ],
+      "E56": [
+        "https://photo.anselmi.ind.br/Fotos/19487_e56.jpg"
+      ]
+    },
     "019410": {
       "010": [
         "https://photo.anselmi.ind.br/Fotos/19410_10.jpg"
+      ]
+    },
+    "019300": {
+      "*10": [
+        "https://photo.anselmi.ind.br/Fotos/19300_10.jpg"
       ]
     },
     "046490": {
@@ -1639,6 +1668,11 @@
         "https://photo.anselmi.ind.br/Fotos/16303_353.jpg"
       ]
     },
+    "047783": {
+      "P69": [
+        "https://photo.anselmi.ind.br/Fotos/47783_p69.jpg"
+      ]
+    },
     "013885": {
       "353": [
         "https://photo.anselmi.ind.br/Fotos/13885_353.jpg"
@@ -1662,9 +1696,19 @@
         "https://photo.anselmi.ind.br/Fotos/19466_353.jpg"
       ]
     },
+    "047725": {
+      "P31": [
+        "https://photo.anselmi.ind.br/Fotos/47725_p31.jpg"
+      ]
+    },
     "016399": {
       "010": [
         "https://photo.anselmi.ind.br/Fotos/16399_10.jpg"
+      ]
+    },
+    "045827": {
+      "005": [
+        "https://photo.anselmi.ind.br/Fotos/45827_05.jpg"
       ]
     },
     "046753": {
@@ -2003,6 +2047,16 @@
         "https://photo.anselmi.ind.br/Fotos/19519_324.jpg"
       ]
     },
+    "019433": {
+      "D57": [
+        "https://photo.anselmi.ind.br/Fotos/19433_d57.jpg"
+      ]
+    },
+    "018802": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/18802_01.jpg"
+      ]
+    },
     "012041": {
       "010": [
         "https://photo.anselmi.ind.br/Fotos/12041_10.jpg"
@@ -2050,22 +2104,11 @@
       "*07": [
         "https://photo.anselmi.ind.br/Fotos/47394_07.jpg"
       ],
-      "008": [
-        "https://photo.anselmi.ind.br/Fotos/47394_08.jpg"
-      ],
       "*01": [
         "https://photo.anselmi.ind.br/Fotos/47394_01.jpg"
       ],
       "*02": [
         "https://photo.anselmi.ind.br/Fotos/47394_02.jpg"
-      ],
-      "*04": [
-        "https://photo.anselmi.ind.br/Fotos/47394_04.jpg"
-      ]
-    },
-    "011022": {
-      "E10": [
-        "https://photo.anselmi.ind.br/Fotos/11022_e10.jpg"
       ]
     },
     "047427": {
@@ -2084,9 +2127,9 @@
         "https://photo.anselmi.ind.br/Fotos/11463_353.jpg"
       ]
     },
-    "018982": {
-      "010": [
-        "https://photo.anselmi.ind.br/Fotos/18982_10.jpg"
+    "012235": {
+      "C25": [
+        "https://photo.anselmi.ind.br/Fotos/12235_c25.jpg"
       ]
     },
     "047425": {
@@ -2151,15 +2194,7 @@
         "https://photo.anselmi.ind.br/Fotos/15198_10.jpg"
       ]
     },
-    "019184": {
-      "999": [
-        "https://photo.anselmi.ind.br/Fotos/19184_999.jpg"
-      ]
-    },
     "014616": {
-      "353": [
-        "https://photo.anselmi.ind.br/Fotos/14616_353.jpg"
-      ],
       "001": [
         "https://photo.anselmi.ind.br/Fotos/14616_01.jpg"
       ]
@@ -2193,14 +2228,8 @@
       ]
     },
     "018942": {
-      "B61": [
-        "https://photo.anselmi.ind.br/Fotos/18942_b61.jpg"
-      ],
       "D07": [
         "https://photo.anselmi.ind.br/Fotos/18942_d07.jpg"
-      ],
-      "178": [
-        "https://photo.anselmi.ind.br/Fotos/18942_178.jpg"
       ]
     },
     "019089": {
@@ -2536,11 +2565,6 @@
         "https://photo.anselmi.ind.br/Fotos/47595_01.jpg"
       ]
     },
-    "019632": {
-      "M08": [
-        "https://photo.anselmi.ind.br/Fotos/19632_m08.jpg"
-      ]
-    },
     "046880": {
       "353": [
         "https://photo.anselmi.ind.br/Fotos/46880_353.jpg"
@@ -2562,7 +2586,15 @@
         "https://photo.anselmi.ind.br/Fotos/47635_353.jpg"
       ]
     },
+    "046099": {
+      "010": [
+        "https://photo.anselmi.ind.br/Fotos/46099_10.jpg"
+      ]
+    },
     "045926": {
+      "*03": [
+        "https://photo.anselmi.ind.br/Fotos/45926_03.jpg"
+      ],
       "*06": [
         "https://photo.anselmi.ind.br/Fotos/45926_06.jpg"
       ],
@@ -2613,12 +2645,6 @@
     "019285": {
       "999": [
         "https://photo.anselmi.ind.br/Fotos/19285_999.jpg"
-      ],
-      "158": [
-        "https://photo.anselmi.ind.br/Fotos/19285_158.jpg"
-      ],
-      "E70": [
-        "https://photo.anselmi.ind.br/Fotos/19285_e70.jpg"
       ]
     },
     "019261": {
@@ -2629,10 +2655,12 @@
         "https://photo.anselmi.ind.br/Fotos/19261_158.jpg"
       ]
     },
+    "019263": {
+      "C25": [
+        "https://photo.anselmi.ind.br/Fotos/19263_c25.jpg"
+      ]
+    },
     "018969": {
-      "353": [
-        "https://photo.anselmi.ind.br/Fotos/18969_353.jpg"
-      ],
       "010": [
         "https://photo.anselmi.ind.br/Fotos/18969_10.jpg"
       ]
@@ -2666,6 +2694,11 @@
         "https://photo.anselmi.ind.br/Fotos/47699_353.jpg"
       ]
     },
+    "012928": {
+      "A98": [
+        "https://photo.anselmi.ind.br/Fotos/12928_a98.jpg"
+      ]
+    },
     "012974": {
       "353": [
         "https://photo.anselmi.ind.br/Fotos/12974_353.jpg"
@@ -2679,11 +2712,6 @@
     "019992": {
       "010": [
         "https://photo.anselmi.ind.br/Fotos/19992_10.jpg"
-      ]
-    },
-    "029014": {
-      "002": [
-        "https://photo.anselmi.ind.br/Fotos/29014_02.jpg"
       ]
     },
     "046350": {
@@ -2717,6 +2745,11 @@
     "019257": {
       "999": [
         "https://photo.anselmi.ind.br/Fotos/19257_999.jpg"
+      ]
+    },
+    "019156": {
+      "B79": [
+        "https://photo.anselmi.ind.br/Fotos/19156_b79.jpg"
       ]
     },
     "012604": {
@@ -2818,9 +2851,24 @@
         "https://photo.anselmi.ind.br/Fotos/13777_353.jpg"
       ]
     },
+    "033785": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/33785_01.jpg"
+      ]
+    },
+    "033670": {
+      "A44": [
+        "https://photo.anselmi.ind.br/Fotos/33670_a44.jpg"
+      ]
+    },
     "046712": {
       "010": [
         "https://photo.anselmi.ind.br/Fotos/46712_10.jpg"
+      ]
+    },
+    "046624": {
+      "E08": [
+        "https://photo.anselmi.ind.br/Fotos/46624_e08.jpg"
       ]
     },
     "046234": {
@@ -2875,6 +2923,16 @@
         "https://photo.anselmi.ind.br/Fotos/11863_147.jpg"
       ]
     },
+    "015178": {
+      "998": [
+        "https://photo.anselmi.ind.br/Fotos/15178_998.jpg"
+      ]
+    },
+    "046475": {
+      "C25": [
+        "https://photo.anselmi.ind.br/Fotos/46475_c25.jpg"
+      ]
+    },
     "015653": {
       "353": [
         "https://photo.anselmi.ind.br/Fotos/15653_353.jpg"
@@ -2906,7 +2964,15 @@
         "https://photo.anselmi.ind.br/Fotos/15187_10.jpg"
       ]
     },
+    "046576": {
+      "C25": [
+        "https://photo.anselmi.ind.br/Fotos/46576_c25.jpg"
+      ]
+    },
     "046754": {
+      "C32": [
+        "https://photo.anselmi.ind.br/Fotos/46754_c32.jpg"
+      ],
       "001": [
         "https://photo.anselmi.ind.br/Fotos/46754_01.jpg"
       ]
@@ -2919,6 +2985,9 @@
     "047705": {
       "*11": [
         "https://photo.anselmi.ind.br/Fotos/47705_11.jpg"
+      ],
+      "A98": [
+        "https://photo.anselmi.ind.br/Fotos/47705_a98.jpg"
       ],
       "353": [
         "https://photo.anselmi.ind.br/Fotos/47705_353.jpg"
@@ -2984,6 +3053,9 @@
     "046427": {
       "782": [
         "https://photo.anselmi.ind.br/Fotos/46427_782.jpg"
+      ],
+      "*01": [
+        "https://photo.anselmi.ind.br/Fotos/46427_01.jpg"
       ]
     },
     "011266": {
@@ -3348,12 +3420,6 @@
       ]
     },
     "046761": {
-      "E49": [
-        "https://photo.anselmi.ind.br/Fotos/46761_e49.jpg"
-      ],
-      "001": [
-        "https://photo.anselmi.ind.br/Fotos/46761_01.jpg"
-      ],
       "324": [
         "https://photo.anselmi.ind.br/Fotos/46761_324.jpg"
       ]
@@ -3509,9 +3575,6 @@
       ]
     },
     "017074": {
-      "998": [
-        "https://photo.anselmi.ind.br/Fotos/17074_998.jpg"
-      ],
       "*10": [
         "https://photo.anselmi.ind.br/Fotos/17074_10.jpg"
       ]
@@ -3566,12 +3629,6 @@
     "045884": {
       "010": [
         "https://photo.anselmi.ind.br/Fotos/45884_10.jpg"
-      ],
-      "A67": [
-        "https://photo.anselmi.ind.br/Fotos/45884_a67.jpg"
-      ],
-      "D44": [
-        "https://photo.anselmi.ind.br/Fotos/45884_d44.jpg"
       ]
     },
     "011751": {
@@ -3583,9 +3640,6 @@
       ],
       "*10": [
         "https://photo.anselmi.ind.br/Fotos/11751_10.jpg"
-      ],
-      "001": [
-        "https://photo.anselmi.ind.br/Fotos/11751_01.jpg"
       ],
       "353": [
         "https://photo.anselmi.ind.br/Fotos/11751_353.jpg"
@@ -3647,11 +3701,6 @@
         "https://photo.anselmi.ind.br/Fotos/19620_11.jpg"
       ]
     },
-    "046303": {
-      "D72": [
-        "https://photo.anselmi.ind.br/Fotos/46303_d72.jpg"
-      ]
-    },
     "010473": {
       "*01": [
         "https://photo.anselmi.ind.br/Fotos/10473_01.jpg"
@@ -3683,7 +3732,15 @@
         "https://photo.anselmi.ind.br/Fotos/13446_999.jpg"
       ]
     },
+    "019144": {
+      "353": [
+        "https://photo.anselmi.ind.br/Fotos/19144_353.jpg"
+      ]
+    },
     "017432": {
+      "998": [
+        "https://photo.anselmi.ind.br/Fotos/17432_998.jpg"
+      ],
       "010": [
         "https://photo.anselmi.ind.br/Fotos/17432_10.jpg"
       ]
@@ -3787,9 +3844,6 @@
       "*06": [
         "https://photo.anselmi.ind.br/Fotos/13135_06.jpg"
       ],
-      "E27": [
-        "https://photo.anselmi.ind.br/Fotos/13135_e27.jpg"
-      ],
       "236": [
         "https://photo.anselmi.ind.br/Fotos/13135_236.jpg"
       ]
@@ -3886,11 +3940,6 @@
         "https://photo.anselmi.ind.br/Fotos/12633_04.jpg"
       ]
     },
-    "047166": {
-      "D36": [
-        "https://photo.anselmi.ind.br/Fotos/47166_d36.jpg"
-      ]
-    },
     "029739": {
       "*01": [
         "https://photo.anselmi.ind.br/Fotos/29739_01.jpg"
@@ -3927,11 +3976,6 @@
         "https://photo.anselmi.ind.br/Fotos/18747_c32.jpg"
       ]
     },
-    "045850": {
-      "998": [
-        "https://photo.anselmi.ind.br/Fotos/45850_998.jpg"
-      ]
-    },
     "018883": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/18883_01.jpg"
@@ -3943,6 +3987,9 @@
       ]
     },
     "018918": {
+      "C72": [
+        "https://photo.anselmi.ind.br/Fotos/18918_c72.jpg"
+      ],
       "D87": [
         "https://photo.anselmi.ind.br/Fotos/18918_d87.jpg"
       ]
@@ -3955,11 +4002,27 @@
     "046842": {
       "353": [
         "https://photo.anselmi.ind.br/Fotos/46842_353.jpg"
+      ],
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/46842_01.jpg"
       ]
     },
     "018888": {
       "IND49": [
         "https://photo.anselmi.ind.br/Fotos/18888_01.jpg"
+      ]
+    },
+    "018952": {
+      "999": [
+        "https://photo.anselmi.ind.br/Fotos/18952_999.jpg"
+      ]
+    },
+    "045854": {
+      "*03": [
+        "https://photo.anselmi.ind.br/Fotos/45854_03.jpg"
+      ],
+      "*01": [
+        "https://photo.anselmi.ind.br/Fotos/45854_01.jpg"
       ]
     },
     "010228": {
@@ -4035,14 +4098,44 @@
         "https://photo.anselmi.ind.br/Fotos/10144_10.jpg"
       ]
     },
+    "010900": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/10900_01.jpg"
+      ]
+    },
     "010730": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/10730_01.jpg"
       ]
     },
+    "046899": {
+      "E56": [
+        "https://photo.anselmi.ind.br/Fotos/46899_e56.jpg"
+      ]
+    },
     "012196": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/12196_01.jpg"
+      ]
+    },
+    "019092": {
+      "004": [
+        "https://photo.anselmi.ind.br/Fotos/19092_04.jpg"
+      ]
+    },
+    "028708": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/28708_01.jpg"
+      ]
+    },
+    "029508": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/29508_01.jpg"
+      ]
+    },
+    "015756": {
+      "003": [
+        "https://photo.anselmi.ind.br/Fotos/15756_03.jpg"
       ]
     },
     "018915": {
@@ -4101,6 +4194,11 @@
         "https://photo.anselmi.ind.br/Fotos/47535_02.jpg"
       ]
     },
+    "029607": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/29607_01.jpg"
+      ]
+    },
     "029423": {
       "IND57": [
         "https://photo.anselmi.ind.br/Fotos/29423_01.jpg"
@@ -4114,6 +4212,24 @@
     "011555": {
       "353": [
         "https://photo.anselmi.ind.br/Fotos/11555_353.jpg"
+      ]
+    },
+    "046817": {
+      "C25": [
+        "https://photo.anselmi.ind.br/Fotos/46817_c25.jpg"
+      ]
+    },
+    "046582": {
+      "003": [
+        "https://photo.anselmi.ind.br/Fotos/46582_03.jpg"
+      ]
+    },
+    "015932": {
+      "*10": [
+        "https://photo.anselmi.ind.br/Fotos/15932_10.jpg"
+      ],
+      "005": [
+        "https://photo.anselmi.ind.br/Fotos/15932_05.jpg"
       ]
     },
     "046393": {
@@ -4140,11 +4256,6 @@
         "https://photo.anselmi.ind.br/Fotos/18937_d57.jpg"
       ]
     },
-    "018950": {
-      "999": [
-        "https://photo.anselmi.ind.br/Fotos/18950_999.jpg"
-      ]
-    },
     "018958": {
       "010": [
         "https://photo.anselmi.ind.br/Fotos/18958_10.jpg"
@@ -4162,9 +4273,6 @@
       "010": [
         "https://photo.anselmi.ind.br/Fotos/12033_10.jpg"
       ],
-      "C25": [
-        "https://photo.anselmi.ind.br/Fotos/12033_c25.jpg"
-      ],
       "353": [
         "https://photo.anselmi.ind.br/Fotos/12033_353.jpg"
       ]
@@ -4180,11 +4288,6 @@
       ],
       "C80": [
         "https://photo.anselmi.ind.br/Fotos/11809_c80.jpg"
-      ]
-    },
-    "012653": {
-      "E42": [
-        "https://photo.anselmi.ind.br/Fotos/12653_e42.jpg"
       ]
     },
     "047522": {
@@ -4213,16 +4316,6 @@
         "https://photo.anselmi.ind.br/Fotos/19168_10.jpg"
       ]
     },
-    "033628": {
-      "003": [
-        "https://photo.anselmi.ind.br/Fotos/33628_03.jpg"
-      ]
-    },
-    "029532": {
-      "001": [
-        "https://photo.anselmi.ind.br/Fotos/29532_01.jpg"
-      ]
-    },
     "046887": {
       "*03": [
         "https://photo.anselmi.ind.br/Fotos/46887_03.jpg"
@@ -4245,6 +4338,16 @@
       ],
       "010": [
         "https://photo.anselmi.ind.br/Fotos/13278_10.jpg"
+      ]
+    },
+    "015427": {
+      "999": [
+        "https://photo.anselmi.ind.br/Fotos/15427_999.jpg"
+      ]
+    },
+    "015956": {
+      "C25": [
+        "https://photo.anselmi.ind.br/Fotos/15956_c25.jpg"
       ]
     },
     "012778": {
@@ -4284,11 +4387,6 @@
         "https://photo.anselmi.ind.br/Fotos/19343_10.jpg"
       ]
     },
-    "019345": {
-      "E61": [
-        "https://photo.anselmi.ind.br/Fotos/19345_e61.jpg"
-      ]
-    },
     "018897": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/18897_01.jpg"
@@ -4297,6 +4395,11 @@
     "019282": {
       "999": [
         "https://photo.anselmi.ind.br/Fotos/19282_999.jpg"
+      ]
+    },
+    "047205": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/47205_01.jpg"
       ]
     },
     "047206": {
@@ -4337,19 +4440,9 @@
         "https://photo.anselmi.ind.br/Fotos/12599_10.jpg"
       ]
     },
-    "029181": {
-      "001": [
-        "https://photo.anselmi.ind.br/Fotos/29181_01.jpg"
-      ]
-    },
     "018604": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/18604_01.jpg"
-      ]
-    },
-    "010247": {
-      "001": [
-        "https://photo.anselmi.ind.br/Fotos/10247_01.jpg"
       ]
     },
     "047284": {
@@ -4391,6 +4484,9 @@
       ]
     },
     "013057": {
+      "B79": [
+        "https://photo.anselmi.ind.br/Fotos/13057_b79.jpg"
+      ],
       "353": [
         "https://photo.anselmi.ind.br/Fotos/13057_353.jpg"
       ]
@@ -4438,9 +4534,6 @@
       ]
     },
     "013207": {
-      "*01": [
-        "https://photo.anselmi.ind.br/Fotos/13207_01.jpg"
-      ],
       "353": [
         "https://photo.anselmi.ind.br/Fotos/13207_353.jpg"
       ]
@@ -4581,6 +4674,11 @@
       ],
       "353": [
         "https://photo.anselmi.ind.br/Fotos/14452_353.jpg"
+      ]
+    },
+    "015356": {
+      "998": [
+        "https://photo.anselmi.ind.br/Fotos/15356_998.jpg"
       ]
     },
     "010436": {
@@ -5453,11 +5551,6 @@
         "https://photo.anselmi.ind.br/Fotos/46920_10.jpg"
       ]
     },
-    "047341": {
-      "E13": [
-        "https://photo.anselmi.ind.br/Fotos/47341_e13.jpg"
-      ]
-    },
     "046767": {
       "C25": [
         "https://photo.anselmi.ind.br/Fotos/46767_c25.jpg"
@@ -5525,14 +5618,9 @@
         "https://photo.anselmi.ind.br/Fotos/46943_10.jpg"
       ]
     },
-    "019387": {
-      "E61": [
-        "https://photo.anselmi.ind.br/Fotos/19387_e61.jpg"
-      ]
-    },
-    "029384": {
-      "C25": [
-        "https://photo.anselmi.ind.br/Fotos/29384_c25.jpg"
+    "046918": {
+      "C80": [
+        "https://photo.anselmi.ind.br/Fotos/46918_c80.jpg"
       ]
     },
     "047501": {
@@ -5564,6 +5652,14 @@
         "https://photo.anselmi.ind.br/Fotos/11381_263.jpg"
       ]
     },
+    "019393": {
+      "A98": [
+        "https://photo.anselmi.ind.br/Fotos/19393_a98.jpg"
+      ],
+      "E80": [
+        "https://photo.anselmi.ind.br/Fotos/19393_e80.jpg"
+      ]
+    },
     "046888": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/46888_01.jpg"
@@ -5593,6 +5689,21 @@
     "046816": {
       "*02": [
         "https://photo.anselmi.ind.br/Fotos/46816_02.jpg"
+      ]
+    },
+    "019441": {
+      "E67": [
+        "https://photo.anselmi.ind.br/Fotos/19441_e67.jpg"
+      ]
+    },
+    "033915": {
+      "004": [
+        "https://photo.anselmi.ind.br/Fotos/33915_04.jpg"
+      ]
+    },
+    "045958": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/45958_01.jpg"
       ]
     },
     "012788": {
@@ -5640,6 +5751,16 @@
         "https://photo.anselmi.ind.br/Fotos/47607_324.jpg"
       ]
     },
+    "047160": {
+      "746": [
+        "https://photo.anselmi.ind.br/Fotos/47160_746.jpg"
+      ]
+    },
+    "046095": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/46095_01.jpg"
+      ]
+    },
     "012632": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/12632_01.jpg"
@@ -5675,6 +5796,11 @@
       ],
       "002": [
         "https://photo.anselmi.ind.br/Fotos/47506_02.jpg"
+      ]
+    },
+    "019453": {
+      "E61": [
+        "https://photo.anselmi.ind.br/Fotos/19453_e61.jpg"
       ]
     },
     "047527": {
@@ -5726,6 +5852,11 @@
     "015579": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/15579_01.jpg"
+      ]
+    },
+    "029300": {
+      "002": [
+        "https://photo.anselmi.ind.br/Fotos/29300_02.jpg"
       ]
     },
     "013200": {
@@ -5783,6 +5914,11 @@
         "https://photo.anselmi.ind.br/Fotos/17120_998.jpg"
       ]
     },
+    "046544": {
+      "353": [
+        "https://photo.anselmi.ind.br/Fotos/46544_353.jpg"
+      ]
+    },
     "013415": {
       "353": [
         "https://photo.anselmi.ind.br/Fotos/13415_353.jpg"
@@ -5815,14 +5951,6 @@
       ],
       "566": [
         "https://photo.anselmi.ind.br/Fotos/13980_566.jpg"
-      ]
-    },
-    "029310": {
-      "001": [
-        "https://photo.anselmi.ind.br/Fotos/29310_01.jpg"
-      ],
-      "D29": [
-        "https://photo.anselmi.ind.br/Fotos/29310_d29.jpg"
       ]
     },
     "014275": {
@@ -5976,7 +6104,15 @@
         "https://photo.anselmi.ind.br/Fotos/12413_10.jpg"
       ]
     },
+    "015966": {
+      "B16": [
+        "https://photo.anselmi.ind.br/Fotos/15966_b16.jpg"
+      ]
+    },
     "047559": {
+      "998": [
+        "https://photo.anselmi.ind.br/Fotos/47559_998.jpg"
+      ],
       "001": [
         "https://photo.anselmi.ind.br/Fotos/47559_01.jpg"
       ],
@@ -6025,6 +6161,11 @@
         "https://photo.anselmi.ind.br/Fotos/47539_02.jpg"
       ]
     },
+    "046121": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/46121_01.jpg"
+      ]
+    },
     "010207": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/10207_01.jpg"
@@ -6057,11 +6198,6 @@
     "000414": {
       "IND01": [
         "https://photo.anselmi.ind.br/Fotos/414_01.jpg"
-      ]
-    },
-    "000028": {
-      "IND01": [
-        "https://photo.anselmi.ind.br/Fotos/28_01.jpg"
       ]
     },
     "046084": {
@@ -6411,6 +6547,16 @@
         "https://photo.anselmi.ind.br/Fotos/10053_324.jpg"
       ]
     },
+    "047726": {
+      "998": [
+        "https://photo.anselmi.ind.br/Fotos/47726_998.jpg"
+      ]
+    },
+    "018733": {
+      "002": [
+        "https://photo.anselmi.ind.br/Fotos/18733_02.jpg"
+      ]
+    },
     "047449": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/47449_01.jpg"
@@ -6493,6 +6639,16 @@
     "013942": {
       "353": [
         "https://photo.anselmi.ind.br/Fotos/13942_353.jpg"
+      ]
+    },
+    "029400": {
+      "003": [
+        "https://photo.anselmi.ind.br/Fotos/29400_03.jpg"
+      ]
+    },
+    "019361": {
+      "E56": [
+        "https://photo.anselmi.ind.br/Fotos/19361_e56.jpg"
       ]
     },
     "012074": {
@@ -6716,19 +6872,9 @@
         "https://photo.anselmi.ind.br/Fotos/15021_353.jpg"
       ]
     },
-    "029756": {
-      "001": [
-        "https://photo.anselmi.ind.br/Fotos/29756_01.jpg"
-      ]
-    },
     "018934": {
       "002": [
         "https://photo.anselmi.ind.br/Fotos/18934_02.jpg"
-      ]
-    },
-    "046474": {
-      "001": [
-        "https://photo.anselmi.ind.br/Fotos/46474_01.jpg"
       ]
     },
     "046925": {
@@ -6783,16 +6929,6 @@
       ],
       "002": [
         "https://photo.anselmi.ind.br/Fotos/47446_02.jpg"
-      ]
-    },
-    "019507": {
-      "P04": [
-        "https://photo.anselmi.ind.br/Fotos/19507_p04.jpg"
-      ]
-    },
-    "047391": {
-      "003": [
-        "https://photo.anselmi.ind.br/Fotos/47391_03.jpg"
       ]
     },
     "010164": {
@@ -6887,25 +7023,12 @@
         "https://photo.anselmi.ind.br/Fotos/46094_01.jpg"
       ]
     },
-    "015451": {
-      "D14": [
-        "https://photo.anselmi.ind.br/Fotos/15451_d14.jpg"
-      ],
-      "010": [
-        "https://photo.anselmi.ind.br/Fotos/15451_10.jpg"
-      ]
-    },
     "047366": {
       "*01": [
         "https://photo.anselmi.ind.br/Fotos/47366_01.jpg"
       ],
       "002": [
         "https://photo.anselmi.ind.br/Fotos/47366_02.jpg"
-      ]
-    },
-    "047493": {
-      "IND49": [
-        "https://photo.anselmi.ind.br/Fotos/47493_02.jpg"
       ]
     },
     "012506": {
@@ -6921,11 +7044,6 @@
     "046953": {
       "517": [
         "https://photo.anselmi.ind.br/Fotos/46953_517.jpg"
-      ]
-    },
-    "029331": {
-      "001": [
-        "https://photo.anselmi.ind.br/Fotos/29331_01.jpg"
       ]
     },
     "010441": {
@@ -6948,11 +7066,6 @@
         "https://photo.anselmi.ind.br/Fotos/46623_01.jpg"
       ]
     },
-    "001018": {
-      "001": [
-        "https://photo.anselmi.ind.br/Fotos/1018_01.jpg"
-      ]
-    },
     "047431": {
       "*01": [
         "https://photo.anselmi.ind.br/Fotos/47431_01.jpg"
@@ -6967,11 +7080,6 @@
     "010598": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/10598_01.jpg"
-      ]
-    },
-    "047778": {
-      "P65": [
-        "https://photo.anselmi.ind.br/Fotos/47778_p65.jpg"
       ]
     },
     "047509": {
@@ -7036,11 +7144,6 @@
       ],
       "002": [
         "https://photo.anselmi.ind.br/Fotos/47571_02.jpg"
-      ]
-    },
-    "028789": {
-      "001": [
-        "https://photo.anselmi.ind.br/Fotos/28789_01.jpg"
       ]
     },
     "047565": {
@@ -7170,6 +7273,11 @@
         "https://photo.anselmi.ind.br/Fotos/12655_10.jpg"
       ]
     },
+    "028799": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/28799_01.jpg"
+      ]
+    },
     "017369": {
       "353": [
         "https://photo.anselmi.ind.br/Fotos/17369_353.jpg"
@@ -7189,6 +7297,11 @@
       ],
       "*04": [
         "https://photo.anselmi.ind.br/Fotos/11034_04.jpg"
+      ]
+    },
+    "028833": {
+      "002": [
+        "https://photo.anselmi.ind.br/Fotos/28833_02.jpg"
       ]
     },
     "047407": {
@@ -7270,8 +7383,16 @@
       ]
     },
     "047674": {
+      "998": [
+        "https://photo.anselmi.ind.br/Fotos/47674_998.jpg"
+      ],
       "236": [
         "https://photo.anselmi.ind.br/Fotos/47674_236.jpg"
+      ]
+    },
+    "015639": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/15639_01.jpg"
       ]
     },
     "010430": {
@@ -7332,27 +7453,19 @@
         "https://photo.anselmi.ind.br/Fotos/47738_236.jpg"
       ]
     },
-    "028545": {
-      "003": [
-        "https://photo.anselmi.ind.br/Fotos/28545_03.jpg"
-      ]
-    },
     "047481": {
-      "002": [
-        "https://photo.anselmi.ind.br/Fotos/47481_02.jpg"
-      ],
       "003": [
         "https://photo.anselmi.ind.br/Fotos/47481_03.jpg"
-      ]
-    },
-    "033597": {
-      "001": [
-        "https://photo.anselmi.ind.br/Fotos/33597_01.jpg"
       ]
     },
     "020038": {
       "010": [
         "https://photo.anselmi.ind.br/Fotos/20038_10.jpg"
+      ]
+    },
+    "020142": {
+      "353": [
+        "https://photo.anselmi.ind.br/Fotos/20142_353.jpg"
       ]
     },
     "012678": {
@@ -7395,14 +7508,9 @@
         "https://photo.anselmi.ind.br/Fotos/16177_780.jpg"
       ]
     },
-    "019772": {
-      "999": [
-        "https://photo.anselmi.ind.br/Fotos/19772_999.jpg"
-      ]
-    },
-    "047861": {
-      "P39": [
-        "https://photo.anselmi.ind.br/Fotos/47861_p39.jpg"
+    "020028": {
+      "353": [
+        "https://photo.anselmi.ind.br/Fotos/20028_353.jpg"
       ]
     },
     "020245": {
@@ -7423,6 +7531,11 @@
     "047914": {
       "236": [
         "https://photo.anselmi.ind.br/Fotos/47914_236.jpg"
+      ]
+    },
+    "020064": {
+      "353": [
+        "https://photo.anselmi.ind.br/Fotos/20064_353.jpg"
       ]
     },
     "020210": {
