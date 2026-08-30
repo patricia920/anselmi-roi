@@ -1,7 +1,7 @@
 {
   "_meta": {
     "fonte": "moa_vw_vitrine (Sisplan via Oracle, sincronizado do anselmi-pcp)",
-    "gerado_em": "2026-08-30T18:12:19Z",
+    "gerado_em": "2026-08-30T18:36:00Z",
     "algoritmo": "cor_arquivo (MOA_VW_VITRINE) → color_sisplan via JOIN — V3 permissivo (TIER 1-6: direto, normalizado, oracle, indireto, so-oracle, orfa)",
     "estatisticas": {
       "match_orfa": 54064,
@@ -14,15 +14,1265 @@
     "fotos_processadas": 96033,
     "refs_no_banco": 16633,
     "pares_ref_color_sisplan": 41542,
-    "limpeza_404_em": "2026-08-30T18:28:18Z",
-    "urls_404_removidas": 375,
-    "refs_zeradas": 224,
-    "cores_zeradas": 375
+    "limpeza_404_em": "2026-08-30T18:54:24Z",
+    "urls_404_removidas": 0,
+    "refs_zeradas": 0,
+    "cores_zeradas": 0
   },
   "fotos": {
+    "010541": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/10541_01.jpg"
+      ]
+    },
+    "001076": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/1076_01.jpg"
+      ]
+    },
+    "022495": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/22495_01.jpg"
+      ]
+    },
+    "010516": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/10516_01.jpg"
+      ],
+      "999": [
+        "https://photo.anselmi.ind.br/Fotos/10516_999.jpg"
+      ],
+      "002": [
+        "https://photo.anselmi.ind.br/Fotos/10516_02.jpg"
+      ]
+    },
+    "017654": {
+      "002": [
+        "https://photo.anselmi.ind.br/Fotos/17654_02.jpg"
+      ],
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/17654_01.jpg"
+      ]
+    },
+    "023197": {
+      "003": [
+        "https://photo.anselmi.ind.br/Fotos/23197_03.jpg"
+      ],
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/23197_01.jpg"
+      ],
+      "002": [
+        "https://photo.anselmi.ind.br/Fotos/23197_02.jpg"
+      ]
+    },
+    "023206": {
+      "002": [
+        "https://photo.anselmi.ind.br/Fotos/23206_02.jpg"
+      ]
+    },
+    "023258": {
+      "157": [
+        "https://photo.anselmi.ind.br/Fotos/23258_157.jpg"
+      ],
+      "010": [
+        "https://photo.anselmi.ind.br/Fotos/23258_10.jpg"
+      ]
+    },
+    "023260": {
+      "553": [
+        "https://photo.anselmi.ind.br/Fotos/23260_553.jpg"
+      ]
+    },
+    "023136": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/23136_01.jpg"
+      ],
+      "010": [
+        "https://photo.anselmi.ind.br/Fotos/23136_10.jpg"
+      ],
+      "562": [
+        "https://photo.anselmi.ind.br/Fotos/23136_562.jpg"
+      ],
+      "574": [
+        "https://photo.anselmi.ind.br/Fotos/23136_574.jpg"
+      ]
+    },
+    "023221": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/23221_01.jpg"
+      ],
+      "553": [
+        "https://photo.anselmi.ind.br/Fotos/23221_553.jpg"
+      ],
+      "583": [
+        "https://photo.anselmi.ind.br/Fotos/23221_583.jpg"
+      ],
+      "574": [
+        "https://photo.anselmi.ind.br/Fotos/23221_574.jpg"
+      ],
+      "564": [
+        "https://photo.anselmi.ind.br/Fotos/23221_564.jpg"
+      ]
+    },
+    "000803": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/803_01.jpg"
+      ]
+    },
+    "000807": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/807_01.jpg"
+      ]
+    },
+    "000808": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/808_01.jpg"
+      ]
+    },
+    "000831": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/831_01.jpg"
+      ]
+    },
+    "000840": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/840_01.jpg"
+      ]
+    },
+    "000894": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/894_01.jpg"
+      ]
+    },
+    "000895": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/895_01.jpg"
+      ]
+    },
+    "000858": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/858_01.jpg"
+      ]
+    },
+    "000860": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/860_01.jpg"
+      ]
+    },
+    "000884": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/884_01.jpg"
+      ]
+    },
+    "000885": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/885_01.jpg"
+      ]
+    },
+    "000887": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/887_01.jpg"
+      ]
+    },
+    "000888": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/888_01.jpg"
+      ]
+    },
+    "000889": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/889_01.jpg"
+      ]
+    },
+    "000890": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/890_01.jpg"
+      ]
+    },
+    "000897": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/897_01.jpg"
+      ]
+    },
+    "000898": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/898_01.jpg"
+      ]
+    },
+    "017653": {
+      "002": [
+        "https://photo.anselmi.ind.br/Fotos/17653_02.jpg"
+      ],
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/17653_01.jpg"
+      ]
+    },
+    "023254": {
+      "557": [
+        "https://photo.anselmi.ind.br/Fotos/23254_557.jpg"
+      ],
+      "378": [
+        "https://photo.anselmi.ind.br/Fotos/23254_378.jpg"
+      ],
+      "481": [
+        "https://photo.anselmi.ind.br/Fotos/23254_481.jpg"
+      ],
+      "157": [
+        "https://photo.anselmi.ind.br/Fotos/23254_157.jpg"
+      ]
+    },
+    "022719": {
+      "436": [
+        "https://photo.anselmi.ind.br/Fotos/22719_436.jpg"
+      ],
+      "010": [
+        "https://photo.anselmi.ind.br/Fotos/22719_10.jpg"
+      ],
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/22719_01.jpg"
+      ],
+      "398": [
+        "https://photo.anselmi.ind.br/Fotos/22719_398.jpg"
+      ]
+    },
+    "043901": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/43901_01.jpg"
+      ]
+    },
+    "031394": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/31394_01.jpg"
+      ]
+    },
+    "022903": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/22903_01.jpg"
+      ],
+      "559": [
+        "https://photo.anselmi.ind.br/Fotos/22903_559.jpg"
+      ],
+      "581": [
+        "https://photo.anselmi.ind.br/Fotos/22903_581.jpg"
+      ],
+      "010": [
+        "https://photo.anselmi.ind.br/Fotos/22903_10.jpg"
+      ],
+      "564": [
+        "https://photo.anselmi.ind.br/Fotos/22903_564.jpg"
+      ],
+      "267": [
+        "https://photo.anselmi.ind.br/Fotos/22903_267.jpg"
+      ],
+      "090": [
+        "https://photo.anselmi.ind.br/Fotos/22903_090.jpg"
+      ]
+    },
+    "023003": {
+      "011": [
+        "https://photo.anselmi.ind.br/Fotos/23003_11.jpg"
+      ],
+      "436": [
+        "https://photo.anselmi.ind.br/Fotos/23003_436.jpg"
+      ],
+      "267": [
+        "https://photo.anselmi.ind.br/Fotos/23003_267.jpg"
+      ],
+      "520": [
+        "https://photo.anselmi.ind.br/Fotos/23003_520.jpg"
+      ],
+      "497": [
+        "https://photo.anselmi.ind.br/Fotos/23003_497.jpg"
+      ]
+    },
+    "022744": {
+      "010": [
+        "https://photo.anselmi.ind.br/Fotos/22744_10.jpg"
+      ],
+      "555": [
+        "https://photo.anselmi.ind.br/Fotos/22744_555.jpg"
+      ],
+      "378": [
+        "https://photo.anselmi.ind.br/Fotos/22744_378.jpg"
+      ],
+      "398": [
+        "https://photo.anselmi.ind.br/Fotos/22744_398.jpg"
+      ],
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/22744_01.jpg"
+      ],
+      "558": [
+        "https://photo.anselmi.ind.br/Fotos/22744_558.jpg"
+      ]
+    },
+    "000644": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/644_01.jpg"
+      ]
+    },
+    "000650": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/650_01.jpg"
+      ]
+    },
+    "000664": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/664_01.jpg"
+      ]
+    },
+    "000670": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/670_01.jpg"
+      ]
+    },
+    "000673": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/673_01.jpg"
+      ]
+    },
+    "000675": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/675_01.jpg"
+      ]
+    },
+    "000681": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/681_01.jpg"
+      ]
+    },
+    "000686": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/686_01.jpg"
+      ]
+    },
+    "000691": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/691_01.jpg"
+      ]
+    },
+    "000694": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/694_01.jpg"
+      ]
+    },
+    "000695": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/695_01.jpg"
+      ]
+    },
+    "044012": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/44012_01.jpg"
+      ]
+    },
+    "031513": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/31513_01.jpg"
+      ]
+    },
+    "000439": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/439_01.jpg"
+      ]
+    },
+    "000463": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/463_01.jpg"
+      ]
+    },
+    "000474": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/474_01.jpg"
+      ]
+    },
+    "000476": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/476_01.jpg"
+      ]
+    },
+    "000551": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/551_01.jpg"
+      ]
+    },
+    "000552": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/552_01.jpg"
+      ]
+    },
+    "023116": {
+      "486": [
+        "https://photo.anselmi.ind.br/Fotos/23116_486.jpg"
+      ]
+    },
+    "000520": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/520_01.jpg"
+      ]
+    },
+    "000546": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/546_01.jpg"
+      ]
+    },
+    "031406": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/31406_01.jpg"
+      ]
+    },
+    "031468": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/31468_01.jpg"
+      ]
+    },
+    "022950": {
+      "471": [
+        "https://photo.anselmi.ind.br/Fotos/22950_471.jpg"
+      ],
+      "090": [
+        "https://photo.anselmi.ind.br/Fotos/22950_090.jpg"
+      ],
+      "451": [
+        "https://photo.anselmi.ind.br/Fotos/22950_451.jpg"
+      ],
+      "233": [
+        "https://photo.anselmi.ind.br/Fotos/22950_233.jpg"
+      ],
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/22950_01.jpg"
+      ],
+      "436": [
+        "https://photo.anselmi.ind.br/Fotos/22950_436.jpg"
+      ]
+    },
+    "022577": {
+      "229": [
+        "https://photo.anselmi.ind.br/Fotos/22577_229.jpg"
+      ],
+      "267": [
+        "https://photo.anselmi.ind.br/Fotos/22577_267.jpg"
+      ],
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/22577_01.jpg"
+      ]
+    },
+    "022477": {
+      "250": [
+        "https://photo.anselmi.ind.br/Fotos/22477_250.jpg"
+      ],
+      "415": [
+        "https://photo.anselmi.ind.br/Fotos/22477_415.jpg"
+      ],
+      "416": [
+        "https://photo.anselmi.ind.br/Fotos/22477_416.jpg"
+      ],
+      "417": [
+        "https://photo.anselmi.ind.br/Fotos/22477_417.jpg"
+      ],
+      "418": [
+        "https://photo.anselmi.ind.br/Fotos/22477_418.jpg"
+      ],
+      "378": [
+        "https://photo.anselmi.ind.br/Fotos/22477_378.jpg"
+      ],
+      "119": [
+        "https://photo.anselmi.ind.br/Fotos/22477_119.jpg"
+      ],
+      "099": [
+        "https://photo.anselmi.ind.br/Fotos/22477_099.jpg"
+      ],
+      "010": [
+        "https://photo.anselmi.ind.br/Fotos/22477_10.jpg"
+      ],
+      "267": [
+        "https://photo.anselmi.ind.br/Fotos/22477_267.jpg"
+      ],
+      "466": [
+        "https://photo.anselmi.ind.br/Fotos/22477_466.jpg"
+      ],
+      "443": [
+        "https://photo.anselmi.ind.br/Fotos/22477_443.jpg"
+      ],
+      "323": [
+        "https://photo.anselmi.ind.br/Fotos/22477_323.jpg"
+      ],
+      "248": [
+        "https://photo.anselmi.ind.br/Fotos/22477_248.jpg"
+      ],
+      "156": [
+        "https://photo.anselmi.ind.br/Fotos/22477_156.jpg"
+      ],
+      "600": [
+        "https://photo.anselmi.ind.br/Fotos/22477_600.jpg"
+      ],
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/22477_01.jpg"
+      ]
+    },
+    "022910": {
+      "511": [
+        "https://photo.anselmi.ind.br/Fotos/22910_511.jpg"
+      ],
+      "478": [
+        "https://photo.anselmi.ind.br/Fotos/22910_478.jpg"
+      ],
+      "347": [
+        "https://photo.anselmi.ind.br/Fotos/22910_347.jpg"
+      ],
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/22910_01.jpg"
+      ],
+      "010": [
+        "https://photo.anselmi.ind.br/Fotos/22910_10.jpg"
+      ]
+    },
+    "023103": {
+      "002": [
+        "https://photo.anselmi.ind.br/Fotos/23103_02.jpg"
+      ]
+    },
+    "000547": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/547_01.jpg"
+      ]
+    },
+    "000600": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/600_01.jpg"
+      ]
+    },
+    "000601": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/601_01.jpg"
+      ]
+    },
+    "000602": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/602_01.jpg"
+      ]
+    },
+    "000603": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/603_01.jpg"
+      ]
+    },
+    "000604": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/604_01.jpg"
+      ]
+    },
+    "000605": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/605_01.jpg"
+      ]
+    },
+    "000606": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/606_01.jpg"
+      ]
+    },
+    "000619": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/619_01.jpg"
+      ]
+    },
+    "000629": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/629_01.jpg"
+      ]
+    },
+    "000636": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/636_01.jpg"
+      ]
+    },
+    "000641": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/641_01.jpg"
+      ]
+    },
+    "002018": {
+      "002": [
+        "https://photo.anselmi.ind.br/Fotos/2018_02.jpg"
+      ],
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/2018_01.jpg"
+      ]
+    },
+    "045422": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/45422_01.jpg"
+      ],
+      "723": [
+        "https://photo.anselmi.ind.br/Fotos/45422_723.jpg"
+      ],
+      "219": [
+        "https://photo.anselmi.ind.br/Fotos/45422_219.jpg"
+      ],
+      "717": [
+        "https://photo.anselmi.ind.br/Fotos/45422_717.jpg"
+      ],
+      "682": [
+        "https://photo.anselmi.ind.br/Fotos/45422_682.jpg"
+      ]
+    },
+    "004228": {
+      "485": [
+        "https://photo.anselmi.ind.br/Fotos/4228_485.jpg"
+      ],
+      "010": [
+        "https://photo.anselmi.ind.br/Fotos/4228_10.jpg"
+      ],
+      "011": [
+        "https://photo.anselmi.ind.br/Fotos/4228_11.jpg"
+      ],
+      "022": [
+        "https://photo.anselmi.ind.br/Fotos/4228_022.jpg"
+      ],
+      "051": [
+        "https://photo.anselmi.ind.br/Fotos/4228_051.jpg"
+      ],
+      "055": [
+        "https://photo.anselmi.ind.br/Fotos/4228_055.jpg"
+      ],
+      "050": [
+        "https://photo.anselmi.ind.br/Fotos/4228_050.jpg"
+      ],
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/4228_01.jpg"
+      ],
+      "003": [
+        "https://photo.anselmi.ind.br/Fotos/4228_03.jpg"
+      ],
+      "157": [
+        "https://photo.anselmi.ind.br/Fotos/4228_157.jpg"
+      ],
+      "999": [
+        "https://photo.anselmi.ind.br/Fotos/4228_999.jpg"
+      ],
+      "172": [
+        "https://photo.anselmi.ind.br/Fotos/4228_172.jpg"
+      ],
+      "178": [
+        "https://photo.anselmi.ind.br/Fotos/4228_178.jpg"
+      ],
+      "593": [
+        "https://photo.anselmi.ind.br/Fotos/4228_593.jpg"
+      ],
+      "319": [
+        "https://photo.anselmi.ind.br/Fotos/4228_319.jpg"
+      ],
+      "191": [
+        "https://photo.anselmi.ind.br/Fotos/4228_191.jpg"
+      ],
+      "592": [
+        "https://photo.anselmi.ind.br/Fotos/4228_592.jpg"
+      ],
+      "581": [
+        "https://photo.anselmi.ind.br/Fotos/4228_581.jpg"
+      ],
+      "576": [
+        "https://photo.anselmi.ind.br/Fotos/4228_576.jpg"
+      ],
+      "331": [
+        "https://photo.anselmi.ind.br/Fotos/4228_331.jpg"
+      ],
+      "559": [
+        "https://photo.anselmi.ind.br/Fotos/4228_559.jpg"
+      ],
+      "588": [
+        "https://photo.anselmi.ind.br/Fotos/4228_588.jpg"
+      ],
+      "558": [
+        "https://photo.anselmi.ind.br/Fotos/4228_558.jpg"
+      ],
+      "347": [
+        "https://photo.anselmi.ind.br/Fotos/4228_347.jpg"
+      ],
+      "267": [
+        "https://photo.anselmi.ind.br/Fotos/4228_267.jpg"
+      ],
+      "271": [
+        "https://photo.anselmi.ind.br/Fotos/4228_271.jpg"
+      ],
+      "439": [
+        "https://photo.anselmi.ind.br/Fotos/4228_439.jpg"
+      ],
+      "208": [
+        "https://photo.anselmi.ind.br/Fotos/4228_208.jpg"
+      ],
+      "586": [
+        "https://photo.anselmi.ind.br/Fotos/4228_586.jpg"
+      ],
+      "622": [
+        "https://photo.anselmi.ind.br/Fotos/4228_622.jpg"
+      ],
+      "630": [
+        "https://photo.anselmi.ind.br/Fotos/4228_630.jpg"
+      ],
+      "620": [
+        "https://photo.anselmi.ind.br/Fotos/4228_620.jpg"
+      ],
+      "619": [
+        "https://photo.anselmi.ind.br/Fotos/4228_619.jpg"
+      ],
+      "656": [
+        "https://photo.anselmi.ind.br/Fotos/4228_656.jpg"
+      ],
+      "670": [
+        "https://photo.anselmi.ind.br/Fotos/4228_670.jpg"
+      ],
+      "627": [
+        "https://photo.anselmi.ind.br/Fotos/4228_627.jpg"
+      ],
+      "441": [
+        "https://photo.anselmi.ind.br/Fotos/4228_441.jpg"
+      ],
+      "635": [
+        "https://photo.anselmi.ind.br/Fotos/4228_635.jpg"
+      ],
+      "564": [
+        "https://photo.anselmi.ind.br/Fotos/4228_564.jpg"
+      ],
+      "606": [
+        "https://photo.anselmi.ind.br/Fotos/4228_606.jpg"
+      ],
+      "653": [
+        "https://photo.anselmi.ind.br/Fotos/4228_653.jpg"
+      ],
+      "636": [
+        "https://photo.anselmi.ind.br/Fotos/4228_636.jpg"
+      ],
+      "661": [
+        "https://photo.anselmi.ind.br/Fotos/4228_661.jpg"
+      ],
+      "346": [
+        "https://photo.anselmi.ind.br/Fotos/4228_346.jpg"
+      ],
+      "641": [
+        "https://photo.anselmi.ind.br/Fotos/4228_641.jpg"
+      ],
+      "637": [
+        "https://photo.anselmi.ind.br/Fotos/4228_637.jpg"
+      ],
+      "328": [
+        "https://photo.anselmi.ind.br/Fotos/4228_328.jpg"
+      ],
+      "268": [
+        "https://photo.anselmi.ind.br/Fotos/4228_268.jpg"
+      ],
+      "727": [
+        "https://photo.anselmi.ind.br/Fotos/4228_727.jpg"
+      ],
+      "650": [
+        "https://photo.anselmi.ind.br/Fotos/4228_650.jpg"
+      ],
+      "621": [
+        "https://photo.anselmi.ind.br/Fotos/4228_621.jpg"
+      ],
+      "158": [
+        "https://photo.anselmi.ind.br/Fotos/4228_158.jpg"
+      ],
+      "629": [
+        "https://photo.anselmi.ind.br/Fotos/4228_629.jpg"
+      ],
+      "682": [
+        "https://photo.anselmi.ind.br/Fotos/4228_682.jpg"
+      ],
+      "605": [
+        "https://photo.anselmi.ind.br/Fotos/4228_605.jpg"
+      ],
+      "680": [
+        "https://photo.anselmi.ind.br/Fotos/4228_680.jpg"
+      ],
+      "708": [
+        "https://photo.anselmi.ind.br/Fotos/4228_708.jpg"
+      ],
+      "527": [
+        "https://photo.anselmi.ind.br/Fotos/4228_527.jpg"
+      ],
+      "524": [
+        "https://photo.anselmi.ind.br/Fotos/4228_524.jpg"
+      ],
+      "168": [
+        "https://photo.anselmi.ind.br/Fotos/4228_168.jpg"
+      ],
+      "511": [
+        "https://photo.anselmi.ind.br/Fotos/4228_511.jpg"
+      ],
+      "652": [
+        "https://photo.anselmi.ind.br/Fotos/4228_652.jpg"
+      ],
+      "683": [
+        "https://photo.anselmi.ind.br/Fotos/4228_683.jpg"
+      ],
+      "689": [
+        "https://photo.anselmi.ind.br/Fotos/4228_689.jpg"
+      ],
+      "604": [
+        "https://photo.anselmi.ind.br/Fotos/4228_604.jpg"
+      ],
+      "591": [
+        "https://photo.anselmi.ind.br/Fotos/4228_591.jpg"
+      ],
+      "563": [
+        "https://photo.anselmi.ind.br/Fotos/4228_563.jpg"
+      ],
+      "362": [
+        "https://photo.anselmi.ind.br/Fotos/4228_362.jpg"
+      ],
+      "594": [
+        "https://photo.anselmi.ind.br/Fotos/4228_594.jpg"
+      ],
+      "649": [
+        "https://photo.anselmi.ind.br/Fotos/4228_649.jpg"
+      ],
+      "642": [
+        "https://photo.anselmi.ind.br/Fotos/4228_642.jpg"
+      ],
+      "333": [
+        "https://photo.anselmi.ind.br/Fotos/4228_333.jpg"
+      ],
+      "B62": [
+        "https://photo.anselmi.ind.br/Fotos/4228_b62.jpg"
+      ],
+      "770": [
+        "https://photo.anselmi.ind.br/Fotos/4228_770.jpg"
+      ],
+      "339": [
+        "https://photo.anselmi.ind.br/Fotos/4228_339.jpg"
+      ],
+      "720": [
+        "https://photo.anselmi.ind.br/Fotos/4228_720.jpg"
+      ],
+      "B98": [
+        "https://photo.anselmi.ind.br/Fotos/4228_b98.jpg"
+      ],
+      "A17": [
+        "https://photo.anselmi.ind.br/Fotos/4228_a17.jpg"
+      ],
+      "A77": [
+        "https://photo.anselmi.ind.br/Fotos/4228_a77.jpg"
+      ],
+      "173": [
+        "https://photo.anselmi.ind.br/Fotos/4228_173.jpg"
+      ]
+    },
+    "002019": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/2019_01.jpg"
+      ],
+      "002": [
+        "https://photo.anselmi.ind.br/Fotos/2019_02.jpg"
+      ]
+    },
+    "000201": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/201_01.jpg"
+      ]
+    },
+    "000202": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/202_01.jpg"
+      ]
+    },
+    "000203": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/203_01.jpg"
+      ]
+    },
+    "000204": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/204_01.jpg"
+      ]
+    },
+    "000205": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/205_01.jpg"
+      ]
+    },
+    "000208": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/208_01.jpg"
+      ]
+    },
+    "000209": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/209_01.jpg"
+      ]
+    },
+    "000211": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/211_01.jpg"
+      ]
+    },
+    "000212": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/212_01.jpg"
+      ]
+    },
+    "000213": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/213_01.jpg"
+      ]
+    },
+    "000216": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/216_01.jpg"
+      ]
+    },
+    "000217": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/217_01.jpg"
+      ]
+    },
+    "000218": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/218_01.jpg"
+      ]
+    },
+    "000219": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/219_01.jpg"
+      ]
+    },
+    "000220": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/220_01.jpg"
+      ]
+    },
+    "000222": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/222_01.jpg"
+      ]
+    },
+    "000223": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/223_01.jpg"
+      ]
+    },
+    "000226": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/226_01.jpg"
+      ]
+    },
+    "000230": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/230_01.jpg"
+      ]
+    },
+    "000231": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/231_01.jpg"
+      ]
+    },
+    "000232": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/232_01.jpg"
+      ]
+    },
+    "000234": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/234_01.jpg"
+      ],
+      "002": [
+        "https://photo.anselmi.ind.br/Fotos/234_02.jpg"
+      ],
+      "003": [
+        "https://photo.anselmi.ind.br/Fotos/234_03.jpg"
+      ],
+      "004": [
+        "https://photo.anselmi.ind.br/Fotos/234_04.jpg"
+      ]
+    },
+    "000236": {
+      "*01": [
+        "https://photo.anselmi.ind.br/Fotos/236_01.jpg"
+      ]
+    },
+    "000237": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/237_01.jpg"
+      ]
+    },
+    "000238": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/238_01.jpg"
+      ]
+    },
+    "000239": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/239_01.jpg"
+      ]
+    },
     "000241": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/241_01.jpg"
+      ]
+    },
+    "000242": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/242_01.jpg"
+      ]
+    },
+    "000244": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/244_01.jpg"
+      ]
+    },
+    "000245": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/245_01.jpg"
+      ]
+    },
+    "001811": {
+      "002": [
+        "https://photo.anselmi.ind.br/Fotos/1811_02.jpg"
+      ]
+    },
+    "000246": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/246_01.jpg"
+      ]
+    },
+    "000247": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/247_01.jpg"
+      ]
+    },
+    "000249": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/249_01.jpg"
+      ]
+    },
+    "000254": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/254_01.jpg"
+      ]
+    },
+    "000258": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/258_01.jpg"
+      ]
+    },
+    "000259": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/259_01.jpg"
+      ]
+    },
+    "000260": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/260_01.jpg"
+      ]
+    },
+    "000261": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/261_01.jpg"
+      ]
+    },
+    "000262": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/262_01.jpg"
+      ]
+    },
+    "000264": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/264_01.jpg"
+      ]
+    },
+    "000265": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/265_01.jpg"
+      ]
+    },
+    "000266": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/266_01.jpg"
+      ]
+    },
+    "000267": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/267_01.jpg"
+      ]
+    },
+    "000268": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/268_01.jpg"
+      ]
+    },
+    "000269": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/269_01.jpg"
+      ]
+    },
+    "000270": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/270_01.jpg"
+      ]
+    },
+    "000271": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/271_01.jpg"
+      ]
+    },
+    "000272": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/272_01.jpg"
+      ]
+    },
+    "000278": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/278_01.jpg"
+      ]
+    },
+    "000290": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/290_01.jpg"
+      ]
+    },
+    "000298": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/298_01.jpg"
+      ]
+    },
+    "000300": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/300_01.jpg"
+      ]
+    },
+    "000301": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/301_01.jpg"
+      ]
+    },
+    "000302": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/302_01.jpg"
+      ]
+    },
+    "000303": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/303_01.jpg"
+      ]
+    },
+    "000304": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/304_01.jpg"
+      ]
+    },
+    "000305": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/305_01.jpg"
+      ]
+    },
+    "000306": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/306_01.jpg"
+      ]
+    },
+    "000307": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/307_01.jpg"
+      ]
+    },
+    "000308": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/308_01.jpg"
+      ]
+    },
+    "000309": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/309_01.jpg"
+      ]
+    },
+    "000310": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/310_01.jpg"
+      ]
+    },
+    "000311": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/311_01.jpg"
+      ]
+    },
+    "000312": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/312_01.jpg"
+      ]
+    },
+    "000313": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/313_01.jpg"
+      ]
+    },
+    "000314": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/314_01.jpg"
+      ]
+    },
+    "000315": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/315_01.jpg"
+      ]
+    },
+    "000316": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/316_01.jpg"
+      ]
+    },
+    "000317": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/317_01.jpg"
+      ]
+    },
+    "000318": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/318_01.jpg"
+      ]
+    },
+    "000319": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/319_01.jpg"
+      ]
+    },
+    "000320": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/320_01.jpg"
+      ]
+    },
+    "000321": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/321_01.jpg"
+      ]
+    },
+    "000322": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/322_01.jpg"
+      ]
+    },
+    "000323": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/323_01.jpg"
+      ]
+    },
+    "000324": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/324_01.jpg"
+      ]
+    },
+    "000325": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/325_01.jpg"
+      ]
+    },
+    "000326": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/326_01.jpg"
+      ]
+    },
+    "000327": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/327_01.jpg"
       ]
     },
     "000328": {
@@ -30,9 +1280,149 @@
         "https://photo.anselmi.ind.br/Fotos/328_01.jpg"
       ]
     },
+    "000329": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/329_01.jpg"
+      ]
+    },
+    "000330": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/330_01.jpg"
+      ]
+    },
+    "000331": {
+      "IND02": [
+        "https://photo.anselmi.ind.br/Fotos/331_01.jpg"
+      ]
+    },
+    "000333": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/333_01.jpg"
+      ]
+    },
+    "000334": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/334_01.jpg"
+      ]
+    },
+    "000343": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/343_01.jpg"
+      ]
+    },
+    "000355": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/355_01.jpg"
+      ]
+    },
+    "000356": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/356_01.jpg"
+      ]
+    },
+    "000357": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/357_01.jpg"
+      ]
+    },
+    "000359": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/359_01.jpg"
+      ]
+    },
+    "000360": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/360_01.jpg"
+      ]
+    },
+    "000361": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/361_01.jpg"
+      ]
+    },
+    "000371": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/371_01.jpg"
+      ]
+    },
+    "000372": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/372_01.jpg"
+      ]
+    },
+    "000373": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/373_01.jpg"
+      ]
+    },
+    "000376": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/376_01.jpg"
+      ]
+    },
+    "000379": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/379_01.jpg"
+      ]
+    },
+    "000381": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/381_01.jpg"
+      ]
+    },
     "000382": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/382_01.jpg"
+      ]
+    },
+    "000385": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/385_01.jpg"
+      ]
+    },
+    "000387": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/387_01.jpg"
+      ]
+    },
+    "000391": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/391_01.jpg"
+      ]
+    },
+    "000392": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/392_01.jpg"
+      ]
+    },
+    "000393": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/393_01.jpg"
+      ]
+    },
+    "000394": {
+      "005": [
+        "https://photo.anselmi.ind.br/Fotos/394_05.jpg"
+      ]
+    },
+    "000016": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/16_01.jpg"
+      ]
+    },
+    "000100": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/100_01.jpg"
+      ]
+    },
+    "000101": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/101_01.jpg"
+      ]
+    },
+    "000102": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/102_01.jpg"
       ]
     },
     "000106": {
@@ -40,9 +1430,154 @@
         "https://photo.anselmi.ind.br/Fotos/106_01.jpg"
       ]
     },
+    "000107": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/107_01.jpg"
+      ]
+    },
+    "000108": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/108_01.jpg"
+      ]
+    },
+    "000109": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/109_01.jpg"
+      ]
+    },
+    "000110": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/110_01.jpg"
+      ]
+    },
+    "000115": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/115_01.jpg"
+      ]
+    },
+    "000116": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/116_01.jpg"
+      ]
+    },
+    "000117": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/117_01.jpg"
+      ]
+    },
+    "000118": {
+      "*01": [
+        "https://photo.anselmi.ind.br/Fotos/118_01.jpg"
+      ]
+    },
+    "000119": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/119_01.jpg"
+      ]
+    },
+    "000120": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/120_01.jpg"
+      ]
+    },
+    "000121": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/121_01.jpg"
+      ]
+    },
+    "000122": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/122_01.jpg"
+      ]
+    },
+    "000126": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/126_01.jpg"
+      ]
+    },
+    "000127": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/127_01.jpg"
+      ]
+    },
+    "000129": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/129_01.jpg"
+      ]
+    },
+    "000154": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/154_01.jpg"
+      ]
+    },
+    "000155": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/155_01.jpg"
+      ]
+    },
+    "000156": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/156_01.jpg"
+      ]
+    },
+    "000157": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/157_01.jpg"
+      ]
+    },
+    "000158": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/158_01.jpg"
+      ]
+    },
+    "000159": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/159_01.jpg"
+      ]
+    },
+    "000160": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/160_01.jpg"
+      ]
+    },
+    "000161": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/161_01.jpg"
+      ]
+    },
+    "000162": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/162_01.jpg"
+      ]
+    },
+    "000163": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/163_01.jpg"
+      ]
+    },
+    "000164": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/164_01.jpg"
+      ]
+    },
     "000165": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/165_01.jpg"
+      ]
+    },
+    "000166": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/166_01.jpg"
+      ]
+    },
+    "000168": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/168_01.jpg"
+      ]
+    },
+    "000169": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/169_01.jpg"
       ]
     },
     "000170": {
@@ -55,9 +1590,22 @@
         "https://photo.anselmi.ind.br/Fotos/172_01.jpg"
       ]
     },
+    "000173": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/173_01.jpg"
+      ]
+    },
     "000174": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/174_01.jpg"
+      ],
+      "002": [
+        "https://photo.anselmi.ind.br/Fotos/174_02.jpg"
+      ]
+    },
+    "000175": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/175_01.jpg"
       ]
     },
     "000176": {
@@ -70,9 +1618,34 @@
         "https://photo.anselmi.ind.br/Fotos/177_01.jpg"
       ]
     },
+    "000178": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/178_01.jpg"
+      ]
+    },
     "000179": {
       "001": [
         "https://photo.anselmi.ind.br/Fotos/179_01.jpg"
+      ]
+    },
+    "000200": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/200_01.jpg"
+      ]
+    },
+    "000643": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/643_01.jpg"
+      ]
+    },
+    "000637": {
+      "IND01": [
+        "https://photo.anselmi.ind.br/Fotos/637_01.jpg"
+      ]
+    },
+    "031465": {
+      "001": [
+        "https://photo.anselmi.ind.br/Fotos/31465_01.jpg"
       ]
     },
     "023215": {
